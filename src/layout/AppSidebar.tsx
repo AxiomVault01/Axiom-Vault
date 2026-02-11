@@ -1,94 +1,68 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
+import Badge from "../components/ui/badge/Badge";
 
 // Assume these icons are imported from an icon library
 import {
-  BoxCubeIcon,
-  CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  ListIcon,
   PageIcon,
+  AlertHexaIcon,
   PieChartIcon,
-  PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
+  GroupIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import SidebarWidget from "./SidebarWidget";
+import LogoutIcon from "../icons/logout-ion";
+import SettingsIcon from "../icons/Settings-icon";
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  badge?: { color: "primary" | "success" | "warning" | "danger"; content: string };
 };
 
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    path: "/",
   },
   {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
+    icon: <AlertHexaIcon />,
+    name: "Risk Alerts", 
+    path: "/alerts",
+    badge: { color: "danger", content: "12" },
   },
   {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
+    icon: <GroupIcon />,
+    name: "Employee Records",
+    path: "/employee-records",
   },
   {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    icon: <PieChartIcon />,
+    name: "Analytics",
+    path: "/analytics",
   },
   {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
     icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
+    name: "Reports",
+    path: "/reports",
   },
 ];
 
 const othersItems: NavItem[] = [
   {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
+    icon: <SettingsIcon />,
+    name: "Settings",
+    path: "/settings",
   },
   {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
+    icon: <LogoutIcon />,
+    name: "Logout",
+    path: "/signin",
   },
 ];
 
@@ -176,7 +150,9 @@ const AppSidebar: React.FC = () => {
                   ? "lg:justify-center"
                   : "lg:justify-start"
               }`}
+              
             >
+              
               <span
                 className={`menu-item-icon-size  ${
                   openSubmenu?.type === menuType && openSubmenu?.index === index
@@ -218,8 +194,20 @@ const AppSidebar: React.FC = () => {
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
+                <>
                   <span className="menu-item-text">{nav.name}</span>
-                )}
+                  
+                  {/* DYNAMIC BADGE LOGIC START */}
+                  {nav.badge && (
+                    <span className="ml-auto">
+                      <Badge variant="solid" color="error">
+                        {nav.badge.content}
+                      </Badge>
+                    </span>
+                  )}
+                  {/* DYNAMIC BADGE LOGIC END */}
+                </>
+              )}
               </Link>
             )
           )}
@@ -285,7 +273,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-7 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 shadow
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -299,7 +287,7 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex ${
+        className={`py-4 flex ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
@@ -308,24 +296,24 @@ const AppSidebar: React.FC = () => {
             <>
               <img
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/images/dashboard/logo-full.png"
                 alt="Logo"
-                width={150}
+                width={250}
                 height={40}
               />
               <img
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="/images/dashboard/logo-full.png"
                 alt="Logo"
-                width={150}
+                width={250}
                 height={40}
               />
             </>
           ) : (
             <img
-              src="/images/logo/logo-icon.svg"
+              src="/images/dashboard/logo-icon.png"
               alt="Logo"
-              width={32}
+              width={40}
               height={32}
             />
           )}
@@ -343,7 +331,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                  ""
                 ) : (
                   <HorizontaLDots className="size-6" />
                 )}
@@ -359,7 +347,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                  <hr className="w-full border-t border-gray-300 dark:border-gray-800" />
                 ) : (
                   <HorizontaLDots />
                 )}
@@ -368,7 +356,6 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
     </aside>
   );

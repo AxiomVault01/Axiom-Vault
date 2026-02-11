@@ -1,39 +1,48 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
-import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
+// import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
-import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
-import RecentOrders from "../../components/ecommerce/RecentOrders";
-import DemographicCard from "../../components/ecommerce/DemographicCard";
+// import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
+// import RecentOrders from "../../components/ecommerce/RecentOrders";
+// import DemographicCard from "../../components/ecommerce/DemographicCard";
 import PageMeta from "../../components/common/PageMeta";
+import RiskAlert from "../../components/ui/alert/risk-alert";
+import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
+import ComponentCard from "../../components/common/ComponentCard";
+import QuickActions from "../UiElements/QuickActions";
 
 export default function Home() {
   return (
     <>
       <PageMeta
-        title="React.js Ecommerce Dashboard | TailAdmin - React.js Admin Dashboard Template"
-        description="This is React.js Ecommerce Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="Axiom Vault | Dashboard"
+        description="Axiom Vault is an AI enabled fraud detection and prevention platform that helps businesses identify and mitigate fraudulent activities in real-time, ensuring the security of their operations and customers."
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
-        <div className="col-span-12 space-y-6 xl:col-span-7">
+        <div className="col-span-12 space-y-12 xl:col-span-12">
+          <RiskAlert />
           <EcommerceMetrics />
 
-          <MonthlySalesChart />
+          {/* <MonthlySalesChart /> */}
         </div>
 
-        <div className="col-span-12 xl:col-span-5">
-          <MonthlyTarget />
-        </div>
-
-        <div className="col-span-12">
+        <div className="col-span-12 xl:col-span-8 mx-auto">
           <StatisticsChart />
+
+          {/* <MonthlyTarget /> */}
         </div>
 
-        <div className="col-span-12 xl:col-span-5">
-          <DemographicCard />
+        <div className="col-span-12 xl:col-span-4 mx-auto">
+          <QuickActions />
         </div>
 
-        <div className="col-span-12 xl:col-span-7">
-          <RecentOrders />
+        <div className="col-span-12"></div>
+
+        <div className="col-span-12 xl:col-span-12">
+          <div className="space-y-6">
+            <ComponentCard title="Flagged Employee Records" desc="Employees with suspicious activities detected by AI">
+              <BasicTableOne />
+            </ComponentCard>
+          </div>
         </div>
       </div>
     </>
