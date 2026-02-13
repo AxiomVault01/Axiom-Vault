@@ -1,4 +1,7 @@
 import { Link } from "react-router";
+import Badge from "../badge/Badge";
+import { DocsIcon, GroupIcon, TimeIcon } from "../../../icons";
+import Button from "../button/Button";
 
 interface AlertProps {
   variant: "success" | "error" | "warning" | "info"; // Alert type
@@ -7,6 +10,10 @@ interface AlertProps {
   showLink?: boolean; // Whether to show the "Learn More" link
   linkHref?: string; // Link URL
   linkText?: string; // Link text
+  employeeNumber?: number; //number of employees affected
+  dateDetected?: string; //date of error
+  extraInfo?: string; // brief information relating to the error
+  reqAction?: string; // action to take relating to the error
 }
 
 const Alert: React.FC<AlertProps> = ({
@@ -15,7 +22,11 @@ const Alert: React.FC<AlertProps> = ({
   message,
   showLink = false,
   linkHref = "#",
-  linkText = "Learn more",
+  // linkText = "Learn more",
+  employeeNumber = 0,
+  dateDetected,
+  extraInfo,
+  reqAction,
 }) => {
   // Tailwind classes for each variant
   const variantClasses = {
@@ -23,21 +34,37 @@ const Alert: React.FC<AlertProps> = ({
       container:
         "border-success-500 bg-success-50 dark:border-success-500/30 dark:bg-success-500/15",
       icon: "text-success-500",
+      subcontainer:
+        "border-success-300 bg-white dark:border-success-500/30 dark:bg-white/30",
+      riskLevel: "GOOD",
+      badgeColor: "bg-success-200 font-semibold"
     },
     error: {
       container:
         "border-error-500 bg-error-50 dark:border-error-500/30 dark:bg-error-500/15",
       icon: "text-error-500",
+      subcontainer:
+        "border-error-300 bg-white dark:border-error-500/30 dark:bg-white/15",
+      riskLevel: "HIGH",
+      badgeColor: "bg-error-200 font-semibold"
     },
     warning: {
       container:
         "border-warning-500 bg-warning-50 dark:border-warning-500/30 dark:bg-warning-500/15",
       icon: "text-warning-500",
+      subcontainer:
+        "border-warning-300 bg-white dark:border-warning-500/30 dark:bg-white/15",
+      riskLevel: "MEDIUM",
+      badgeColor: "bg-warning-200 font-semibold"
     },
     info: {
       container:
         "border-blue-light-500 bg-blue-light-50 dark:border-blue-light-500/30 dark:bg-blue-light-500/15",
       icon: "text-blue-light-500",
+      subcontainer:
+        "border-blue-light-300 bg-white dark:border-blue-light-500/30 dark:bg-white/15",
+      riskLevel: "LOW",
+      badgeColor: "bg-blue-light-200 font-semibold"
     },
   };
 
@@ -113,29 +140,74 @@ const Alert: React.FC<AlertProps> = ({
 
   return (
     <div
-      className={`rounded-xl border p-4 ${variantClasses[variant].container}`}
+      className={`rounded-xl mx-4 border ${variantClasses[variant].container}`}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3 px-5 py-4">
         <div className={`-mt-0.5 ${variantClasses[variant].icon}`}>
           {icons[variant]}
         </div>
 
         <div>
-          <h4 className="mb-1 text-sm font-semibold text-gray-800 dark:text-white/90">
-            {title}
-          </h4>
+          <div className="flex gap-2 mb-2 items-center">
+            <h4 className=" text-sm font-semibold text-gray-800 dark:text-white/90">
+              {title}
+            </h4>
+            <Badge color={variant}>
+              {" "}
+              <span className={`text-xs ${variantClasses[variant].badgeColor} px-3 dark:bg-transparent py-1 rounded-4xl`}>
+                {variantClasses[variant].riskLevel}
+              </span>
+            </Badge>
+          </div>
 
           <p className="text-sm text-gray-500 dark:text-gray-400">{message}</p>
 
-          {showLink && (
-            <Link
-              to={linkHref}
-              className="inline-block mt-3 text-sm font-medium text-gray-500 underline dark:text-gray-400"
-            >
-              {linkText}
-            </Link>
-          )}
+          <div className="flex gap-3 justify-start items-center">
+            <div className="flex text-sm text-gray-500 dark:text-gray-400 pt-2 gap-1">
+              <GroupIcon className="mt-1" /> {employeeNumber} employee
+              {employeeNumber > 1 && "s"} affected
+            </div>
+            <div className="flex text-sm text-gray-500 dark:text-gray-400 pt-2 gap-1">
+              <TimeIcon className="mt-1" /> Detected: {dateDetected}{" "}
+            </div>
+            {extraInfo && (
+              <div className="flex text-sm text-gray-500 dark:text-gray-400 pt-2 gap-1">
+                <DocsIcon className="mt-1" /> {extraInfo}{" "}
+              </div>
+            )}
+          </div>
         </div>
+      </div>
+
+      {/* subcontainer*/}
+      <div
+        className={`rounded-b-xl border px-6 py-2.5 flex justify-between items-center ${variantClasses[variant].subcontainer}`}
+      >
+        <div className="text-sm text-gray-500 dark:text-gray-300">
+          Required Action:{" "}
+          <span className="text-gray-900 font-bold dark:text-gray-200">
+            {" "}
+            {reqAction}{" "}
+          </span>
+        </div>
+
+        {showLink && (
+          <div className="flex gap-3">
+            <Link to={linkHref} className="">
+              <Button variant="outline" size="sm">
+                {" "}
+                View Details{" "}
+              </Button>
+            </Link>
+
+            <Link to={linkHref} className="">
+              <Button variant={variant} size="sm">
+                {" "}
+                Take Action{" "}
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
