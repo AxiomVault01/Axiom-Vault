@@ -4,33 +4,46 @@ import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
+import MainImg from "../../../public/Vault.jpg";
+
+const bgImage  = {
+  backgroundImage: `url(${MainImg})`,
+  minheight: "100vh",
+  width: "100%",
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+};
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   return (
-    <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
+    <div style={bgImage}>
+    <div className="flex flex-col flex-1 w-full mx-auto overflow-y-auto lg:w-1/2 no-scrollbar">
       <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
         <Link
-          to="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          to="/welcome"
+          className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon className="size-5" />
-          Back to dashboard
+          Back to Home
         </Link>
       </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
-        <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Sign Up
+        <div className="bg-white rounded-t-lg">
+          <div className="mb-5 sm:mb-8 p-8 bg-brand-500 rounded-t-lg">
+            <div className="w-10 h-10 mb-3 bg-white rounded-lg mx-auto"></div>
+
+            <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
+              Create Your Account
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign up!
+            <p className="text-sm text-brand-200 text-center dark:text-gray-400">
+              Start Protecting your organization from fraud today
             </p>
           </div>
-          <div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
+          <div className="p-5">
+            {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
               <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
                   width="20"
@@ -71,8 +84,8 @@ export default function SignUpForm() {
                 </svg>
                 Sign up with X
               </button>
-            </div>
-            <div className="relative py-3 sm:py-5">
+            </div> */}
+            {/* <div className="relative py-3 sm:py-5">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
               </div>
@@ -81,55 +94,73 @@ export default function SignUpForm() {
                   Or
                 </span>
               </div>
-            </div>
+            </div> */}
             <form>
               <div className="space-y-5">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  {/* <!-- First Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      First Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="fname"
-                      name="fname"
-                      placeholder="Enter your first name"
-                    />
-                  </div>
-                  {/* <!-- Last Name --> */}
-                  <div className="sm:col-span-1">
-                    <Label>
-                      Last Name<span className="text-error-500">*</span>
-                    </Label>
-                    <Input
-                      type="text"
-                      id="lname"
-                      name="lname"
-                      placeholder="Enter your last name"
-                    />
-                  </div>
-                </div>
+                {/* <!-- Full Name --> */}
+                <div className="sm:col-span-1">
+                  <Label className="text-brand-800">
+                    Full Name
+                  </Label>
+                  <Input
+                   type="text"
+                   id="fname"
+                   name="fname"
+                   placeholder="Juan dela Cruz"
+                  />
+               </div>
+              
                 {/* <!-- Email --> */}
                 <div>
-                  <Label>
-                    Email<span className="text-error-500">*</span>
+                  <Label className="text-brand-800">
+                    Work Email Address
                   </Label>
                   <Input
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Enter your email"
+                    placeholder="auditor@agency.gov"
                   />
                 </div>
+
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  {/* <!-- Organization --> */}
+                  <div className="sm:col-span-1">
+                    <Label className="text-brand-800">
+                      Organization
+                    </Label>
+                    <Input
+                      type="text"
+                      id="org"
+                      name="org"
+                      placeholder="Agency Name"
+                    />
+                  </div>
+                  {/* <!-- Department--> */}
+                  <div className="sm:col-span-1">
+                    <Label className="text-brand-800">
+                      Department
+                    </Label>
+                    <select name="dept" id="dept" className="w-full px-2 py-3 border border-gray-200 rounded-lg focus:outline-none">
+                      <option value="">Select</option>
+                      <option value="internal audit">Internal Audit</option>
+                      <option value="finance">Finance</option>
+                      <option value="compliance">Compliance</option>
+                      <option value="risk management">Risk Management</option>
+                      <option value="human resources">Human Resources</option>
+                      <option value="others">Others</option>
+                    </select>
+                  </div>
+                </div>
+
                 {/* <!-- Password --> */}
                 <div>
-                  <Label>
-                    Password<span className="text-error-500">*</span>
+                  <Label className="text-brand-800">
+                    Password
                   </Label>
                   <div className="relative">
                     <Input
-                      placeholder="Enter your password"
+                      placeholder="Minimum of 8 characters"
                       type={showPassword ? "text" : "password"}
                     />
                     <span
@@ -144,47 +175,75 @@ export default function SignUpForm() {
                     </span>
                   </div>
                 </div>
+
+                {/* <!-- Confirm Password --> */}
+                <div>
+                  <Label className="text-brand-800">
+                    Re-enter your password
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      placeholder="Minimum of 8 characters"
+                      type={showPassword ? "text" : "password"}
+                    />
+                    <span
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                    >
+                      {showPassword ? (
+                        <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                      ) : (
+                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                      )}
+                    </span>
+                  </div>
+                </div>
+
                 {/* <!-- Checkbox --> */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 p-2 bg-brand-50 border-1 border-brand-700 rounded-lg">
                   <Checkbox
                     className="w-5 h-5"
                     checked={isChecked}
                     onChange={setIsChecked}
                   />
-                  <p className="inline-block font-normal text-gray-500 dark:text-gray-400">
-                    By creating an account means you agree to the{" "}
-                    <span className="text-gray-800 dark:text-white/90">
+                  <p className="inline-block font-normal text-brand-800 dark:text-gray-400">
+                    I agree to the{" "}
+                    <span className="text-error-500 dark:text-white/90">
                       Terms and Conditions,
                     </span>{" "}
-                    and our{" "}
-                    <span className="text-gray-800 dark:text-white">
+                    and {" "}
+                    <span className="text-error-500 dark:text-white">
                       Privacy Policy
                     </span>
+                    and confirm that this account is for official government or institutional use.
                   </p>
                 </div>
                 {/* <!-- Button --> */}
                 <div>
                   <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
-                    Sign Up
+                    Create Account
                   </button>
                 </div>
               </div>
             </form>
 
-            <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
+            <div className="mt-6 flex justify-center">
+              <p className="text-sm font-normal text-brand-100 dark:text-gray-400 sm:text-start">
                 Already have an account? {""}
-                <Link
-                  to="/signin"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
+              </p>
+            </div>
+            {/* <!-- Button --> */}
+            <div className="mt-6"> 
+              <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg  shadow-theme-xs">
+                <Link to="/signin">
                   Sign In
                 </Link>
-              </p>
+              </button>
             </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

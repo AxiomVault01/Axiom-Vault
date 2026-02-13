@@ -5,33 +5,46 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
+import MainImg from "../../../public/Vault.jpg";
+
+const bgImage  = {
+  backgroundImage: `url(${MainImg})`,
+  minheight: "100vh",
+  width: "100%",
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+};
+
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   return (
-    <div className="flex flex-col flex-1">
+    <div style={bgImage}>
+    <div className="flex flex-col flex-1 w-full mx-auto">
       <div className="w-full max-w-md pt-10 mx-auto">
         <Link
-          to="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          to="/welcome"
+          className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon className="size-5" />
-          Back to dashboard
+          Back to Home
         </Link>
       </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
-        <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Sign In
+        <div className="bg-white rounded-t-lg">
+          <div className="mb-5 sm:mb-8 p-8 bg-brand-500 rounded-t-lg">
+            <div className="w-10 h-10 mb-3 bg-white rounded-lg mx-auto"></div>
+            <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
+              Welcome Back
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign in!
+            <p className="text-sm text-brand-200 text-center dark:text-gray-400">
+              Sign in to access Axiom Vault
             </p>
           </div>
-          <div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
+          <div className="p-5">
+            {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">
               <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
                   width="20"
@@ -72,8 +85,8 @@ export default function SignInForm() {
                 </svg>
                 Sign in with X
               </button>
-            </div>
-            <div className="relative py-3 sm:py-5">
+            </div> */}
+            {/* <div className="relative py-3 sm:py-5">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
               </div>
@@ -82,18 +95,18 @@ export default function SignInForm() {
                   Or
                 </span>
               </div>
-            </div>
+            </div> */}
             <form>
               <div className="space-y-6">
                 <div>
-                  <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                  <Label className="text-brand-800">
+                    Email Address
                   </Label>
-                  <Input placeholder="info@gmail.com" />
+                  <Input placeholder="auditor@agency.gov" />
                 </div>
                 <div>
-                  <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                  <Label className="text-brand-800">
+                    Password 
                   </Label>
                   <div className="relative">
                     <Input
@@ -115,8 +128,8 @@ export default function SignInForm() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Checkbox checked={isChecked} onChange={setIsChecked} />
-                    <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                      Keep me logged in
+                    <span className="block font-normal text-brand-800 text-theme-sm dark:text-gray-400">
+                     Remember Me 
                     </span>
                   </div>
                   <Link
@@ -128,26 +141,41 @@ export default function SignInForm() {
                 </div>
                 <div>
                   <Button className="w-full" size="sm">
-                    Sign in
+                    <Link
+                  to="/"
+                >
+                  Sign In
+                </Link>
+                  
                   </Button>
                 </div>
               </div>
             </form>
 
-            <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
-                <Link
-                  to="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
-                  Sign Up
-                </Link>
+            <div className="mt-6 flex justify-center">
+              <p className="text-sm font-normal text-brand-100 dark:text-gray-400 sm:text-start">
+                New to Axiom Vault ?
+                
               </p>
             </div>
+            {/* <!-- Button --> */}
+            <div className="mt-6"> 
+              <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg  shadow-theme-xs">
+                <Link
+                  to="/signup"
+                >
+                  Create Account
+                </Link>
+              </button>
+            </div>
+            <div className="mt-10 border-t-2 border-gray-100">
+              <p className="text-sm text-center mt-5 text-brand-100 dark:text-gray-400">By signing in, you agree to our Terms of Service and Privacy Policy</p>
+            </div>
+          
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
