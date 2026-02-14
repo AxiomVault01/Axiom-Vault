@@ -1,6 +1,6 @@
 import React from "react";
-import GridShape from "../../components/common/GridShape";
-import { Link } from "react-router";
+// import GridShape from "../../components/common/GridShape";
+// import { Link } from "react-router";
 import ThemeTogglerTwo from "../../components/common/ThemeTogglerTwo";
 
 
@@ -11,7 +11,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }){
   return (
-    <div className="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
+    <div className="relative p-0 bg-white z-1 dark:bg-gray-900 sm:p-0">
       <div className="relative flex flex-col justify-center w-full min-h-screen lg:flex-row dark:bg-gray-900 sm:p-0">
         {children}
         {/* <div className="items-center hidden w-full h-full lg:w-1/2 bg-brand-950 dark:bg-white/5 lg:grid">
@@ -33,7 +33,7 @@ export default function AuthLayout({
             </div>
           </div>
         </div> */}
-        <div className="fixed z-50 hidden bottom-6 right-6 sm:block">
+        <div className="fixed z-50 bottom-6 right-6">
           <ThemeTogglerTwo />
         </div>
       </div>

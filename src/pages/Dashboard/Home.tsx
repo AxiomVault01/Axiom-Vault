@@ -25,13 +25,13 @@ export default function Home() {
           {/* <MonthlySalesChart /> */}
         </div>
 
-        <div className="col-span-12 xl:col-span-8 mx-auto">
+        <div className="col-span-12 xl:col-span-9">
           <StatisticsChart />
 
           {/* <MonthlyTarget /> */}
         </div>
 
-        <div className="col-span-12 xl:col-span-4 mx-auto">
+        <div className="col-span-12 xl:col-span-3">
           <QuickActions />
         </div>
 
