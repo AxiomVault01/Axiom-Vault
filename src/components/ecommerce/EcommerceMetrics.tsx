@@ -85,8 +85,8 @@ export default function EcommerceMetrics() {
       {/* <!-- Metric Item Start --> */}
       <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] md:p-5">
         <div className="flex items-end justify-between">
-          <div className="flex items-center rounded-xl justify-center w-12 h-12 bg-brand-100 text-brand-500 dark:bg-brand-500/15 dark:text-brand-400">
-            <PieChartIcon className="text-brand-800 size-6 dark:text-white/90" />
+          <div className="flex items-center rounded-xl justify-center w-12 h-12 bg-brand-300 text-brand-500 dark:bg-brand-500/15 dark:text-brand-400">
+            <PieChartIcon className="text-brand-500 size-6 dark:text-white/90" />
           </div>
           <span className="mb-3"><Badge color="primary">
              <span className="text-brand-600 text-xs font-semibold">MONITORING</span>

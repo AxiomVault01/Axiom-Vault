@@ -43,36 +43,36 @@ const RiskAlertFilters = () => {
       id: "all", 
       label: "All Alerts", 
       count: counts.all,
-      activeClass: "bg-gray-900 text-white",
-      inactiveClass: "bg-gray-100 text-gray-700 hover:bg-gray-200"
+      activeClass: "bg-gray-900 text-white border dark:bg-black",
+      inactiveClass: "bg-gray-200 text-gray-700 hover:bg-gray-200"
     },
     { 
       id: "critical", 
       label: "Critical", 
       count: counts.critical,
       activeClass: "bg-red-600 text-white",
-      inactiveClass: "bg-red-50 text-red-600 hover:bg-red-100"
+      inactiveClass: "bg-red-100 text-red-600 hover:bg-red-100"
     },
     { 
       id: "high", 
       label: "High", 
       count: counts.high,
       activeClass: "bg-orange-600 text-white",
-      inactiveClass: "bg-orange-50 text-orange-600 hover:bg-orange-100"
+      inactiveClass: "bg-orange-100 text-orange-600 hover:bg-orange-100"
     },
     { 
       id: "medium", 
       label: "Medium", 
       count: counts.medium,
       activeClass: "bg-yellow-600 text-white",
-      inactiveClass: "bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
+      inactiveClass: "bg-yellow-100 text-yellow-600 hover:bg-yellow-100"
     },
     { 
       id: "low", 
       label: "Low", 
       count: counts.low,
       activeClass: "bg-blue-600 text-white",
-      inactiveClass: "bg-blue-50 text-blue-600 hover:bg-blue-100"
+      inactiveClass: "bg-blue-100 text-blue-600 hover:bg-blue-100"
     },
   ];
 
@@ -85,13 +85,13 @@ const RiskAlertFilters = () => {
   return (
     <div>
       {/* Filter Tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-3 mb-6">
         {filters.map((filter) => (
           <button
             key={filter.id}
             onClick={() => setActiveFilter(filter.id)}
             className={`
-              px-4 py-2 rounded-lg font-medium text-sm transition-colors
+              md:px-4 px-2 py-2 rounded-lg font-medium md:text-sm text-xs transition-colors
               ${
                 activeFilter === filter.id
                   ? filter.activeClass

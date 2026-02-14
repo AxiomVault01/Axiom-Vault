@@ -13,7 +13,8 @@ import {
   GroupIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import LogoutIcon from "../icons/logout-ion";
+import LogoutIcon from "../icons/Logout-ion";
+// import LogoutIcon from "../icons/logout-ion";
 import SettingsIcon from "../icons/Settings-icon";
 
 type NavItem = {
@@ -28,7 +29,7 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    path: "/",
+    path: "/dashboard",
   },
   {
     icon: <AlertHexaIcon />,
@@ -62,7 +63,7 @@ const othersItems: NavItem[] = [
   {
     icon: <LogoutIcon />,
     name: "Logout",
-    path: "/signin",
+    path: "/",
   },
 ];
 
