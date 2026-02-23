@@ -8,7 +8,7 @@ const Input = ({ label, ...props }: InputProps) => {
       <label className="text-sm font-medium text-gray-700">{label}</label>
       <input
         {...props}
-        className="h-11 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+        className="h-11 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2D91D1] focus:border-[#2D91D1] text-sm"
       />
     </div>
   );

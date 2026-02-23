@@ -51,7 +51,7 @@ const Settings = () => {
             </Select>
           </div>
 
-          <button className="mt-6 bg-[#2D91D1] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#2D91D1] transition">
+          <button className="mt-6 bg-[#2D91D1] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#2D91D1]/90 transition-all duration-300">
             Save Changes
           </button>
         </Card>
