@@ -77,8 +77,8 @@ const EmployeeTable = () => {
           </thead>
 
           <tbody className="divide-y">
-            {filteredEmployees.map((emp, i) => (
-              <tr key={i} className="hover:bg-gray-50">
+            {filteredEmployees.map((emp) => (
+              <tr key={emp.id} className="hover:bg-gray-50">
                 <td className="px-3 sm:px-6 py-3 sm:py-4">
                   <p className="font-medium text-xs sm:text-sm">{emp.name}</p>
                   <p className="text-xs text-gray-500">{emp.id}</p>
