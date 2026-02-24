@@ -41,6 +41,17 @@ const navItems: NavItem[] = [
     icon: <GroupIcon />,
     name: "Employee Records",
     path: "/employee-records",
+    // subItems: [
+    //   {
+    //     name: "Employee Information",
+    //     path: "/employee-information",
+    //     new: true,
+    //   },
+    //   {
+    //     name: "Activity Logs",
+    //     path: "/activity-logs",
+    //   },
+    // ],
   },
   {
     icon: <PieChartIcon />,

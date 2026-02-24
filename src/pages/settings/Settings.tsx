@@ -5,14 +5,14 @@ import Select from "../../components/settings/Select";
 import Toggle from "../../components/settings/Toggle";
 import { User, Bell } from "lucide-react";
 
-const Settings = () => {
+function Settings() {
   const [criticalAlerts, setCriticalAlerts] = useState(true);
   const [highRiskAlerts, setHighRiskAlerts] = useState(true);
   const [dailySummary, setDailySummary] = useState(false);
   const [systemUpdates, setSystemUpdates] = useState(true);
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]  ">
+    <div className="min-h-screen  ">
       <div className="w-full mx-auto space-y-6">
         {/* Page Header */}
         <Card>
@@ -59,11 +59,11 @@ const Settings = () => {
         {/* Notification Preferences */}
         <Card>
           <div className="flex items-start gap-3 mb-6">
-            <div className="bg-orange-50 p-2 rounded-lg">
-              <Bell className="w-5 h-5 text-orange-500" />
+            <div className="bg-orange-50 p-2 rounded-lg dark:bg-gray-400">
+              <Bell className="w-5 h-5 text-orange-500 dark:text-white" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-500">
                 Notification Preferences
               </h2>
               <p className="text-sm text-gray-500">
