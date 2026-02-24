@@ -1,10 +1,20 @@
+import { Clock } from "lucide-react";
+
 const RecentActivity = () => {
   const activities = [
-    { text: "Reviewed case ACC-2847", time: "2 hours ago" },
-    { text: "Generated monthly report", time: "5 hours ago" },
-    { text: "Updated case evidence ACC-1923", time: "Yesterday, 3:45 PM" },
-    { text: "Closed investigation ACC-5621", time: "Yesterday, 11:20 AM" },
-    { text: "Created new alert ACC-7634", time: "2 days ago" },
+    {
+      text: "Reviewed case ACC-2847",
+      time: "2 hours ago",
+      icon: <Clock size={14} />,
+    },
+    {
+      text: "Generated monthly report",
+      time: "5 hours ago",
+      icon: <Clock size={14} />,
+    },
+    { text: "Updated case evidence ACC-1923", time: "Yesterday, 3:45 PM", icon: <Clock size={14} /> },
+    { text: "Closed investigation ACC-5621", time: "Yesterday, 11:20 AM", icon: <Clock size={14} /> },
+    { text: "Created new alert ACC-7634", time: "2 days ago", icon: <Clock size={14} /> },
   ];
 
   return (
@@ -17,7 +27,7 @@ const RecentActivity = () => {
             <div className="w-3 h-3 mt-2 bg-green-500 rounded-full" />
             <div>
               <p className="text-sm">{item.text}</p>
-              <p className="text-xs text-gray-500">{item.time}</p>
+              <p className="text-xs text-gray-500 flex gap-2">{item.icon} {item.time}</p>
             </div>
           </div>
         ))}
