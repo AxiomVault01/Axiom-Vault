@@ -4,7 +4,7 @@ import { Users, AlertTriangle, CheckCircle, Filter } from "lucide-react";
 
 const EmployeeRecords = () => {
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-gray-100 flex dark:bg-black">
       
 
       <main className="flex-1 flex flex-col">

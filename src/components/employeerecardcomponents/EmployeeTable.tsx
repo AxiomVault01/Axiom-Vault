@@ -25,7 +25,7 @@ const EmployeeTable = () => {
   }, [searchTerm, statusFilter]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border overflow-hidden dark:bg-gray-800 dark:border-gray-700 dark:text-white">
       {/* Filters */}
       <div className="p-3 sm:p-4 border-b flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <input
@@ -78,7 +78,7 @@ const EmployeeTable = () => {
 
           <tbody className="divide-y">
             {filteredEmployees.map((emp) => (
-              <tr key={emp.id} className="hover:bg-gray-50">
+              <tr key={emp.id} className="">
                 <td className="px-3 sm:px-6 py-3 sm:py-4">
                   <p className="font-medium text-xs sm:text-sm">{emp.name}</p>
                   <p className="text-xs text-gray-500">{emp.id}</p>
