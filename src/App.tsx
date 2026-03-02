@@ -1,7 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
+import Welcome from "./pages/AuthPages/Welcome";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
-import Welcome from "./pages/AuthPages/Welcome";
+import EmailRequired from "./pages/AuthPages/EmailRequired";
+import EmailVerification from "./pages/AuthPages/EmailVerification";
+import ForgotPassword from "./pages/AuthPages/ForgotPassword";
+import VerifyCode from "./pages/AuthPages/VerifyCode";
+import ResetPassword from "./pages/AuthPages/ResetPassword";
+import ResetPasswordSuccessful from "./pages/AuthPages/ResetPasswordSuccessful";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -19,10 +25,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-import Settings from "./pages/settings/Settings";
-import EmployeeRecords from "./pages/employeeinfo/EmployeeRecords";
-import Profile from "./pages/newprofile/Profile";
-import EmployeeDetails from "./pages/employeeinfo/EmployeeDetails";
+import Analytics from "./components/analytics/Analytics";
 // import WelcomePage from "./components/auth/WelcomePage";
 
 export default function App() {
@@ -35,14 +38,8 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/dashboard" element={<Home />} />
-            <Route index path="/profile" element={<Profile />} />
-            <Route index path="/settings" element={<Settings />} />
-            <Route
-              index
-              path="/employee-records"
-              element={<EmployeeRecords />}
-            />
-            <Route index path="/employee/:id" element={<EmployeeDetails />} />
+            <Route index path="/analytics" element={<Analytics />} />
+
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
@@ -69,9 +66,15 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/welcome" element={<Welcome />} />
+          <Route path="/email-required" element={<EmailRequired />} />
+          <Route path="/email-verification" element={<EmailVerification />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-code" element={<VerifyCode />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

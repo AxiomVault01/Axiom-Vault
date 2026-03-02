@@ -78,15 +78,13 @@ const EmployeeTable = () => {
 
           <tbody className="divide-y">
             {filteredEmployees.length === 0 && searchTerm ? (
-              
-                <tr className="w-full text-center">
-                  <td className=" w-full text-center">
-                    <p className="text-center py-10 px-5 text-gray-500 text-lg font-medium">
-                      No employees found matching your criteria
-                    </p>
-                  </td>
-                </tr>
-             
+              <tr className="w-full text-center">
+                <td className=" w-full text-center">
+                  <p className="text-center py-10 px-5 text-gray-500 text-lg font-medium">
+                    No employees found matching your criteria
+                  </p>
+                </td>
+              </tr>
             ) : (
               filteredEmployees.map((emp) => (
                 <tr key={emp.id} className="">
