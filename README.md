@@ -27,7 +27,7 @@ To get started with Axiom-Vault, ensure you have the following prerequisites ins
 Clone the repository using the following command:
 
 ```bash
-git clone https://github.com/Am-Jheffy/Axiom-Vault.git
+git clone https://github.com/AxiomVault01/Axiom-Vault.git
 ```
 
 > Windows Users: place the repository near the root of your drive if you face issues while cloning.

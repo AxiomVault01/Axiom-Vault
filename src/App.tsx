@@ -25,6 +25,8 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import Analytics from "./components/analytics/Analytics";
+// import WelcomePage from "./components/auth/WelcomePage";
 
 export default function App() {
   return (
@@ -36,6 +38,8 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/dashboard" element={<Home />} />
+            <Route index path="/analytics" element={<Analytics />} />
+
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
