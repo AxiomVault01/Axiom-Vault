@@ -56,9 +56,9 @@ const InsightsPanel: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className={`rounded-2xl bg-brand-50 border border-brand-300 px-5 py-6 ${className}`}
+      className={`rounded-2xl bg-brand-50 border border-brand-300 px-5 py-6 dark:border-brand-500 dark:bg-brand-500/[0.15] ${className}`}
     >
-      <h3 className="text-sm font-semibold text-gray-800 mb-4">Insights</h3>
+      <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-300 mb-4">Insights</h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {insights.map((insight) => {
@@ -66,7 +66,7 @@ const InsightsPanel: React.FC<Props> = ({
           return (
             <div
               key={insight.id}
-              className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-start gap-3 hover:shadow-md transition-shadow"
+              className="bg-white rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-white/[0.03] shadow-sm p-4 flex items-start gap-3 hover:shadow-md transition-shadow"
             >
               {/* Icon */}
               <div
@@ -77,7 +77,7 @@ const InsightsPanel: React.FC<Props> = ({
 
               {/* Text */}
               <div>
-                <p className="text-xs font-semibold text-gray-800 mb-1">
+                <p className="text-xs font-semibold text-gray-800 dark:text-gray-300 mb-1">
                   {insight.title}
                 </p>
                 <p className="text-xs text-gray-500 leading-relaxed">

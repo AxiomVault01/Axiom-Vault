@@ -96,10 +96,10 @@ const RiskCasesByDepartmentChart: React.FC<Props> = ({
 
   return (
     <div
-      className={`bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col ${className}`}
+      className={`bg-white rounded-2xl border border-gray-200 dark:border-gray-800 dark:bg-white/[0.03] shadow-sm p-5 flex flex-col ${className}`}
     >
       <div className="mb-4">
-        <h3 className="text-sm font-semibold text-gray-800 tracking-tight">
+        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-300 tracking-tight">
           Risk Cases by Department
         </h3>
         <p className="text-xs text-gray-400 mt-0.5">
