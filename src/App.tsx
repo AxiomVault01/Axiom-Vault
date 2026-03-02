@@ -1,7 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
+import Welcome from "./pages/AuthPages/Welcome";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
-import Welcome from "./pages/AuthPages/Welcome";
+import EmailRequired from "./pages/AuthPages/EmailRequired";
+import EmailVerification from "./pages/AuthPages/EmailVerification";
+import ForgotPassword from "./pages/AuthPages/ForgotPassword";
+import VerifyCode from "./pages/AuthPages/VerifyCode";
+import ResetPassword from "./pages/AuthPages/ResetPassword";
+import ResetPasswordSuccessful from "./pages/AuthPages/ResetPasswordSuccessful";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -60,9 +66,15 @@ export default function App() {
           </Route>
 
           {/* Auth Layout */}
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/welcome" element={<Welcome />} />
+          <Route path="/email-required" element={<EmailRequired />} />
+          <Route path="/email-verification" element={<EmailVerification />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-code" element={<VerifyCode />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
+import { ChevronLeftIcon, CheckCircleIcon, EyeCloseIcon, EyeIcon, UserIcon, LockIcon} from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import MainImg from "../../../public/Vault.jpg";
+import Bicon from "../../../public/Brand Icon.jpg";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -15,6 +16,11 @@ const bgImage = {
   backgroundPosition: "center",
 };
 
+const BiImage = {
+  width: "30.53px",
+  height: "40px",
+};
+
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -23,7 +29,7 @@ export default function SignUpForm() {
       <div className="flex flex-col flex-1 w-full mx-auto overflow-y-auto lg:w-1/2 no-scrollbar">
         <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
           <Link
-            to="/"
+            to="/welcome"
             className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-200 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon className="size-5" />
@@ -31,10 +37,10 @@ export default function SignUpForm() {
           </Link>
         </div>
         <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10">
-          <div className="bg-white rounded-t-lg dark:border-gray-800 dark:bg-gray-900">
+          <div className="bg-white rounded-t-lg dark:border-gray-800 dark:bg-gray-900 rounded-lg">
             <div className="mb-5 sm:mb-3 p-8 bg-brand-500 rounded-t-lg">
-              <div className="w-10 h-10 mb-3 bg-white dark:bg-gray-900 rounded-lg mx-auto p-1">
-                <img src="/public/Icon.png" alt="" />
+              <div className="w-12 h-12 mb-3 bg-white dark:bg-gray-900 rounded-lg mx-auto p-1">
+                <img src={Bicon} style={BiImage} className="mx-auto" alt="Brand Icon" />
               </div>
 
               <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
@@ -45,6 +51,19 @@ export default function SignUpForm() {
               </p>
             </div>
             <div className="p-5">
+              <div className="px-2 md:px-4 py-1 mb-5 w-full text-sm text-white bg-success-50 dark:bg-success-500/20 border-success-200 dark:border-success-400 border rounded-lg">
+                <div className="flex text-left gap-3">
+                  <span className="mt-1 text-brand-500">
+                    <CheckCircleIcon className="w-5 h-5"></CheckCircleIcon>
+                  </span>
+                  <span>
+                    <p className="text-black font-semibold">Email Verified!</p>
+                    <p className="text-gray-700 dark:text-gray-300 font-light">
+                      Your email <span className="text-black font-semibold">janedoe@gmail.com</span> has been verified. Complete your registration below.
+                    </p>
+                 </span>
+               </div>
+             </div>
               
               <form>
                 <div className="space-y-4">
@@ -53,25 +72,10 @@ export default function SignUpForm() {
                     <Label className="text-brand-800 dark:text-white/90">
                       Full Name
                     </Label>
-                    <Input
-                      type="text"
-                      id="fname"
-                      name="fname"
-                      placeholder="Juan dela Cruz"
-                    />
-                  </div>
-
-                  {/* <!-- Email --> */}
-                  <div>
-                    <Label className="text-brand-800 dark:text-white/90">
-                      Work Email Address
-                    </Label>
-                    <Input
-                      type="email"
-                      id="email"
-                      name="email"
-                      placeholder="auditor@agency.gov"
-                    />
+                    <div className="relative w-full max-w-md">
+                      <UserIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></UserIcon>
+                      <Input type="text"id="fname" name="fname" placeholder="Juan dela Cruz" className="w-full pl-10 pr-4 py-2" />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -112,10 +116,11 @@ export default function SignUpForm() {
                   <div>
                     <Label className="text-brand-800">Password</Label>
                     <div className="relative">
-                      <Input
-                        placeholder="Minimum of 8 characters"
-                        type={showPassword ? "text" : "password"}
-                      />
+                      <div className="relative w-full max-w-md">
+                        <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
+                        <Input className="w-full pl-10 pr-4 py-2" placeholder="Minimum of 8 characters"
+                        type={showPassword ? "text" : "password"} />
+                     </div>
                       <span
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -135,10 +140,11 @@ export default function SignUpForm() {
                       Re-enter your password
                     </Label>
                     <div className="relative">
-                      <Input
-                        placeholder="Minimum of 8 characters"
-                        type={showPassword ? "text" : "password"}
-                      />
+                      <div className="relative w-full max-w-md">
+                        <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
+                        <Input className="w-full pl-10 pr-4 py-2" placeholder="Minimum of 8 characters"
+                        type={showPassword ? "text" : "password"} />
+                     </div>
                       <span
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -174,8 +180,8 @@ export default function SignUpForm() {
                   </div>
                   {/* <!-- Button --> */}
                   <div>
-                    <Link to="/signin">
-                      <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-900 hover:border-gray-400 hover:text-gray-50 mt-6">
+                    <Link to="/signup">
+                      <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6">
                         Create Account
                       </button>
                     </Link>
