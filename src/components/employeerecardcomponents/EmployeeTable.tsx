@@ -25,7 +25,7 @@ const EmployeeTable = () => {
   }, [searchTerm, statusFilter]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border overflow-hidden dark:bg-black dark:border-gray-700 dark:text-white">
+    <div className="bg-white rounded-xl shadow-sm border overflow-hidden dark:bg-white/[0.03] dark:border-gray-700 dark:text-white">
       {/* Filters */}
       <div className="p-3 sm:p-4 border-b flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <input
@@ -39,7 +39,7 @@ const EmployeeTable = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm"
+            className="border rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm dark:text-gray-400"
           >
             <option>All Status</option>
             <option>Flagged</option>
@@ -56,7 +56,7 @@ const EmployeeTable = () => {
       {/* Table - Responsive */}
       <div className="overflow-x-auto">
         <table className="min-w-full text-xs sm:text-sm">
-          <thead className="bg-gray-50 text-gray-600 uppercase text-xs dark:bg-gray-700 dark:text-white">
+          <thead className="bg-gray-50 text-gray-600 uppercase text-xs dark:bg-white/[0.03] dark:text-white">
             <tr>
               <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">Employee</th>
               <th className="px-3 sm:px-6 py-3 sm:py-4 text-left hidden md:table-cell">

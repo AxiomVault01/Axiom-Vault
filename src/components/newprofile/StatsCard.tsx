@@ -10,7 +10,7 @@ const StatCard = ({
   bg: string;
 }) => {
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border dark:bg-gray-700 dark:border-gray-700 dark:text-white">
+    <div className="bg-white rounded-xl p-6 shadow-sm border dark:bg-white/[0.03] dark:border-gray-700 dark:text-white">
       <div
         className={`w-12 h-12 rounded-xl flex items-center justify-center text-white ${bg}`}
       >

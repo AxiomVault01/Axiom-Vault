@@ -55,8 +55,8 @@ const EmployeeDetails = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8 dark:bg-black dark:text-white">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden  dark:bg-black dark:text-white">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8 dark:bg-white/[0.03] dark:text-white">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden  dark:bg-white/[0.03] dark:text-white">
         {/* Header with Close Button */}
         <div className="flex items-center justify-between p-4 sm:p-6 md:p-8 border-b">
           <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">
@@ -90,7 +90,7 @@ const EmployeeDetails = () => {
                   {employee.name}
                 </h2>
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium w-fit ${isVerified ? "bg-green-100 text-green-700  dark:bg-black dark:text-white" : "bg-red-100 text-red-700  dark:bg-black dark:text-white"}`}
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium w-fit ${isVerified ? "bg-green-100 text-green-700  dark:bg-white/[0.03] dark:text-white" : "bg-red-100 text-red-700 dark:bg-white/[0.03] dark:text-white"}`}
                 >
                   {employee.status}
                 </span>
@@ -104,7 +104,7 @@ const EmployeeDetails = () => {
 
         {/* Risk Alert Section - Only show for Flagged */}
         {!isVerified && (
-          <div className="p-4 sm:p-6 md:p-8 bg-red-50 border-b  dark:bg-black dark:text-white">
+          <div className="p-4 sm:p-6 md:p-8 bg-red-50 border-b  dark:bg-white/[0.03] dark:text-white">
             <div className="flex gap-4">
               <AlertTriangle
                 className="text-red-600 flex-shrink-0 mt-1"
@@ -194,12 +194,12 @@ const EmployeeDetails = () => {
           </div>
 
           {/* Financial Information */}
-          <div className=" dark:bg-black dark:text-white">
+          <div className=" dark:bg-white/[0.03] dark:text-white">
             <h3 className="text-lg font-bold text-gray-800 mb-4 dark:text-white">
               Financial Information
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-blue-50 rounded-lg p-4  dark:bg-black ">
+              <div className="bg-blue-50 rounded-lg p-4  dark:bg-white/[0.03] ">
                 <p className="text-xs text-gray-600 dark:text-white">
                   Current Salary
                 </p>
@@ -210,7 +210,7 @@ const EmployeeDetails = () => {
                   per month
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-lg p-4 dark:bg-black">
+              <div className="bg-gray-50 rounded-lg p-4 dark:bg-white/[0.03]">
                 <p className="text-xs text-gray-600 dark:text-white">
                   Bank Account
                 </p>
@@ -229,7 +229,7 @@ const EmployeeDetails = () => {
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 dark:bg-black">
+                <thead className="bg-gray-50 dark:bg-white/[0.03]">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700 text-xs uppercase dark:text-white">
                       Period
@@ -266,7 +266,7 @@ const EmployeeDetails = () => {
 
         {/* Risk Assessment Section - Only show for Flagged */}
         {!isVerified && (
-          <div className="p-4 sm:p-6 md:p-8 bg-gray-50 border-t  dark:bg-black dark:text-white">
+          <div className="p-4 sm:p-6 md:p-8 bg-gray-50 border-t  dark:bg-white/[0.03] dark:text-white">
             <h3 className="text-lg font-bold text-gray-800 mb-4 dark:text-white">
               Risk Assessment
             </h3>
@@ -294,7 +294,7 @@ const EmployeeDetails = () => {
         )}
 
         {/* Action Buttons */}
-        <div className="p-4 sm:p-6 md:p-8 bg-gray-50 border-t flex flex-col sm:flex-row gap-3 sm:gap-4 justify-end  dark:bg-black dark:text-white">
+        <div className="p-4 sm:p-6 md:p-8 bg-gray-50 border-t flex flex-col sm:flex-row gap-3 sm:gap-4 justify-end  dark:bg-white/[0.03] dark:text-white">
           <button
             onClick={() => navigate(-1)}
             className="px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base font-medium text-gray-700 dark:text-white transition"

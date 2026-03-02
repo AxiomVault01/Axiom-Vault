@@ -15,7 +15,7 @@ function Settings() {
     <div className="min-h-screen  ">
       <div className="w-full mx-auto space-y-6">
         {/* Page Header */}
-        <Card className="dark:bg-gray-700">
+        <Card className="dark:bg-white/[0.03] dark:border-gray-700">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
             Settings
           </h1>
@@ -25,7 +25,7 @@ function Settings() {
         </Card>
 
         {/* Account Settings */}
-        <Card className="dark:bg-gray-700">
+        <Card className="dark:bg-white/[0.03] dark:border-gray-700">
           <div className="flex items-start gap-3 mb-6">
             <div className="bg-[#2D91D1]/10 p-2 rounded-lg">
               <User className="w-5 h-5 text-[#2D91D1]" />
@@ -46,7 +46,8 @@ function Settings() {
             <Input label="Email Address" defaultValue="auditor@agency.gov" />
             <Input label="Department" defaultValue="Internal Audit" />
 
-            <Select label="Role" defaultValue="Senior Auditor">
+            <Select label="Role" defaultValue="Select Role" className="dark:text-white">
+              <option disabled>Select Role</option>
               <option>Senior Auditor</option>
               <option>Junior Auditor</option>
               <option>Administrator</option>
@@ -59,7 +60,7 @@ function Settings() {
         </Card>
 
         {/* Notification Preferences */}
-        <Card className="dark:bg-gray-700">
+        <Card className="dark:bg-white/[0.03] dark:border-gray-700">
           <div className="flex items-start gap-3 mb-6">
             <div className="bg-orange-50 p-2 rounded-lg dark:bg-gray-400">
               <Bell className="w-5 h-5 text-orange-500 dark:text-white" />
@@ -74,7 +75,7 @@ function Settings() {
             </div>
           </div>
 
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {/* Critical Risk */}
             <div className="flex items-center justify-between py-4">
               <div>

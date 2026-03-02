@@ -10,7 +10,7 @@ const SummaryCard = ({
   bg: string;
 }) => {
   return (
-    <div className="bg-white border rounded-xl p-5 flex items-center gap-4 shadow-sm dark:bg-black dark:border-gray-700 dark:text-white">
+    <div className="bg-white border rounded-xl p-5 flex items-center gap-4 shadow-sm dark:bg-white/[0.03] dark:border-gray-700 dark:text-white">
       <div
         className={`w-10 h-10 rounded-lg flex items-center justify-center ${bg}`}
       >

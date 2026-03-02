@@ -2,7 +2,7 @@ import { User, Mail, Phone, Building, Shield } from "lucide-react";
 
 const PersonalInfo = () => {
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border dark:bg-gray-700 dark:border-gray-700 dark:text-white">
+    <div className="bg-white rounded-xl p-6 shadow-sm border dark:bg-white/[0.03] dark:border-gray-700 dark:text-white">
       <h3 className="font-semibold text-lg mb-6">Personal Information</h3>
 
       <div className="space-y-6">

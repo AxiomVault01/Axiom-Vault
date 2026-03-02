@@ -10,7 +10,7 @@ const Select = ({ label, children, ...props }: SelectProps) => {
       </label>
       <select
         {...props}
-        className="h-11 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2D91D1] focus:border-[#2D91D1] text-sm dark:text-gray-600"
+        className="h-11 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2D91D1] focus:border-[#2D91D1] text-sm dark:text-gray-400 dark:border-gray-700"
       >
         {children}
       </select>
