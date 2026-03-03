@@ -16,7 +16,7 @@ const EmployeeTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
 
-  // ✅ Filter Logic (unchanged but optimized)
+  //  Filter Logic 
   const filteredEmployees = useMemo(() => {
     return employees.filter((emp) => {
       const matchesSearch =
@@ -32,7 +32,7 @@ const EmployeeTable = () => {
     });
   }, [searchTerm, statusFilter]);
 
-  // Columns Definition (TanStack v8)
+  // Columns Definition 
   const columns = useMemo<ColumnDef<Employee>[]>(
     () => [
       {
