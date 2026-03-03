@@ -32,7 +32,7 @@ const EmployeeTable = () => {
     });
   }, [searchTerm, statusFilter]);
 
-  // ✅ Columns Definition (TanStack v8)
+  // Columns Definition (TanStack v8)
   const columns = useMemo<ColumnDef<Employee>[]>(
     () => [
       {
@@ -169,55 +169,56 @@ const EmployeeTable = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-xs sm:text-sm">
-          <thead className="bg-gray-50 text-gray-600 uppercase text-xs dark:bg-white/[0.03] dark:text-white">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="px-3 sm:px-6 py-3 sm:py-4 text-left"
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-
-          <tbody className="divide-y">
-            {filteredEmployees.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="text-center py-10 text-gray-500"
-                >
-                  No employees found matching your criteria
-                </td>
-              </tr>
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className="px-3 sm:px-6 py-3 sm:py-4"
+      <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8 ">
+        <div className="overflow-x-scroll shadow ring-1 ring-gray-100 ring-opacity-5 md:rounded-lg">
+          <table className="min-w-full text-xs sm:text-sm">
+            <thead className="bg-gray-50 text-gray-600 uppercase text-xs dark:bg-white/[0.03] dark:text-white">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="px-3 sm:px-6 py-3 sm:py-4 text-left"
                     >
                       {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
-                    </td>
+                    </th>
                   ))}
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ))}
+            </thead>
+            <tbody className="divide-y">
+              {filteredEmployees.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="text-center py-10 text-gray-500"
+                  >
+                    No employees found matching your criteria
+                  </td>
+                </tr>
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap xl:whitespace-pre-wrap"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
