@@ -90,7 +90,7 @@ const EmployeeDetails = () => {
                   {employee.name}
                 </h2>
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium w-fit ${isVerified ? "bg-green-100 text-green-700  dark:bg-white/[0.03] dark:text-white" : "bg-red-100 text-red-700 dark:bg-white/[0.03] dark:text-white"}`}
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium w-fit ${isVerified ? "bg-green-100 text-green-700 " : "bg-red-100 text-red-700 dark:bg-white/[0.03] dark:text-white"}`}
                 >
                   {employee.status}
                 </span>

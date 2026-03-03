@@ -4,7 +4,7 @@ import { Users, AlertTriangle, CheckCircle, Filter } from "lucide-react";
 
 const EmployeeRecords = () => {
   return (
-    <div className="min-h-screen bg-gray-100 flex dark:bg-black">
+    <div className="min-h-screen bg-gray-100 flex max-w-full dark:bg-black overflow-auto xl:overflow-hidden">
       
 
       <main className="flex-1 flex flex-col">
@@ -12,7 +12,7 @@ const EmployeeRecords = () => {
 
         <div className="p-4 md:p-8 space-y-6">
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <SummaryCard
               icon={<Users size={18} />}
               value="8"
