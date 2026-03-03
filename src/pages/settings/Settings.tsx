@@ -3,13 +3,18 @@ import Card from "../../components/settings/Card";
 import Input from "../../components/settings/Input";
 import Select from "../../components/settings/Select";
 import Toggle from "../../components/settings/Toggle";
-import { User, Bell } from "lucide-react";
+import { User, Bell, ChevronRight, Download, Trash2 } from "lucide-react";
 
 function Settings() {
   const [criticalAlerts, setCriticalAlerts] = useState(true);
   const [highRiskAlerts, setHighRiskAlerts] = useState(true);
   const [dailySummary, setDailySummary] = useState(false);
   const [systemUpdates, setSystemUpdates] = useState(true);
+
+  // system preferences
+  const [language, setLanguage] = useState("English (US)");
+  const [timeZone, setTimeZone] = useState("Eastern Time (ET)");
+  const [dateFormat, setDateFormat] = useState("DD/MM/YYYY");
 
   return (
     <div className="min-h-screen  ">
@@ -46,7 +51,11 @@ function Settings() {
             <Input label="Email Address" defaultValue="auditor@agency.gov" />
             <Input label="Department" defaultValue="Internal Audit" />
 
-            <Select label="Role" defaultValue="Select Role" className="dark:text-white">
+            <Select
+              label="Role"
+              defaultValue="Select Role"
+              className="dark:text-white"
+            >
               <option disabled>Select Role</option>
               <option>Senior Auditor</option>
               <option>Junior Auditor</option>
@@ -141,9 +150,110 @@ function Settings() {
             </div>
           </div>
         </Card>
+
+        {/* Security & Privacy */}
+        <Card className="dark:bg-white/[0.03] dark:border-gray-700">
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Security & Privacy
+            </h2>
+            <p className="text-sm text-gray-500">
+              Manage your security settings
+            </p>
+            <div className="flex flex-col divide-y divide-gray-200 dark:divide-gray-700">
+              {[
+                "Change Password",
+                "Two-Factor Authentication",
+                "Session Management",
+              ].map((item) => (
+                <button
+                  key={item}
+                  className="w-full flex items-center justify-between py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                >
+                  <span className="text-sm text-gray-900 dark:text-gray-100">
+                    {item}
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </Card>
+
+        {/* System Preferences */}
+        <Card className="dark:bg-white/[0.03] dark:border-gray-700">
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              System Preferences
+            </h2>
+            <p className="text-sm text-gray-500">
+              Customize your application experience
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Select
+                label="Language"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+              >
+                <option>English (US)</option>
+                <option>English (UK)</option>
+                <option>Spanish</option>
+              </Select>
+              <Select
+                label="Time Zone"
+                value={timeZone}
+                onChange={(e) => setTimeZone(e.target.value)}
+              >
+                <option>Eastern Time (ET)</option>
+                <option>Central Time (CT)</option>
+                <option>Pacific Time (PT)</option>
+              </Select>
+              <Select
+                label="Date Format"
+                value={dateFormat}
+                onChange={(e) => setDateFormat(e.target.value)}
+              >
+                <option>DD/MM/YYYY</option>
+                <option>MM/DD/YYYY</option>
+                <option>YYYY-MM-DD</option>
+              </Select>
+            </div>
+            <button className="mt-4 bg-[#2D91D1] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#2D91D1]/90 transition-all duration-300">
+              Save Preferences
+            </button>
+          </div>
+        </Card>
+
+        {/* Data Management */}
+        <Card className="dark:bg-white/[0.03] dark:border-gray-700">
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Data Management
+            </h2>
+            <p className="text-sm text-gray-500">Export and manage your data</p>
+            <div className="flex flex-col divide-y divide-gray-200 dark:divide-gray-700">
+              <button className="w-full flex items-center justify-between py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Download className="w-5 h-5 text-green-500" />
+                  <span className="text-sm text-gray-900 dark:text-gray-100">
+                    Export Account Data
+                  </span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </button>
+              <button className="w-full flex items-center justify-between py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Trash2 className="w-5 h-5 text-red-500" />
+                  <span className="text-sm text-red-500">Delete Account</span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </button>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );
-};
+}
 
 export default Settings;
