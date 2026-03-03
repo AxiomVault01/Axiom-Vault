@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon, LockIcon, MailIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import MainImg from "../../../public/Vault.jpg";
+import Bicon from "../../../public/Brand Icon.jpg";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -14,6 +15,10 @@ const bgImage = {
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
   backgroundPosition: "center",
+};
+const BiImage = {
+  width: "30.53px",
+  height: "40px",
 };
 
 export default function SignInForm() {
@@ -32,10 +37,10 @@ export default function SignInForm() {
           </Link>
         </div>
         <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10">
-          <div className="bg-white rounded-t-lg border dark:border-gray-300 dark:bg-gray-900">
+          <div className="bg-white rounded-t-lg border dark:border-gray-300 dark:bg-gray-900 rounded-lg">
             <div className="mb-5 sm:mb-4 p-8 bg-brand-500 rounded-t-lg">
-              <div className="w-10 h-10 mb-3 bg-white dark:bg-gray-900 p-1 rounded-lg mx-auto">
-                <img src="/public/Icon.png" alt="" />
+              <div className="w-12 h-12 mb-3 bg-white dark:bg-gray-900 p-1 rounded-lg mx-auto">
+                <img src={Bicon} style={BiImage} className="mx-auto" alt="Brand Icon" />
               </div>
               <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
                 Welcome Back
@@ -51,17 +56,21 @@ export default function SignInForm() {
                     <Label className="text-brand-800 dark:text-white/90">
                       Email Address
                     </Label>
-                    <Input placeholder="auditor@agency.gov" />
+                    <div className="relative w-full max-w-md">
+                      <MailIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon>
+                      <Input type="text"id="fname" name="fname" placeholder="auditor@agency.gov" className="w-full pl-10 pr-4 py-2" />
+                    </div>
                   </div>
                   <div>
                     <Label className="text-brand-800 dark:text-white/90">
                       Password
                     </Label>
                     <div className="relative">
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
-                      />
+                      <div className="relative w-full max-w-md">
+                        <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
+                        <Input className="w-full pl-10 pr-4 py-2" placeholder="Minimum of 8 characters"
+                        type={showPassword ? "text" : "password"} />
+                     </div>
                       <span
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -82,7 +91,7 @@ export default function SignInForm() {
                       </span>
                     </div>
                     <Link
-                      to="/reset-password"
+                      to="/forgot-password"
                       className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                     >
                       Forgot password?

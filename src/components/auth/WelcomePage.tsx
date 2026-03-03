@@ -1,30 +1,24 @@
-// import { useState } from "react";
 import { Link } from "react-router";
-import { CheckCircleIcon } from "../../icons";
-// import Label from "../form/Label";
-// import Input from "../form/input/InputField";
-// import Checkbox from "../form/input/Checkbox";
-// import Button from "../ui/button/Button";
+import { CheckCircleIcon, GroupIcon, AlertHexaIcon, DocsIcon, GridIcon, TableIcon, PieChartIcon } from "../../icons";
+import Button from "../ui/button/Button";
+import Logo from "../../../public/Logo.jpg";
+
+const lgImage = {
+  width: "175px",
+  height: "45.4px",
+};
 
 export default function WelcomePage() {
   return (
     <div className="w-full bg-blue-light-25 p-0 overflow-x-hidden dark:border-gray-800 dark:bg-white/[0.03]">
       <header>
         <div className="flex items-center space-x-2 p-5">
-          <div className="w-12 h-12 bg-brand-500 rounded-lg flex items-center justify-center">
-            <img src="/public/Icon.png" alt="" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl md:2xl font-bold dark:text-gray-200">
-              Axiom Vault
-            </span>
-            <p className="text-sm text-gray-800 dark:text-gray-400">
-              AI-Powered Internal Audit System
-            </p>
+          <div className="">
+            <img src={Logo} style={lgImage} alt="Logo" />
           </div>
         </div>
       </header>
-      <section className="grid md:grid-cols-2 p-5 md:px-30 md:py-15">
+      <section className="p-5 grid grid-cols-1 xl:grid-cols-2 xl:px-20 xl:py-15">
         <div>
           <div className="inline-block w-72 h-10 bg-brand-500 rounded-full backdrop-blur-sm"></div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mt-2 dark:text-gray-100">
@@ -51,15 +45,15 @@ export default function WelcomePage() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <Link to="/signup">
-              <button className="px-6 py-2 bg-brand-500 text-white rounded-xl text-lg lg:text-lg hover:bg-blue-500">
+            <Link to="/email-required">
+              <Button className="w-full px-6 py-2 bg-brand-500 text-white rounded-xl text-lg lg:text-lg ">
                 Get Started
-              </button>
+              </Button>
             </Link>
             <Link to="/signin">
-              <button className="border text-brand-800 border-gray-400 px-6 py-2 mb-6 rounded-xl text-lg lg:text-lg dark:text-gray-300 hover:bg-gray-400 dark:hover:text-gray-900">
+              <Button className="w-full border text-brand-800 border-gray-400 px-6 py-2 mb-6 rounded-xl text-lg lg:text-lg dark:text-gray-300">
                 Sign In
-              </button>
+              </Button>
             </Link>
           </div>
         </div>
@@ -73,10 +67,12 @@ export default function WelcomePage() {
             </p>
           </div>
           <div className="w-full">
-            <dl className="grid  md:grid-cols-2 gap-6 mx-auto p-2 md:p-10">
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto p-2 md:p-10">
               <div className="bg-blue-light-25 border-blue-light-50 rounded-xl border p-5  dark:border-gray-800 dark:bg-white/[0.03]">
                 <dt className="font-semibold text-gray-900 lg:text-2xl dark:text-gray-100">
-                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center"></div>
+                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center">
+                    <PieChartIcon className="text-white"></PieChartIcon>
+                  </div>
                   AI Detection
                 </dt>
                 <dd className="mt-2 text-gray-800 lg:text-xl dark:text-gray-400">
@@ -85,7 +81,9 @@ export default function WelcomePage() {
               </div>
               <div className="bg-blue-light-25 border-blue-light-50 rounded-xl border p-5  dark:border-gray-800 dark:bg-white/[0.03]">
                 <dt className="font-semibold text-gray-900 lg:text-2xl dark:text-gray-100">
-                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center"></div>
+                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center">
+                    <GroupIcon className="text-white"></GroupIcon>
+                  </div>
                   Employee Monitoring
                 </dt>
                 <dd className="mt-2 text-gray-800 lg:text-xl dark:text-gray-400">
@@ -94,7 +92,9 @@ export default function WelcomePage() {
               </div>
               <div className="bg-blue-light-25 border-blue-light-50 rounded-xl border p-5  dark:border-gray-800 dark:bg-white/[0.03]">
                 <dt className="font-semibold text-gray-900 lg:text-2xl dark:text-gray-100">
-                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center"></div>
+                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center">
+                    <TableIcon className="text-white"></TableIcon>
+                  </div>
                   Bank Account Validation
                 </dt>
                 <dd className="mt-2 text-gray-800 lg:text-xl dark:text-gray-400">
@@ -103,7 +103,9 @@ export default function WelcomePage() {
               </div>
               <div className="bg-blue-light-25 border-blue-light-50 rounded-xl border p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                 <dt className="font-semibold text-gray-900 lg:text-2xl dark:text-gray-100">
-                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center"></div>
+                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center">
+                    <AlertHexaIcon className="stroke-white"></AlertHexaIcon>
+                  </div>
                   Risk Alerts
                 </dt>
                 <dd className="mt-2 text-gray-800 lg:text-xl dark:text-gray-400">
@@ -112,7 +114,9 @@ export default function WelcomePage() {
               </div>
               <div className="bg-blue-light-25 border-blue-light-50 rounded-xl border p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                 <dt className="font-semibold text-gray-900 lg:text-2xl dark:text-gray-100">
-                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center"></div>
+                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center">
+                    <GridIcon className="text-white"></GridIcon>
+                  </div>
                   Analytics Dashboard
                 </dt>
                 <dd className="mt-2 text-gray-800 lg:text-xl dark:text-gray-400">
@@ -121,7 +125,9 @@ export default function WelcomePage() {
               </div>
               <div className="bg-blue-light-25 border-blue-light-50 rounded-xl border-1 p-8 dark:border-gray-800 dark:bg-white/[0.03]">
                 <dt className="font-semibold text-gray-900 lg:text-2xl dark:text-gray-100">
-                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center"></div>
+                  <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center">
+                    <DocsIcon className="text-white"></DocsIcon>
+                  </div>
                   Audit Trail
                 </dt>
                 <dd className="mt-2 text-gray-800 lg:text-xl dark:text-gray-400">
