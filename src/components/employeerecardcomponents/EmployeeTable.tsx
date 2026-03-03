@@ -2,6 +2,7 @@ import Badge from "./Badge";
 import { employees } from "../../pages/UiElements/Constants";
 import { Link } from "react-router";
 import { useState, useMemo } from "react";
+import { Eye } from "lucide-react";
 
 const EmployeeTable = () => {
   // State for search and filter
@@ -25,7 +26,7 @@ const EmployeeTable = () => {
   }, [searchTerm, statusFilter]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border overflow-hidden dark:bg-white/[0.03] dark:border-gray-700 dark:text-white">
+    <div className="bg-white rounded-xl shadow-sm border overflow-x-scroll dark:bg-white/[0.03] dark:border-gray-700 dark:text-white">
       {/* Filters */}
       <div className="p-3 sm:p-4 border-b flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <input
@@ -78,33 +79,31 @@ const EmployeeTable = () => {
 
           <tbody className="divide-y">
             {filteredEmployees.length === 0 && searchTerm ? (
-              
-                <tr className="w-full text-center">
-                  <td className=" w-full text-center">
-                    <p className="text-center py-10 px-5 text-gray-500 text-lg font-medium">
-                      No employees found matching your criteria
-                    </p>
-                  </td>
-                </tr>
-             
+              <tr className="w-full text-center">
+                <td className=" w-full text-center">
+                  <p className="text-center py-10 px-5 text-gray-500 text-lg font-medium">
+                    No employees found matching your criteria
+                  </p>
+                </td>
+              </tr>
             ) : (
               filteredEmployees.map((emp) => (
-                <tr key={emp.id} className="">
-                  <td className="px-3 sm:px-6 py-3 sm:py-4">
+                <tr key={emp.id} className=" ">
+                  <td className="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap ">
                     <p className="font-medium text-xs sm:text-sm">{emp.name}</p>
                     <p className="text-xs text-gray-500">{emp.id}</p>
                   </td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 hidden md:table-cell">
+                  <td className="p">
                     <p className="text-xs sm:text-sm">{emp.department}</p>
                     <p className="text-xs text-gray-500">{emp.role}</p>
                   </td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 hidden lg:table-cell">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4  lg:table-cell " title={emp.bank}>
                     <div className="flex flex-col gap-2">
                       <span className="text-xs sm:text-sm">{emp.bank}</span>
                       {emp.info && <Badge text={emp.info} variant="red1" />}
                     </div>
                   </td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 hidden sm:table-cell">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4  sm:table-cell">
                     <Badge text={emp.risk} variant="red" />
                   </td>
                   <td className="px-3 sm:px-6 py-3 sm:py-4">
@@ -127,12 +126,18 @@ const EmployeeTable = () => {
                     />
                   </td>
 
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-blue-600 font-medium cursor-pointer text-center">
+                  <td className="px-3 sm:px-2 py-3 sm:py-4 text-blue-600 font-medium cursor-pointer text-center">
                     <Link
                       to={`/employee/${emp.id}`}
-                      className="text-xs sm:text-sm hover:underline dark:text-white"
+                      className="text-xs sm:text-sm hover:underline dark:text-white hidden md:block"
                     >
                       View Details
+                    </Link>
+                    <Link
+                      to={`/employee/${emp.id}`}
+                      className="text-xs sm:text-sm hover:underline dark:text-white md:hidden"
+                    >
+                      <Eye />
                     </Link>
                   </td>
                 </tr>

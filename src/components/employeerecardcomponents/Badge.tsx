@@ -16,12 +16,15 @@ const Badge = ({
   };
 
   return (
-    <span
-      className={`px-3 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1 ${styles[variant]}`}
-    >
-      {icon && <span className="flex items-center">{icon}</span>}
-      {text}
-    </span>
+    <>
+      <span
+        className={`px-3 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1   ${styles[variant]}`}
+      >
+        {icon && <span className="flex items-center">{icon}</span>}
+        {text}
+      </span>
+      
+    </>
   );
 };
 
