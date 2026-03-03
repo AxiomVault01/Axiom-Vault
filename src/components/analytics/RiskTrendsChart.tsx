@@ -11,6 +11,30 @@ import React from "react";
 import { Line } from "react-chartjs-2";
 import type { ChartOptions } from "chart.js";
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Filler,
+);
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -63,6 +87,9 @@ const RiskTrendsChart: React.FC<Props> = ({
   const critical = data.map((d) => d.critical);
   const highRisk = data.map((d) => d.highRisk);
   const mediumRisk = data.map((d) => d.mediumRisk);
+
+  const maxValue = Math.max(...critical, ...highRisk, ...mediumRisk);
+  const yMax = Math.ceil((maxValue + 2) / 10) * 11; // round up to nearest 11
 
   const chartData = {
     labels,
@@ -129,7 +156,7 @@ const RiskTrendsChart: React.FC<Props> = ({
       },
       y: {
         min: 15,
-        max: 75,
+        max: yMax,
         grid: { color: "rgba(0,0,0,0.05)", lineWidth: 1 },
         border: { display: false, dash: [4, 4] },
         ticks: { font: { size: 11 }, color: "#9CA3AF", stepSize: 10 },
@@ -147,14 +174,22 @@ const RiskTrendsChart: React.FC<Props> = ({
           Risk Trends (Last 30 Days)
         </h3>
       </div>
-      {/* Custom legend */}
-      <div className="flex items-center gap-5 mb-4">
-        <LegendPill color="#d92d20" label="Critical" />
-        <LegendPill color="#F97316" label="High Risk" />
-        <LegendPill color="#EAB308" label="Medium Risk" />
-      </div>
-      <div className="h-52">
-        <Line data={chartData} options={options} redraw={true} id="risk-trends-line-chart" />
+
+      <div className="py-3">
+        {/* Custom legend */}
+        <div className="flex items-center gap-5 mb-4">
+          <LegendPill color="#d92d20" label="Critical" />
+          <LegendPill color="#F97316" label="High Risk" />
+          <LegendPill color="#EAB308" label="Medium Risk" />
+        </div>
+        <div className="h-52">
+          <Line
+            data={chartData}
+            options={options}
+            redraw={true}
+            id="risk-trends-line-chart"
+          />
+        </div>
       </div>
     </div>
   );

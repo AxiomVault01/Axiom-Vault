@@ -180,7 +180,7 @@ export default function SignUpForm() {
                   </div>
                   {/* <!-- Button --> */}
                   <div>
-                    <Link to="/signup">
+                    <Link to="/signin">
                       <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6">
                         Create Account
                       </button>

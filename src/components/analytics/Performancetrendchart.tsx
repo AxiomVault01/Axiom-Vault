@@ -41,6 +41,11 @@ const PerformanceTrendChart: React.FC<Props> = ({
   data = DEFAULT_DATA,
   className = "",
 }) => {
+  const maxY = Math.max(
+    ...data.map((d) => Math.max(d.detected, d.falsePositive, d.resolved))
+  );
+  const yMax = Math.ceil((maxY + 2) / 4) * 4; // round up to nearest 4
+
   const chartData = {
     labels: data.map((d) => d.month),
     datasets: [
@@ -113,7 +118,7 @@ const PerformanceTrendChart: React.FC<Props> = ({
       },
       y: {
         min: 0,
-        max: 100,
+        max: yMax,
         grid: { color: "rgba(0,0,0,0.05)", lineWidth: 1 },
         border: { display: false },
         ticks: {

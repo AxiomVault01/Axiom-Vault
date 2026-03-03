@@ -30,6 +30,7 @@ import Settings from "./pages/settings/Settings";
 import EmployeeRecords from "./pages/employeeinfo/EmployeeRecords";
 import Profile from "./pages/newprofile/Profile";
 import EmployeeDetails from "./pages/employeeinfo/EmployeeDetails";
+import ReportsPage from "./components/reports/Reportspage";
 // import WelcomePage from "./components/auth/WelcomePage";
 
 export default function App() {
@@ -44,6 +45,7 @@ export default function App() {
             <Route index path="/dashboard" element={<Home />} />
             <Route index path="/analytics" element={<Analytics />} />
             <Route index path="/profile" element={<Profile />} />
+            <Route index path="/reports" element={<ReportsPage />} />
             <Route index path="/settings" element={<Settings />} />
             <Route
               index

@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { CheckCircleIcon, GroupIcon, AlertHexaIcon, DocsIcon, GridIcon, TableIcon, PieChartIcon } from "../../icons";
 import Button from "../ui/button/Button";
-import Logo from "../../../public/Logo.jpg";
+import Logo from "../../../public/full-logo-nbg.png";
 
 const lgImage = {
   width: "175px",

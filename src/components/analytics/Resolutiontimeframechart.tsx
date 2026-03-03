@@ -36,6 +36,9 @@ const ResolutionTimeframeChart: React.FC<Props> = ({
   data = DEFAULT_DATA,
   className = "",
 }) => {
+  const maxCount = Math.max(...data.map((d) => d.count));
+  const xMax = Math.ceil((maxCount + 2) / 5) * 5; // round up to nearest 5
+  
   const chartData = {
     labels: data.map((d) => d.label),
     datasets: [
@@ -72,7 +75,7 @@ const ResolutionTimeframeChart: React.FC<Props> = ({
     scales: {
       x: {
         min: 0,
-        max: 36,
+        max: xMax,
         grid: { color: "rgba(0,0,0,0.05)", lineWidth: 1 },
         border: { display: false },
         ticks: {
