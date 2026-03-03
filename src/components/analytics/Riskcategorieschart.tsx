@@ -8,7 +8,32 @@
 
 import React from "react";
 import { Pie } from "react-chartjs-2";
-import type { ArcElement, ChartOptions, Plugin } from "chart.js";
+import type { ChartOptions, Plugin } from "chart.js";
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Filler,
+);
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -107,7 +132,7 @@ const RiskCategoriesChart: React.FC<Props> = ({
         </h3>
       </div>
 
-      <div className="flex items-center gap-6 flex-1 relative">
+      <div className="flex items-center gap-6 flex-1 relative py-3">
         {/* Pie */}
         <div className="lg:h-60 lg:w-60 shrink-0 p-2 w-50 h-50">
           <Pie

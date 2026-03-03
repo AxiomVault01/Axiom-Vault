@@ -9,6 +9,9 @@ import RiskAlert from "../../components/ui/alert/risk-alert";
 import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
 import ComponentCard from "../../components/common/ComponentCard";
 import QuickActions from "../UiElements/QuickActions";
+import RiskTrendsChart from "../../components/analytics/RiskTrendsChart";
+import RiskCategoriesChart from "../../components/analytics/Riskcategorieschart";
+import SuspiciousActivities from "../../components/employeerecardcomponents/SuspiciousActivities";
 
 export default function Home() {
   return (
@@ -25,17 +28,21 @@ export default function Home() {
           {/* <MonthlySalesChart /> */}
         </div>
 
-        <div className="col-span-12 xl:col-span-9">
-          <StatisticsChart />
+        <div className="col-span-12 space-y-12 xl:col-span-6">
+          <RiskTrendsChart className="lg:col-span-3" />
+        </div>
 
-          {/* <MonthlyTarget /> */}
+        <div className="col-span-12 space-y-12 xl:col-span-6">
+          <RiskCategoriesChart className="lg:col-span-3" />
+        </div>
+
+        <div className="col-span-12 xl:col-span-9">
+          <SuspiciousActivities />
         </div>
 
         <div className="col-span-12 xl:col-span-3">
           <QuickActions />
         </div>
-
-        <div className="col-span-12"></div>
 
         <div className="col-span-12 xl:col-span-12">
           <div className="space-y-6">
