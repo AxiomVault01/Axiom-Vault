@@ -20,6 +20,7 @@ const BiImage = {
   width: "30.53px",
   height: "40px",
 };
+
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -28,7 +29,7 @@ export default function SignInForm() {
       <div className="flex flex-col flex-1 w-full mx-auto">
         <div className="w-full max-w-md pt-10 mx-auto">
           <Link
-            to="/welcome"
+            to="/"
             className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-200 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon className="size-5" />
@@ -99,7 +100,7 @@ export default function SignInForm() {
                   <div>
                     <Link to="/dashboard">
                       <Button
-                        className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
+                        className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-900 hover:border-gray-400 hover:text-gray-50 mt-6"
                         size="sm"
                       >
                         Sign In
