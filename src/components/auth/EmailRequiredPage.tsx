@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Link } from "react-router";
 import { ChevronLeftIcon, MailIcon, PaperPlaneIcon } from "../../icons";
 import Label from "../form/Label";
@@ -23,6 +25,52 @@ const BiImage = {
 
 
 export default function EmailRequiredPage() {
+    const navigate = useNavigate();
+
+    // Form State
+    const [formData, setFormData] = useState({
+     email: "",
+    });
+    
+    // Error State
+    const [errors, setErrors] = useState({
+      email: "",
+    });
+    
+    // Handling Input Changes
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    };
+    
+    // Validating Function
+      const validateForm = () => {
+      const newErrors = {
+        email: "",
+    };
+
+    // Email validation
+     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailPattern.test(formData.email)) {
+       newErrors.email = "Please enter a valid email address";
+    }
+
+    setErrors(newErrors);
+      return !newErrors.email;
+    };
+
+    //  Submitting Handler
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+       if (validateForm()) {
+       console.log("Form submitted", formData);
+      navigate("/email-verification"); 
+      }
+    };
+
   return (
     <div style={bgImage}>
         <div className="flex flex-col flex-1 w-full mx-auto">
@@ -39,10 +87,10 @@ export default function EmailRequiredPage() {
                            <img src={Bicon} style={BiImage} className="mx-auto" alt="Brand Icon" />
                        </div>
                        <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
-                          Create Your Account
+                          Get Started
                        </h1>
                        <p className="text-sm text-brand-200 text-center dark:text-gray-200">
-                         Start Protecting your organization from fraud today.
+                          Verify your email address to begin registration.
                       </p>
                   </div>
 
@@ -61,26 +109,26 @@ export default function EmailRequiredPage() {
                           </div>
                       </div>
 
-                       <form>
+                       <form onSubmit={handleSubmit}>
                            <div className="space-y-4">
-                               <div>
-                                  <Label className="text-brand-800 dark:text-white/90">
-                                     Work Email Address
-                                  </Label>
-                                  <div className="relative w-full max-w-md">
-                                      <MailIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon>
-                                      <Input type="text"id="fname" name="fname" placeholder="auditor@agency.gov" className="w-full pl-10 pr-4 py-2" />
-                                    </div>
-                              </div>  
+                                <Label className="text-brand-800 dark:text-white/90">
+                                    Work Email Address
+                                </Label>
+                                <div className="relative w-full max-w-md">
+                                    <MailIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon>
+                                    <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} placeholder="auditor@agency.gov" required className="w-full pl-10 pr-4 py-2" />
+                              </div>
+                                {errors.email && (
+                                 <p className="text-red-500 text-sm">{errors.email}</p>
+                               )}
                           </div>
                           <div>
-                               <Link to="/email-verification">
-                                 <Button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
-                                      size="sm">
-                                        <PaperPlaneIcon></PaperPlaneIcon>
-                                        Send Verification Code
-                                  </Button>
-                              </Link>
+                                <Button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
+                                    size="sm">
+                                    <PaperPlaneIcon></PaperPlaneIcon>
+                                    Send Verification Code
+                                    {/* <Link to="/email-verification"></Link> */}
+                                </Button>
                           </div>
                        </form>
                        <div className="mt-6 flex justify-center">
@@ -91,9 +139,9 @@ export default function EmailRequiredPage() {
                       {/* <!-- Button --> */}
                       <div className="mt-6">
                            <Link to="/signin">
-                              <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs  dark:text-gray-200 dark:hover:text-gray-300">
+                              <Button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs  dark:text-gray-200 dark:hover:text-gray-300">
                                   Sign In
-                              </button>
+                              </Button>
                           </Link>
                       </div>
                   </div>

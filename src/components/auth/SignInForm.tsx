@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Link } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon, LockIcon, MailIcon } from "../../icons";
 import Label from "../form/Label";
@@ -23,6 +24,65 @@ const BiImage = {
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const navigate = useNavigate();
+
+  // Form State
+  const [formData, setFormData] = useState({
+  email: "",
+  password: "",
+  });
+
+  // Error State
+  const [errors, setErrors] = useState({
+  email: "",
+  password: "",
+  });
+
+  // Handling Input Changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+  };
+
+  // Validating Function
+  const validateForm = () => {
+  const newErrors = {
+    email: "",
+    password: "",
+  };
+
+  // Email validation
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(formData.email)) {
+    newErrors.email = "Please enter a valid email address";
+  }
+
+  // Password validation
+  const passwordPattern =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+  if (!passwordPattern.test(formData.password)) {
+    newErrors.password =
+    "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
+  }
+
+  setErrors(newErrors);
+
+  return !newErrors.email && !newErrors.password;
+ };
+
+ //  Submitting Handler
+ const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (validateForm()) {
+    console.log("Form submitted", formData);
+    navigate("/dashboard"); 
+  }
+ };
+
   return (
     <div style={bgImage}>
       <div className="flex flex-col flex-1 w-full mx-auto">
@@ -48,18 +108,25 @@ export default function SignInForm() {
                 Sign in to access Axiom Vault
               </p>
             </div>
+
             <div className="p-5">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
+                  {/* Email Address */}
                   <div>
                     <Label className="text-brand-800 dark:text-white/90">
                       Email Address
                     </Label>
                     <div className="relative w-full max-w-md">
                       <MailIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon>
-                      <Input type="text"id="fname" name="fname" placeholder="auditor@agency.gov" className="w-full pl-10 pr-4 py-2" />
+                      <Input type="email" id="email" name="email" placeholder="auditor@agency.gov" value={formData.email} onChange={handleChange} required className="w-full pl-10 pr-4 py-2" />
                     </div>
+                    {errors.email && (
+                      <p className="text-red-500 text-sm">{errors.email}</p>
+                    )}
                   </div>
+
+                  {/* Password */}
                   <div>
                     <Label className="text-brand-800 dark:text-white/90">
                       Password
@@ -67,9 +134,10 @@ export default function SignInForm() {
                     <div className="relative">
                       <div className="relative w-full max-w-md">
                         <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
-                        <Input className="w-full pl-10 pr-4 py-2" placeholder="Minimum of 8 characters"
+                        <Input className="w-full pl-10 pr-4 py-2" name="password" value={formData.password} onChange={handleChange}  placeholder="Enter Your Password" required 
                         type={showPassword ? "text" : "password"} />
                      </div>
+                      
                       <span
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -81,6 +149,9 @@ export default function SignInForm() {
                         )}
                       </span>
                     </div>
+                    {errors.password && (
+                      <p className="text-red-500 text-sm">{errors.password}</p>
+                    )}
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -97,14 +168,11 @@ export default function SignInForm() {
                     </Link>
                   </div>
                   <div>
-                    <Link to="/dashboard">
-                      <Button
-                        className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
-                        size="sm"
-                      >
-                        Sign In
-                      </Button>
-                    </Link>
+                    <Button type="submit"
+                      className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
+                      size="sm">
+                      Sign In
+                    </Button>
                   </div>
                 </div>
               </form>
@@ -116,7 +184,7 @@ export default function SignInForm() {
               </div>
               {/* <!-- Button --> */}
               <div className="mt-6">
-                <Link to="/signup">
+                <Link to="/email-required">
                   <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 dark:text-gray-200 dark:hover:text-gray-900">
                     Create Account
                   </button>
