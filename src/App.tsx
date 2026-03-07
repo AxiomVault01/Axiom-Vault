@@ -25,8 +25,6 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-import ReportPage from "./pages/ReportPage/ReportPage";
-import GenerateReports from "./pages/ReportPage/GenerateReportsPage";
 
 export default function App() {
   return (
@@ -38,10 +36,6 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/dashboard" element={<Home />} />
-
-            {/* Reports Page */}
-            <Route path="/reports" element={<ReportPage />} />
-            <Route path="/generate-reports" element={<GenerateReports />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
