@@ -62,9 +62,9 @@ export default function ForgotPasswordPage() {
        return (
       <div  className="flex flex-col flex-1 w-full mx-auto">
           <header>
-              <div className="p-5">
-                  <img src={Logo} style={lgImage} alt="Logo" />
-              </div>
+            <div className="p-5">
+                <img src={Logo} style={lgImage} alt="Logo" />
+             </div>
           </header>
 
           <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10 p-5">
