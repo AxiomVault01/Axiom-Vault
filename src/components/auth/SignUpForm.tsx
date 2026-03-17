@@ -112,7 +112,7 @@ export default function SignUpForm() {
       <div className="flex flex-col flex-1 w-full mx-auto overflow-y-auto lg:w-1/2 no-scrollbar">
         <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
           <Link
-            to="/welcome"
+            to="/"
             className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-200 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon className="size-5" />
@@ -277,9 +277,11 @@ export default function SignUpForm() {
                   )}
                   {/* <!-- Button --> */}
                   <div>
-                    <Button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6">
-                     Create Account
-                    </Button>
+                    <Link to="/signin">
+                      <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6">
+                        Create Account
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </form>
