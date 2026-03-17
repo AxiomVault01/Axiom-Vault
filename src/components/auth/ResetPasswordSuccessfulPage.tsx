@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { CheckLineIcon } from "../../icons";
 import Logo from "../../../public/Logo.jpg";
+import Button from "../ui/button/Button";
 
 
 const lgImage = {
@@ -34,11 +35,11 @@ export default function ResetPasswordSuccessfulPage() {
             <h2 className="text-2xl font-bold mt-5 mb-4 text-center">Done!</h2>
             <p className="mb-6">Your password has been reset successfully!</p>
             <Link  to="/signin" className="text-sm ">
-             <button 
+             <Button 
                onClick={() => setIsOpen(false)}
                className="flex items-center justify-center bg-brand-500 w-full text-white px-4 py-3 rounded-lg" >
                 Okay
-             </button>
+             </Button>
            </Link>
          </div>
         </div>
