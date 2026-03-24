@@ -1,4 +1,3 @@
-import React from 'react'
 
 export default function SecurityAndPrivacy({title, description, className}: {title: string, description: string, className?: string}) {
   return (

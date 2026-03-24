@@ -24,6 +24,19 @@ const BiImage = {
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    if (!isChecked && !email && !password) {
+      setError("You must agree to the terms and conditions.");
+      return;
+    }
+    // You can perform validation and send data to the server
+  };
   return (
     <div style={bgImage}>
       <div className="flex flex-col flex-1 w-full mx-auto overflow-y-auto lg:w-1/2 no-scrollbar">
@@ -65,7 +78,7 @@ export default function SignUpForm() {
                </div>
              </div>
               
-              <form>
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
                   {/* <!-- Full Name --> */}
                   <div className="sm:col-span-1">
@@ -118,7 +131,7 @@ export default function SignUpForm() {
                     <div className="relative">
                       <div className="relative w-full max-w-md">
                         <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
-                        <Input className="w-full pl-10 pr-4 py-2" placeholder="Minimum of 8 characters"
+                        <Input className="w-full pl-10 pr-4 py-2" placeholder="Minimum of 8 characters" 
                         type={showPassword ? "text" : "password"} />
                      </div>
                       <span

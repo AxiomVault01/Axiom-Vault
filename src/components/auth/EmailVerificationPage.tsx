@@ -54,7 +54,7 @@ export default function EmailVerificationPage() {
                                <span>
                                   <p className="text-black font-semibold dark:text-white">Check Your Email</p>
                                   <p className="text-gray-700 dark:text-gray-100">
-                                     We sent a 6-digit verification code to <span className="text-black font-semibold">janedoe@gmail.com</span> Didn't receive it? Check your spam folder or <Link to="" className="text-brand-500 font-semibold">try another email</Link>
+                                     We sent a 6-digit verification code to <span className="text-black Pfont-semibold">janedoe@gmail.com</span> Didn't receive it? Check your spam folder or <Link to="" className="text-brand-500 font-semibold">try another email</Link>
                                   </p>
                               </span>
                           </div>
