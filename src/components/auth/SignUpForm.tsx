@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Link } from "react-router";
 import { ChevronLeftIcon, CheckCircleIcon, EyeCloseIcon, EyeIcon, UserIcon, LockIcon} from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
+import Button from "../ui/button/Button";
 import Checkbox from "../form/input/Checkbox";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
+
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -24,19 +27,86 @@ const BiImage = {
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [error, setError] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  
+  // Form State
+  const [formData, setFormData] = useState({
+  fullName: "",
+  password: "",
+  confirmPassword: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    if (!isChecked && !email && !password) {
-      setError("You must agree to the terms and conditions.");
-      return;
-    }
-    // You can perform validation and send data to the server
+  // Error State
+  const [errors, setErrors] = useState({
+  fullName: "",
+  password: "",
+  confirmPassword: "",
+  checkbox: "",
+
+  });
+
+  // Handling Input Changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
   };
+
+  // Validating Function
+  const validateForm = () => {
+  const newErrors = {
+    fullName: "",
+    password: "",
+    confirmPassword: "",
+    checkbox: "",
+  };
+
+  // Full Name validation
+  const fullNamePattern = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
+  if (!formData.fullName.trim()) {
+    newErrors.fullName = "Full name is required";
+  } else if (!fullNamePattern.test(formData.fullName.trim())) {
+    newErrors.fullName = "Please enter your first, middle and last name, letters only";
+  }
+
+  // Password validation
+  const passwordPattern =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+  if (!passwordPattern.test(formData.password)) {
+    newErrors.password =
+    "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
+  }
+
+  if (formData.password !== formData.confirmPassword) {
+  newErrors.confirmPassword = "Passwords do not match";
+  }
+
+  // Checkbox validation
+  if (!isChecked) {
+    newErrors.checkbox =
+    "You must agree to the Terms & Conditions and Privacy Policy, and confirm government or institutional official use before creating an account.";
+  }
+
+  
+  setErrors(newErrors);
+
+  return Object.values(newErrors).every((error) => error === "");
+
+ };
+
+  // Update your handleSubmit
+  const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  //Only navigate if everything is valid 
+  if (validateForm()) {
+    console.log("Form submitted", formData);
+    navigate("/signin");
+   }
+  };
+
   return (
     <div style={bgImage}>
       <div className="flex flex-col flex-1 w-full mx-auto overflow-y-auto lg:w-1/2 no-scrollbar">
@@ -78,7 +148,7 @@ export default function SignUpForm() {
                </div>
              </div>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   {/* <!-- Full Name --> */}
                   <div className="sm:col-span-1">
@@ -87,8 +157,11 @@ export default function SignUpForm() {
                     </Label>
                     <div className="relative w-full max-w-md">
                       <UserIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></UserIcon>
-                      <Input type="text"id="fname" name="fname" placeholder="Juan dela Cruz" className="w-full pl-10 pr-4 py-2" />
+                      <Input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange}  placeholder="Juan dela Cruz" required className="w-full pl-10 pr-4 py-2" />
                     </div>
+                    {errors.fullName && (
+                      <p className="text-red-500 text-sm">{errors.fullName}</p>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -102,6 +175,7 @@ export default function SignUpForm() {
                         id="org"
                         name="org"
                         placeholder="Agency Name"
+                        required
                       />
                     </div>
                     {/* <!-- Department--> */}
@@ -112,6 +186,7 @@ export default function SignUpForm() {
                       <select
                         name="dept"
                         id="dept"
+                        required
                         className="w-full px-2 py-3 border border-gray-300 dark:border-gray-600 dark:text-gray-200 text-sm rounded-lg focus:outline-none focus:dark:bg-gray-900 focus:dark:text-white"
                       >
                         <option value="">Select</option>
@@ -131,7 +206,7 @@ export default function SignUpForm() {
                     <div className="relative">
                       <div className="relative w-full max-w-md">
                         <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
-                        <Input className="w-full pl-10 pr-4 py-2" placeholder="Minimum of 8 characters" 
+                        <Input className="w-full pl-10 pr-4 py-2" name="password" value={formData.password} onChange={handleChange} required placeholder="Enter Your Password"
                         type={showPassword ? "text" : "password"} />
                      </div>
                       <span
@@ -145,6 +220,9 @@ export default function SignUpForm() {
                         )}
                       </span>
                     </div>
+                    {errors.password && (
+                      <p className="text-red-500 text-sm">{errors.password}</p>
+                    )}
                   </div>
 
                   {/* <!-- Confirm Password --> */}
@@ -155,7 +233,7 @@ export default function SignUpForm() {
                     <div className="relative">
                       <div className="relative w-full max-w-md">
                         <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
-                        <Input className="w-full pl-10 pr-4 py-2" placeholder="Minimum of 8 characters"
+                        <Input className="w-full pl-10 pr-4 py-2" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required placeholder="Confirm Your Password"
                         type={showPassword ? "text" : "password"} />
                      </div>
                       <span
@@ -169,6 +247,9 @@ export default function SignUpForm() {
                         )}
                       </span>
                     </div>
+                    {errors.password && (
+                      <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+                    )}
                   </div>
 
                   {/* <!-- Checkbox --> */}
@@ -191,6 +272,9 @@ export default function SignUpForm() {
                       or institutional use.
                     </p>
                   </div>
+                  {errors.checkbox && (
+                    <p className="text-red-500 text-sm ml-8">{errors.checkbox}</p>
+                  )}
                   {/* <!-- Button --> */}
                   <div>
                     <Link to="/signin">
@@ -210,9 +294,9 @@ export default function SignUpForm() {
               {/* <!-- Button --> */}
               <div className="mt-4">
                 <Link to="/signin">
-                  <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 hover:border-gray-400 dark:hover:text-gray-900 dark:text-gray-100">
+                  <Button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 hover:border-gray-400 dark:hover:text-gray-900 dark:text-gray-100">
                     Sign In
-                  </button>
+                  </Button>
                 </Link>
               </div>
             </div>

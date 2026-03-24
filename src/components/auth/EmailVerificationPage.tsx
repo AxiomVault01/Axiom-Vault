@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Link } from "react-router";
 import { ChevronLeftIcon, CheckLineIcon } from "../../icons";
 import Label from "../form/Label";
@@ -23,6 +25,40 @@ const BiImage = {
 
 
 export default function EmailVerificationPage() {
+    const [code, setCode] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+
+      // Validation for only numbers
+      if (/^\d*$/.test(value)) {
+      setCode(value);
+      }
+    };
+
+    const validateCode = () => {
+      const codePattern = /^\d{6}$/;
+
+     if (!codePattern.test(code)) {
+      setError("Verification code must be exactly 6 digits");
+      return false;
+      }
+
+      setError("");
+       return true;
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (validateCode()) {
+      console.log("Code verified:", code);
+      navigate("/signup");
+    }
+  };
+
   return (
     <div style={bgImage}>
         <div className="flex flex-col flex-1 w-full mx-auto">
@@ -39,10 +75,10 @@ export default function EmailVerificationPage() {
                            <img src={Bicon} style={BiImage} className="mx-auto" alt="Brand Icon" />
                        </div>
                        <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
-                          Create Your Account
+                          Get Started
                        </h1>
                        <p className="text-sm text-brand-200 text-center dark:text-gray-200">
-                         Start Protecting your organization from fraud today.
+                         Verify your email address to begin registration.
                       </p>
                   </div>
                   <div className="p-5 pt-0">
@@ -59,26 +95,27 @@ export default function EmailVerificationPage() {
                               </span>
                           </div>
                       </div>
-                       <form>
+                       <form onSubmit={handleSubmit}>
                            <div className="space-y-4">
                                <div>
                                   <Label className="text-brand-800 dark:text-white/90">
-                                      Verification Code
+                                      Email Verification Code
                                   </Label>
                                   <div className="relative w-full max-w-md">
                                       {/* <MailIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon> */}
-                                      <Input type="text"id="cname" name="cname" placeholder="E n t e r  6 - d i g i t c o d e" className="w-full pl-10 pr-4 py-2" />
+                                      <Input type="text" value={code} onChange={handleChange} maxLength={6} required placeholder="Enter the 6-digit code sent" className="w-full pl-10 pr-4 py-2 tracking-[0.5em]" />
                                     </div>
+                                   {error && (
+                                        <p className="text-red-500 text-sm">{error}</p>
+                                    )}
                               </div>  
                           </div>
                           <div>
-                               <Link to="/signup">
-                                 <Button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
-                                      size="sm">
-                                        <CheckLineIcon></CheckLineIcon>
-                                        Verify Code
-                                  </Button>
-                              </Link>
+                               <Button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
+                                   size="sm">
+                                   <CheckLineIcon></CheckLineIcon>
+                                    Verify Code
+                               </Button>
                           </div>
                        </form>
                        <div className="mt-6 flex justify-center">
@@ -89,9 +126,9 @@ export default function EmailVerificationPage() {
                       {/* <!-- Button --> */}
                       <div className="mt-6">
                            <Link to="/signin">
-                              <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 dark:text-gray-200 dark:hover:text-gray-900">
+                              <Button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 dark:text-gray-200 dark:hover:text-gray-900">
                                   Sign In
-                              </button>
+                              </Button>
                           </Link>
                       </div>
                   </div>
