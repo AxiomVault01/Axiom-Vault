@@ -20,7 +20,7 @@ const Alert: React.FC<AlertProps> = ({
   variant,
   title,
   message,
-  showLink = false,
+  showLink = true,
   linkHref = "#",
   // linkText = "Learn more",
   employeeNumber = 0,
