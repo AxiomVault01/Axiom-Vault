@@ -1,5 +1,7 @@
 // npm install lucide-react
 
+import { useNavigate } from "react-router";
+
 // import React from 'react';
 // import { Search, Download, FileText, Bell, CheckCircle } from 'lucide-react';
 
@@ -114,33 +116,34 @@
 // import React from "react";
 
 const QuickActions = () => {
+  const navigate = useNavigate();
   const actions = [
     {
       id: 1,
       icon: "🔍",
       label: "Run Full Audit",
-      onClick: () => console.log("Run Full Audit"),
+      onClick: () => navigate('/reports'),
       bgColor: "#EFF6FF", // light blue
     },
     {
       id: 2,
       icon: "⬇️",
       label: "Export Report",
-      onClick: () => console.log("Export Report"),
+      onClick: () => navigate('/reports'),
       bgColor: "#F9FAFB", // light gray
     },
     {
       id: 3,
       icon: "📄",
       label: "Generate Report",
-      onClick: () => console.log("Generate Report"),
+      onClick: () => navigate('/reports'),
       bgColor: "#F9FAFB",
     },
     {
       id: 4,
       icon: "🔔",
       label: "Alert Settings",
-      onClick: () => console.log("Alert Settings"),
+      onClick: () => navigate('/settings'),
       bgColor: "#F9FAFB",
     },
   ];

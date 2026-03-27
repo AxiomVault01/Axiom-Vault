@@ -117,7 +117,7 @@ const RiskAlertFilters = () => {
             // linkText="Learn more"
             // employeeNumber={5}
             // dateDetected="20/2/2026"
-            // reqAction="Investigation Required"
+            reqAction="Investigation Required"
           />
         ))}
       </div>
