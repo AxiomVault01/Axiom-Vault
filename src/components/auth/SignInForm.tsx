@@ -27,19 +27,16 @@ export default function SignInForm() {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
 
-  // Form State
   const [formData, setFormData] = useState({
   email: "",
   password: "",
   });
 
-  // Error State
   const [errors, setErrors] = useState({
   email: "",
   password: "",
   });
 
-  // Handling Input Changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   setFormData({
     ...formData,
@@ -47,21 +44,18 @@ export default function SignInForm() {
   });
   };
 
-  // Validating Function
   const validateForm = () => {
   const newErrors = {
     email: "",
     password: "",
   };
 
-  // Email validation
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!emailPattern.test(formData.email)) {
     newErrors.email = "Please enter a valid email address";
   }
 
-  // Password validation
   const passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
@@ -75,7 +69,6 @@ export default function SignInForm() {
   return !newErrors.email && !newErrors.password;
  };
 
- //  Submitting Handler
  const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
   if (validateForm()) {
@@ -113,7 +106,6 @@ export default function SignInForm() {
             <div className="p-5">
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
-                  {/* Email Address */}
                   <div>
                     <Label className="text-brand-800 dark:text-white/90">
                       Email Address
@@ -127,7 +119,6 @@ export default function SignInForm() {
                     )}
                   </div>
 
-                  {/* Password */}
                   <div>
                     <Label className="text-brand-800 dark:text-white/90">
                       Password
@@ -163,20 +154,18 @@ export default function SignInForm() {
                     </div>
                     <Link
                       to="/forgot-password"
-                      className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                      className="text-sm text-brand-500 hover:text-brand-500 dark:text-brand-400"
                     >
                       Forgot password?
                     </Link>
                   </div>
                   <div>
-                    <Link to="/dashboard">
-                      <Button
-                        className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-900 hover:border-gray-400 hover:text-gray-50 mt-6"
-                        size="sm"
-                      >
-                        Sign In
-                      </Button>
-                    </Link>
+                    <Button type="submit"
+                     className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-500 hover:border-gray-400 hover:text-gray-50 mt-6"
+                     size="sm">
+                     Sign In
+                    </Button>
+                    
                   </div>
                 </div>
               </form>
@@ -186,7 +175,7 @@ export default function SignInForm() {
                   New to Axiom Vault ?
                 </p>
               </div>
-              {/* <!-- Button --> */}
+
               <div className="mt-6">
                 <Link to="/email-required">
                   <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 dark:text-gray-200 dark:hover:text-gray-900">

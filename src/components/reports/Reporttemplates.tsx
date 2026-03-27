@@ -33,7 +33,7 @@ const TemplateCard: React.FC<{template:ReportTemplate}> = ({template}) => {
         <p className="text-[11px] text-gray-400 mt-2">Last: {template.lastGenerated}</p>
       </div>
       <button onClick={() => template.onGenerate?.(template.id)}
-        className="shrink-0 self-end px-4 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg transition-colors">
+        className="shrink-0 self-end px-4 py-1.5 bg-brand-500  text-white text-xs font-semibold rounded-lg transition-colors">
         Generate
       </button>
     </div>

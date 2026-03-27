@@ -16,20 +16,17 @@ export default function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  // Form State
   const [formData, setFormData] = useState({
   password: "",
   confirmPassword: "",
   });
 
-  // Error State
   const [errors, setErrors] = useState({
   password: "",
   confirmPassword: "",
 
   });
 
-  // Handling Input Changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   setFormData({
     ...formData,
@@ -37,14 +34,12 @@ export default function ResetPasswordPage() {
   });
   };
 
-  // Validating Function
   const validateForm = () => {
   const newErrors = {
     password: "",
     confirmPassword: "",
   };
 
-  // Password validation
   const passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
@@ -62,7 +57,6 @@ export default function ResetPasswordPage() {
   return !newErrors.password && !newErrors.confirmPassword;
  };
 
- //  Submitting Handler
  const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
   if (validateForm()) {
@@ -70,7 +64,6 @@ export default function ResetPasswordPage() {
     navigate("/reset-password-successful"); 
   }
  };
-
 
   return (
     <div  className="flex flex-col flex-1 w-full mx-auto">
@@ -124,7 +117,6 @@ export default function ResetPasswordPage() {
                {errors.confirmPassword && (
                   <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
                 )}
-               
                
                <div>
                  <p>Your password must contain</p>

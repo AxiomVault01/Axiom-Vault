@@ -13,59 +13,53 @@ const lgImage = {
 };
 
 export default function ForgotPasswordPage() {
-    const navigate = useNavigate();
-    
-        // Form State
-        const [formData, setFormData] = useState({
-         email: "",
-        });
+ const navigate = useNavigate();
+  
+ const [formData, setFormData] = useState({
+   email: "",
+ });
         
-        // Error State
-        const [errors, setErrors] = useState({
-          email: "",
-        });
+  const [errors, setErrors] = useState({
+   email: "",
+  });
         
-        // Handling Input Changes
-        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-          setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-          });
-        };
-        
-        // Validating Function
-          const validateForm = () => {
-          const newErrors = {
-            email: "",
-        };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+    ...formData,
+   [e.target.name]: e.target.value,
+    });
+ };
+      
+ const validateForm = () => {
+    const newErrors = {
+      email: "",
+    };
     
-        // Email validation
-         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-          if (!emailPattern.test(formData.email)) {
-           newErrors.email = "Please enter a valid email address";
-        }
+    if (!emailPattern.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+   }
     
-        setErrors(newErrors);
-          return !newErrors.email;
-        };
+   setErrors(newErrors);
+     return !newErrors.email;
+ };
     
-        //  Submitting Handler
-        const handleSubmit = (e: React.FormEvent) => {
-            e.preventDefault();
-           if (validateForm()) {
-           console.log("Form submitted", formData);
-          navigate("/verify-code"); 
-          }
-        };
+ const handleSubmit = (e: React.FormEvent) => {
+   e.preventDefault();
+   if (validateForm()) {
+      console.log("Form submitted", formData);
+      navigate("/verify-code"); 
+   }
+ };
 
-       return (
-      <div  className="flex flex-col flex-1 w-full mx-auto">
-          <header>
-            <div className="p-5">
-                <img src={Logo} style={lgImage} alt="Logo" />
-             </div>
-          </header>
+ return (
+   <div  className="flex flex-col flex-1 w-full mx-auto">
+      <header>
+       <div className="p-5">
+         <img src={Logo} style={lgImage} alt="Logo" />
+       </div>
+     </header>
 
           <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10 p-5">
               <div className="bg-white rounded-lg border-2 border-brand-500">

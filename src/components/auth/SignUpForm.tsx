@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
-import { ChevronLeftIcon, CheckCircleIcon, EyeCloseIcon, EyeIcon, UserIcon, LockIcon} from "../../icons";
+import { CircleCheckBig } from "lucide-react";
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon, UserIcon, LockIcon} from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
@@ -29,14 +30,12 @@ export default function SignUpForm() {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
   
-  // Form State
   const [formData, setFormData] = useState({
   fullName: "",
   password: "",
   confirmPassword: "",
   });
 
-  // Error State
   const [errors, setErrors] = useState({
   fullName: "",
   password: "",
@@ -45,7 +44,6 @@ export default function SignUpForm() {
 
   });
 
-  // Handling Input Changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   setFormData({
     ...formData,
@@ -53,7 +51,6 @@ export default function SignUpForm() {
   });
   };
 
-  // Validating Function
   const validateForm = () => {
   const newErrors = {
     fullName: "",
@@ -62,7 +59,6 @@ export default function SignUpForm() {
     checkbox: "",
   };
 
-  // Full Name validation
   const fullNamePattern = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
   if (!formData.fullName.trim()) {
     newErrors.fullName = "Full name is required";
@@ -70,7 +66,6 @@ export default function SignUpForm() {
     newErrors.fullName = "Please enter your first, middle and last name, letters only";
   }
 
-  // Password validation
   const passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
@@ -83,24 +78,20 @@ export default function SignUpForm() {
   newErrors.confirmPassword = "Passwords do not match";
   }
 
-  // Checkbox validation
   if (!isChecked) {
     newErrors.checkbox =
     "You must agree to the Terms & Conditions and Privacy Policy, and confirm government or institutional official use before creating an account.";
   }
 
-  
   setErrors(newErrors);
 
   return Object.values(newErrors).every((error) => error === "");
 
  };
 
-  // Update your handleSubmit
   const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
 
-  //Only navigate if everything is valid 
   if (validateForm()) {
     console.log("Form submitted", formData);
     navigate("/signin");
@@ -134,10 +125,10 @@ export default function SignUpForm() {
               </p>
             </div>
             <div className="p-5">
-              <div className="px-2 md:px-4 py-1 mb-5 w-full text-sm text-white bg-success-50 dark:bg-success-500/20 border-success-200 dark:border-success-400 border rounded-lg">
+              <div className="px-2 md:px-4 py-1 mb-5 w-full text-sm text-white bg-gray-100 dark:bg-gray-500/20 border-orange-500 dark:border-orange-400 border rounded-lg">
                 <div className="flex text-left gap-3">
                   <span className="mt-1 text-brand-500">
-                    <CheckCircleIcon className="w-5 h-5"></CheckCircleIcon>
+                    <CircleCheckBig className="w-5 h-5 text-orange-900"></CircleCheckBig>
                   </span>
                   <span>
                     <p className="text-black font-semibold">Email Verified!</p>
@@ -150,7 +141,6 @@ export default function SignUpForm() {
               
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
-                  {/* <!-- Full Name --> */}
                   <div className="sm:col-span-1">
                     <Label className="text-brand-800 dark:text-white/90">
                       Full Name
@@ -165,7 +155,6 @@ export default function SignUpForm() {
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    {/* <!-- Organization --> */}
                     <div className="sm:col-span-1">
                       <Label className="text-brand-800 dark:text-white/90">
                         Organization
@@ -178,7 +167,6 @@ export default function SignUpForm() {
                         required
                       />
                     </div>
-                    {/* <!-- Department--> */}
                     <div className="sm:col-span-1">
                       <Label className="text-brand-800 dark:text-white/90">
                         Department
@@ -200,7 +188,6 @@ export default function SignUpForm() {
                     </div>
                   </div>
 
-                  {/* <!-- Password --> */}
                   <div>
                     <Label className="text-brand-800">Password</Label>
                     <div className="relative">
@@ -225,7 +212,6 @@ export default function SignUpForm() {
                     )}
                   </div>
 
-                  {/* <!-- Confirm Password --> */}
                   <div>
                     <Label className="text-brand-800">
                       Re-enter your password
@@ -252,7 +238,6 @@ export default function SignUpForm() {
                     )}
                   </div>
 
-                  {/* <!-- Checkbox --> */}
                   <div className="flex items-center gap-3 p-2 bg-brand-50 border-1 border-brand-700 rounded-lg dark:border-gray-800 dark:bg-white/[0.1]">
                     <Checkbox
                       className="w-5 h-5"
@@ -275,13 +260,11 @@ export default function SignUpForm() {
                   {errors.checkbox && (
                     <p className="text-red-500 text-sm ml-8">{errors.checkbox}</p>
                   )}
-                  {/* <!-- Button --> */}
                   <div>
-                    <Link to="/signin">
-                      <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6">
-                        Create Account
-                      </button>
-                    </Link>
+                   <Button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6">
+                     Create Account
+                   </Button>
+                    
                   </div>
                 </div>
               </form>
@@ -291,7 +274,6 @@ export default function SignUpForm() {
                   Already have an account? {""}
                 </p>
               </div>
-              {/* <!-- Button --> */}
               <div className="mt-4">
                 <Link to="/signin">
                   <Button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 hover:border-gray-400 dark:hover:text-gray-900 dark:text-gray-100">
