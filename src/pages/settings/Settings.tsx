@@ -3,7 +3,7 @@ import Card from "../../components/settings/Card";
 import Input from "../../components/settings/Input";
 import Select from "../../components/settings/Select";
 import Toggle from "../../components/settings/Toggle";
-import { User, Bell, ChevronRight, Download, Trash2 } from "lucide-react";
+import { User, Bell, ChevronRight, Download, Trash2, Lock, Database } from "lucide-react";
 
 function Settings() {
   const [criticalAlerts, setCriticalAlerts] = useState(true);
@@ -153,29 +153,36 @@ function Settings() {
 
         {/* Security & Privacy */}
         <Card className="dark:bg-white/[0.03] dark:border-gray-700">
-          <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Security & Privacy
-            </h2>
-            <p className="text-sm text-gray-500">
-              Manage your security settings
-            </p>
+          <div className="">
+            <div className="flex items-center gap-3">
+              <div className="bg-red-100 p-2 rounded-lg text-red-600">
+                <Lock />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Security & Privacy
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Manage your security settings
+                </p>
+              </div>
+            </div>
             <div className="flex flex-col divide-y divide-gray-200 dark:divide-gray-700">
-              {[
-                "Change Password",
-                "Two-Factor Authentication",
-                "Session Management",
-              ].map((item) => (
-                <button
-                  key={item}
-                  className="w-full flex items-center justify-between py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-                >
-                  <span className="text-sm text-gray-900 dark:text-gray-100">
-                    {item}
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-gray-400" />
-                </button>
-              ))}
+              {/* CHANGE PASSWORD */}
+             <div  className="w-full py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 border px-3 rounded-lg mt-4 cursor-pointer">
+              <h1 className="font-medium text-md">Change Password</h1>
+              <p className="text-xs font-normal text-gray-500">Update your account password</p>
+             </div>
+             {/* TWO-FACTOR AUTHENTICATION */}
+             <div  className="w-full py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 border px-3 rounded-lg mt-4 cursor-pointer">
+              <h1 className="font-medium text-md">Two-Factor Authentication</h1>
+              <p className="text-xs font-normal text-gray-500">Add an extra layer of security</p>
+             </div>
+             {/* SESSION MANAGEMENT */}
+             <div  className="w-full py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 border px-3 rounded-lg mt-4 cursor-pointer">
+              <h1 className="font-medium text-md">Session Management</h1>
+              <p className="text-xs font-normal text-gray-500">View and manage active sessions</p>
+             </div>
             </div>
           </div>
         </Card>
@@ -226,27 +233,39 @@ function Settings() {
 
         {/* Data Management */}
         <Card className="dark:bg-white/[0.03] dark:border-gray-700">
-          <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Data Management
-            </h2>
-            <p className="text-sm text-gray-500">Export and manage your data</p>
-            <div className="flex flex-col divide-y divide-gray-200 dark:divide-gray-700">
-              <button className="w-full flex items-center justify-between py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Download className="w-5 h-5 text-green-500" />
-                  <span className="text-sm text-gray-900 dark:text-gray-100">
-                    Export Account Data
-                  </span>
+          <div className="space-y-2">
+            <div className="flex gap-3 items-center mb-5">
+              <p className="bg-green-100 p-3 rounded-lg text-green-700"><Database/></p>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 ">
+                  Data Management
+                </h2>
+                 <p className="text-sm text-gray-500">Export and manage your data</p>
+              </div>
+            </div>
+           
+            <div className="flex flex-col divide-y divide-gray-200 dark:divide-gray-700 gap-3">
+              <button className="w-full flex items-center justify-between py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg border border-gray-300 px-3">
+                <div className="flex items-center gap-3 ">
+                  <Download className="w-5 h-5 text-green-700" />
+                  <div>
+                    <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                      Export Account Data
+                    </h2>
+                    <p className="text-xs text-gray-400">Download all your data in a CSV format</p>
+                  </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                
               </button>
-              <button className="w-full flex items-center justify-between py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+              <button className="w-full flex items-center justify-between py-4 text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg border border-red-600 px-3 text-red-600 ">
                 <div className="flex items-center gap-3">
-                  <Trash2 className="w-5 h-5 text-red-500" />
-                  <span className="text-sm text-red-500">Delete Account</span>
+                  <Trash2 className="w-5 h-5 " />
+                  <div>
+                    <h2 className="text-sm font-semibold ">Delete Account</h2>
+                    <p className="text-xs">Permanently delete your account and data</p>
+                  </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+               
               </button>
             </div>
           </div>
