@@ -33,8 +33,8 @@ const FORMAT_BADGE: Record<ReportFormat, string> = {
 
 const ReportRow: React.FC<{ report: RecentReport }> = ({ report }) => (
   <div className="flex flex-col lg:flex-row items-center gap-4 py-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50/60 rounded-lg px-2 -mx-2 transition-colors dark:border-gray-700 dark:hover:bg-white/[0.05]">
-    <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-      <FileText size={16} className="text-blue-500" />
+    <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+      <FileText size={16} className="text-brand-500" />
     </div>
     <div className="flex-1 min-w-0">
       <p className="text-sm font-medium text-gray-800 truncate dark:text-gray-300">{report.title}</p>
@@ -49,7 +49,7 @@ const ReportRow: React.FC<{ report: RecentReport }> = ({ report }) => (
     </div>
     <button
       onClick={() => report.onDownload?.(report.id)}
-      className="shrink-0 flex items-center gap-1.5 px-4 py-2 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm"
+      className="shrink-0 flex items-center gap-1.5 px-4 py-2 bg-brand-500 active:bg-brand-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm"
     >
       <Download size={12} />
       Download
@@ -63,7 +63,7 @@ const RecentReports: React.FC<Props> = ({ reports = DEFAULT_REPORTS, onViewAll }
       <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-300">Recent Reports</h3>
       <button
         onClick={onViewAll}
-        className="flex items-center gap-1.5 text-xs text-blue-500 hover:text-blue-700 font-medium transition-colors"
+        className="flex items-center gap-1.5 text-xs text-brand-500 font-medium transition-colors"
       >
         View All <ListFilter size={12} />
       </button>

@@ -74,7 +74,7 @@ const CustomReportBuilder: React.FC<Props> = ({ onGenerate, onSaveTemplate }) =>
                 <button key={p} onClick={() => setTimePeriod(p)}
                   className={"flex-1 py-2.5 text-xs font-semibold transition-colors " +
                     (timePeriod === p
-                      ? "bg-blue-500 text-white"
+                      ? "bg-brand-500 text-white"
                       : "bg-white text-gray-500 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200")}
                 >{p}</button>
               ))}
@@ -114,8 +114,8 @@ const CustomReportBuilder: React.FC<Props> = ({ onGenerate, onSaveTemplate }) =>
                     <input type="radio" name="exportFormat" value={fmt}
                       checked={active} onChange={() => setExportFormat(fmt)} className="sr-only" />
                     <span className={"w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors " +
-                      (active ? "border-blue-500" : "border-gray-300")}>
-                      {active && <span className="w-2 h-2 rounded-full bg-blue-500 block" />}
+                      (active ? "border-brand-500" : "border-gray-300")}>
+                      {active && <span className="w-2 h-2 rounded-full bg-brand-500 block" />}
                     </span>
                   </span>
                   <span className={"text-sm " + (active ? "text-gray-800 font-medium" : "text-gray-500")}>
@@ -130,7 +130,7 @@ const CustomReportBuilder: React.FC<Props> = ({ onGenerate, onSaveTemplate }) =>
         {/* Row 4 – Action buttons */}
         <div className="flex items-center gap-3 pt-1">
           <button onClick={() => onGenerate?.(vals)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+            className="flex items-center gap-2 px-5 py-2.5 bg-brand-500 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
             <Download size={14} />
             Generate Report
           </button>

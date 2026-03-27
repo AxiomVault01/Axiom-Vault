@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
+import { KeyRound } from "lucide-react";
 import { ChevronLeftIcon, CheckLineIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -85,7 +86,7 @@ export default function EmailVerificationPage() {
                       <div className="px-2 md:px-4 py-1 mb-5 w-full mt-2 text-sm text-white bg-brand-50 dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border rounded-lg">
                           <div className="flex text-left gap-3">
                                <span className="mt-1 text-brand-500">
-
+                                 <KeyRound className="size-5"></KeyRound>
                                </span>
                                <span>
                                   <p className="text-black font-semibold dark:text-white">Check Your Email</p>
@@ -102,8 +103,8 @@ export default function EmailVerificationPage() {
                                       Email Verification Code
                                   </Label>
                                   <div className="relative w-full max-w-md">
-                                      {/* <MailIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon> */}
-                                      <Input type="text" value={code} onChange={handleChange} maxLength={6} required placeholder="Enter the 6-digit code sent" className="w-full pl-10 pr-4 py-2 tracking-[0.5em]" />
+                                     <KeyRound className="absolute w-4 h-4 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></KeyRound>
+                                      <Input type="text" value={code} onChange={handleChange} maxLength={6} required placeholder="Enter 6-digit code" className="w-full pl-10 pr-4 py-2 tracking-[0.5em]" />
                                     </div>
                                    {error && (
                                         <p className="text-red-500 text-sm">{error}</p>

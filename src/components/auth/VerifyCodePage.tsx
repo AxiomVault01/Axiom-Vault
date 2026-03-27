@@ -19,7 +19,6 @@ export default function VerifyCodePage() {
     const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
     const navigate = useNavigate();
 
-    // Handling OTP input changes
     const handleChange = (value: string, index: number) => {
       if (!/^\d?$/.test(value)) return; 
 
@@ -32,14 +31,12 @@ export default function VerifyCodePage() {
      }
    };
 
-   //    Handling Backspace for OTP inputs
    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
       if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
      }
     };
 
-    // Validating OTP
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
 
