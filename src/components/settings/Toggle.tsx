@@ -8,7 +8,7 @@ const Toggle = ({ enabled, onChange }: ToggleProps) => {
     <button
       onClick={onChange}
       className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
-        enabled ? "bg-[#2D91D1]" : "bg-gray-300"
+        enabled ? "bg-brand-500" : "bg-gray-300"
       }`}
     >
       <span

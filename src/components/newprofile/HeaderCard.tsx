@@ -21,7 +21,7 @@ const HeaderCard = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-[#2D91D1] to-[#41a3e0] text-white rounded-2xl p-6 md:p-8 shadow-lg relative overflow-hidden">
+    <div className="bg-brand-500 text-white rounded-2xl p-6 md:p-8 shadow-lg relative overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="flex items-center gap-6">
           {/* Avatar with Camera Icon */}
@@ -40,7 +40,7 @@ const HeaderCard = () => {
             {/* Camera Icon Button */}
             <button
               onClick={handleCameraClick}
-              className="absolute bottom-0 right-0 bg-white hover:bg-[#2D91D1] transition p-2 rounded-full text-[#2D91D1] hover:text-white shadow-lg"
+              className="absolute bottom-0 right-0 bg-white hover:bg-brand-500 transition p-2 rounded-full text-brand-500 hover:text-white shadow-lg"
               title="Change profile picture"
             >
               <Camera size={16} />

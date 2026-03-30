@@ -32,8 +32,8 @@ function Settings() {
         {/* Account Settings */}
         <Card className="dark:bg-white/[0.03] dark:border-gray-700">
           <div className="flex items-start gap-3 mb-6">
-            <div className="bg-[#2D91D1]/10 p-2 rounded-lg">
-              <User className="w-5 h-5 text-[#2D91D1]" />
+            <div className="bg-brand-500/10 p-2 rounded-lg">
+              <User className="w-5 h-5 text-brand-500" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -63,7 +63,7 @@ function Settings() {
             </Select>
           </div>
 
-          <button className="mt-6 bg-[#2D91D1] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#2D91D1]/90 transition-all duration-300">
+          <button className="mt-6 bg-brand-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300">
             Save Changes
           </button>
         </Card>
@@ -225,7 +225,7 @@ function Settings() {
                 <option>YYYY-MM-DD</option>
               </Select>
             </div>
-            <button className="mt-4 bg-[#2D91D1] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#2D91D1]/90 transition-all duration-300">
+            <button className="mt-4 bg-brand-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium  transition-all duration-300">
               Save Preferences
             </button>
           </div>

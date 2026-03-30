@@ -20,7 +20,7 @@ function Profile () {
             icon={<Shield size={22} />}
             value="89"
             label="Cases Investigated"
-            bg="bg-blue-500"
+            bg="bg-brand-500"
           />
           <StatCard
             icon={<CheckCircle size={22} />}

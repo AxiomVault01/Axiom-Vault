@@ -42,7 +42,7 @@ const Info = ({
   value: string;
 }) => (
   <div className="flex items-start gap-4">
-    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+    <div className="w-10 h-10 rounded-lg bg-brand-500 flex items-center justify-center text-white">
       {icon}
     </div>
 

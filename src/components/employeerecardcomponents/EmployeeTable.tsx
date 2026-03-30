@@ -162,7 +162,7 @@ const EmployeeTable = () => {
             <option>Pending</option>
           </select>
 
-          <button className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm hover:bg-blue-700">
+          <button className="bg-brand-500 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm h">
             Export
           </button>
         </div>

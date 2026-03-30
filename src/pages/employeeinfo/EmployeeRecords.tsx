@@ -17,7 +17,7 @@ const EmployeeRecords = () => {
               icon={<Users size={18} />}
               value="8"
               label="Total Employees"
-              bg="bg-blue-100 text-blue-600"
+              bg="bg-brand-500/10 bg-brand-500"
             />
             <SummaryCard
               icon={<AlertTriangle size={18} />}
