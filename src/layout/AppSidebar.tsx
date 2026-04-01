@@ -316,12 +316,22 @@ const AppSidebar: React.FC = () => {
               />
             </>
           ) : (
-            <img
-              src="/public/logo-icon-nbg.png"
-              alt="Logo"
-              width={40}
-              height={32}
-            />
+            <>
+              <img
+              className="dark:hidden"
+                src="/public/logo-icon-nbg.png"
+                alt="Logo"
+                width={40}
+                height={32}
+              />
+              <img
+              className="dark:block hidden"
+                src="/public/AXIOM_VAULT_c.png"
+                alt="Logo"
+                width={40}
+                height={32}
+              />
+            </>
           )}
         </Link>
       </div>

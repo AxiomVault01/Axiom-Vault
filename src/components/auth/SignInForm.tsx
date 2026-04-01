@@ -8,6 +8,7 @@ import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
+import Biconw from "../../../public/AXIOM_VAULT_c.png";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -93,7 +94,8 @@ export default function SignInForm() {
           <div className="bg-white rounded-t-lg border dark:border-gray-300 dark:bg-gray-900 rounded-lg">
             <div className="mb-5 sm:mb-4 p-8 bg-brand-500 rounded-t-lg">
               <div className="w-12 h-12 mb-3 bg-white dark:bg-gray-900 p-1 rounded-lg mx-auto">
-                <img src={Bicon} style={BiImage} className="mx-auto" alt="Brand Icon" />
+                <img src={Bicon} style={BiImage} className="mx-auto dark:hidden" alt="Brand Icon" />
+                <img src={Biconw} style={BiImage} className="mx-auto hidden dark:block" alt="Brand Icon" />
               </div>
               <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
                 Welcome Back
