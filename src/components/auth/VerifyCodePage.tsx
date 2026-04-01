@@ -101,16 +101,7 @@ export default function VerifyCodePage() {
               <p className="text-gray-700 dark:text-gray-100 text-xs">
                 We sent a 6-digit verification code to your mail. Didn't receive
                 it?{" "}
-                {timeLeft > 0 ? (
-                  `Resend in ${timeLeft} seconds`
-                ) : (
-                  <button
-                    onClick={handleResend}
-                    className="text-brand-500 font-semibold cursor-pointer dark:text-white"
-                  >
-                    Resend Code
-                  </button>
-                )}
+               
               </p>
             </span>
           </div>
@@ -141,9 +132,18 @@ export default function VerifyCodePage() {
 
                 <div className="text-center dark:text-white">
                   <p>Didn't recieve OTP ?</p>
-                  <button className="text-brand-500 mt-5 text-sm dark:text-white">
+                  <p className="text-brand-500 mt-5 text-sm dark:text-white">
+                    {timeLeft > 0 ? (
+                  `Resend in ${timeLeft} seconds`
+                ) : (
+                  <button type="button"
+                    onClick={handleResend}
+                    className="text-brand-500 font-semibold cursor-pointer dark:text-white"
+                  >
                     Resend OTP
                   </button>
+                )}
+                  </p>
                 </div>
                 <div>
                   <Button
