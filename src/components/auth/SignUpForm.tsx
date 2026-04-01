@@ -147,7 +147,7 @@ export default function SignUpForm() {
                     </Label>
                     <div className="relative w-full max-w-md">
                       <UserIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></UserIcon>
-                      <Input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange}  placeholder="Juan dela Cruz" required className="w-full pl-10 pr-4 py-2" />
+                      <Input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange}  placeholder="First & Last Name" required className="w-full pl-10 pr-4 py-2" />
                     </div>
                     {errors.fullName && (
                       <p className="text-red-500 text-sm">{errors.fullName}</p>

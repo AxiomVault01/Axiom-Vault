@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
 import { KeyRound } from "lucide-react";
@@ -26,36 +26,57 @@ const BiImage = {
 
 
 export default function EmailVerificationPage() {
-    const [code, setCode] = useState("");
+    const [code, setCode] = useState<string[]>(['','','','','','']);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const inputRefs = useRef<HTMLInputElement[]>([]);
+    const [timeLeft, setTimeLeft] = useState(60);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    useEffect(() => {
+      if (timeLeft > 0) {
+        const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+        return () => clearTimeout(timer);
+      }
+    }, [timeLeft]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
       const value = e.target.value;
-
-      // Validation for only numbers
-      if (/^\d*$/.test(value)) {
-      setCode(value);
+      if (/^\d$/.test(value) || value === '') {
+        const newCode = [...code];
+        newCode[index] = value;
+        setCode(newCode);
+        if (value && index < 5) {
+          inputRefs.current[index + 1]?.focus();
+        }
       }
     };
 
-    const validateCode = () => {
-      const codePattern = /^\d{6}$/;
-
-     if (!codePattern.test(code)) {
-      setError("Verification code must be exactly 6 digits");
-      return false;
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+      if (e.key === 'Backspace' && !code[index] && index > 0) {
+        inputRefs.current[index - 1]?.focus();
       }
+    };
 
+    const handleResend = () => {
+      setTimeLeft(60);
+      // TODO: Call API to resend OTP
+      console.log("Resend OTP requested");
+    };
+
+    const validateCode = () => {
+      if (code.some(d => d === '')) {
+        setError("Please enter all 6 digits");
+        return false;
+      }
       setError("");
-       return true;
+      return true;
     };
 
     const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateCode()) {
-      console.log("Code verified:", code);
+      console.log("Code verified:", code.join(''));
       navigate("/signup");
     }
   };
@@ -85,13 +106,13 @@ export default function EmailVerificationPage() {
                   <div className="p-5 pt-0">
                       <div className="px-2 md:px-4 py-1 mb-5 w-full mt-2 text-sm text-white bg-brand-50 dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border rounded-lg">
                           <div className="flex text-left gap-3">
-                               <span className="mt-1 text-brand-500">
+                               <span className="mt-1 text-brand-500 dark:text-white">
                                  <KeyRound className="size-5"></KeyRound>
                                </span>
                                <span>
                                   <p className="text-black font-semibold dark:text-white">Check Your Email</p>
                                   <p className="text-gray-700 dark:text-gray-100">
-                                     We sent a 6-digit verification code to <span className="text-black Pfont-semibold">janedoe@gmail.com</span> Didn't receive it? Check your spam folder or <Link to="" className="text-brand-500 font-semibold">try another email</Link>
+                                     We sent a 6-digit verification code to <span className="text-black font-semibold dark:text-white">janedoe@gmail.com</span> Didn't receive it?  {timeLeft > 0 ? `Resend in ${timeLeft} seconds` : <button onClick={handleResend} className="text-brand-500 font-semibold cursor-pointer dark:text-white">Resend Code</button>}
                                   </p>
                               </span>
                           </div>
@@ -102,10 +123,21 @@ export default function EmailVerificationPage() {
                                   <Label className="text-brand-800 dark:text-white/90">
                                       Email Verification Code
                                   </Label>
-                                  <div className="relative w-full max-w-md">
-                                     <KeyRound className="absolute w-4 h-4 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></KeyRound>
-                                      <Input type="text" value={code} onChange={handleChange} maxLength={6} required placeholder="Enter 6-digit code" className="w-full pl-10 pr-4 py-2 tracking-[0.5em]" />
-                                    </div>
+                                  <div className="flex gap-2 justify-center">
+                                    {code.map((digit, index) => (
+                                      <Input
+                                        key={index}
+                                        type="text"
+                                        value={digit}
+                                        onChange={(e) => handleInputChange(e, index)}
+                                        onKeyDown={(e) => handleKeyDown(e, index)}
+                                        maxLength={1}
+                                        required
+                                        className="w-12 text-center"
+                                        ref={(el) => { if (el) inputRefs.current[index] = el; }}
+                                      />
+                                    ))}
+                                  </div>
                                    {error && (
                                         <p className="text-red-500 text-sm">{error}</p>
                                     )}

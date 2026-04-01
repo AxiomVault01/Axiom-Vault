@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { Brain, Database, TriangleAlert, ChartColumn, FileSearch, CircleCheckBig } from "lucide-react";
 import { GroupIcon } from "../../icons";
 import Button from "../ui/button/Button";
-import Logo from "../../../public/Logo.jpg";
+import logo from "../../../public/logo.png";
 
 const lgImage = {
   width: "175px",
@@ -15,7 +15,7 @@ export default function WelcomePage() {
       <header>
         <div className="flex items-center space-x-2 p-5">
           <div className="">
-            <img src={Logo} style={lgImage} alt="Logo" />
+            <img src={logo} style={lgImage} alt="Logo" />
           </div>
         </div>
       </header>
@@ -26,7 +26,7 @@ export default function WelcomePage() {
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mt-2 dark:text-gray-100">
             Detect Payroll Fraud
-            <span className="block text-brand-500">with AI Precision</span>
+            <span className="block text-brand-500 dark:text-[#fff]">with AI Precision</span>
           </h2>
           <p className="md:text-xl lg:text-2xl mt-5 text-gray-800 dark:text-gray-400">
             Advanced artificial intelligence continuously monitors employee
@@ -38,19 +38,19 @@ export default function WelcomePage() {
               <div className="w-7 h-7 rounded-full bg-orange-900 ">
                 <CircleCheckBig className=" text-white mx-auto size-5 mt-1"></CircleCheckBig>
               </div>
-             <p className="text-gray-700">Real-time fraud detection & alerts</p>
+             <p className="text-gray-700 dark:text-[#fff]">Real-time fraud detection & alerts</p>
             </div>
             <div className="flex gap-3 py-2 lg:text-xl">
                <div className="w-7 h-7 rounded-full bg-orange-900 ">
                 <CircleCheckBig className=" text-white mx-auto size-5 mt-1"></CircleCheckBig>
               </div>
-              <p className="text-gray-700">99.2% accuracy in pattern recognition</p>
+              <p className="text-gray-700 dark:text-[#fff]">99.2% accuracy in pattern recognition</p>
             </div>
             <div className="flex gap-3 py-2 lg:text-xl">
               <div className="w-7 h-7 rounded-full bg-orange-900 ">
                 <CircleCheckBig className=" text-white mx-auto size-5 mt-1"></CircleCheckBig>
               </div>
-              <p className="text-gray-700">Designed for non-technical auditors</p>
+              <p className="text-gray-700 dark:text-[#fff]">Designed for non-technical auditors</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -147,21 +147,21 @@ export default function WelcomePage() {
             <div className="border-t-1 border-brand-100 mt-4 md:-mt-5">
               <div className="flex flex-col md:flex-row items-center justify-center gap-10 ">
                 <div>
-                  <p className="font-bold text-brand-500">10k+</p>
+                  <p className="font-bold text-brand-500 dark:text-gray-400">10k+</p>
                   <span className="text-sm text-brand-500 dark:text-gray-400">
                     Records/Day
                   </span>
                 </div>
 
                 <div>
-                  <p className="font-bold text-brand-500">2s</p>
+                  <p className="font-bold text-brand-500 dark:text-gray-400 ">2s</p>
                   <span className="text-sm text-brand-500 dark:text-gray-400">
                     Detection Time
                   </span>
                 </div>
 
                 <div>
-                  <p className="font-bold text-brand-500">24/7</p>
+                  <p className="font-bold text-brand-500 dark:text-gray-400">24/7</p>
                   <span className="text-sm text-brand-500 dark:text-gray-400">Monitoring</span>
                 </div>
               </div>

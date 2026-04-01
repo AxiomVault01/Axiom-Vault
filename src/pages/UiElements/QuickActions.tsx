@@ -1,5 +1,6 @@
 // npm install lucide-react
 
+import { Download, Search, File, Bell, CheckSquare } from "lucide-react";
 import { useNavigate } from "react-router";
 
 // import React from 'react';
@@ -120,28 +121,28 @@ const QuickActions = () => {
   const actions = [
     {
       id: 1,
-      icon: "🔍",
+      icon: <Search size={18}/>,
       label: "Run Full Audit",
       onClick: () => navigate('/reports'),
       bgColor: "#EFF6FF", // light blue
     },
     {
       id: 2,
-      icon: "⬇️",
+      icon: <Download size={18}/>,
       label: "Export Report",
       onClick: () => navigate('/reports'),
       bgColor: "#F9FAFB", // light gray
     },
     {
       id: 3,
-      icon: "📄",
+      icon: <File size={18}/>,
       label: "Generate Report",
       onClick: () => navigate('/reports'),
       bgColor: "#F9FAFB",
     },
     {
       id: 4,
-      icon: "🔔",
+      icon: <Bell size={18}/>,
       label: "Alert Settings",
       onClick: () => navigate('/settings'),
       bgColor: "#F9FAFB",
@@ -189,7 +190,7 @@ const QuickActions = () => {
             marginBottom: "4px",
           }}
         >
-          <span style={{ fontSize: "18px" }}>✅</span>
+          <span style={{ fontSize: "18px" }}><CheckSquare size={18} className="text-green-600"/></span>
           <span
             style={{ fontSize: "14px", fontWeight: "600", color: "#065F46" }}
           >

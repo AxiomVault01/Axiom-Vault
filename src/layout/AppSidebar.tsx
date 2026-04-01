@@ -16,13 +16,17 @@ import { useSidebar } from "../context/SidebarContext";
 import LogoutIcon from "../icons/Logout-ion";
 // import LogoutIcon from "../icons/logout-ion";
 import SettingsIcon from "../icons/Settings-icon";
+// import { Modal } from "../components/ui/modal";
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
-  badge?: { color: "primary" | "success" | "warning" | "danger"; content: string };
+  badge?: {
+    color: "primary" | "success" | "warning" | "danger";
+    content: string;
+  };
 };
 
 const navItems: NavItem[] = [
@@ -33,7 +37,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <AlertHexaIcon />,
-    name: "Risk Alerts", 
+    name: "Risk Alerts",
     path: "/alerts",
     badge: { color: "danger", content: "12" },
   },
@@ -68,22 +72,28 @@ const othersItems: NavItem[] = [
 ];
 
 const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const location = useLocation();
+  const {
+    isExpanded,
+    isMobileOpen,
+    isHovered,
+    setIsHovered,
+    openLogoutModal,
+    // closeLogoutModal,
+  } = useSidebar();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
+    {},
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // const isActive = (path: string) => location.pathname === path;
   const isActive = useCallback(
     (path: string) => location.pathname === path,
-    [location.pathname]
+    [location.pathname],
   );
 
   useEffect(() => {
@@ -122,19 +132,6 @@ const AppSidebar: React.FC = () => {
     }
   }, [openSubmenu]);
 
-  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
-    setOpenSubmenu((prevOpenSubmenu) => {
-      if (
-        prevOpenSubmenu &&
-        prevOpenSubmenu.type === menuType &&
-        prevOpenSubmenu.index === index
-      ) {
-        return null;
-      }
-      return { type: menuType, index };
-    });
-  };
-
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
       {items.map((nav, index) => (
@@ -151,9 +148,7 @@ const AppSidebar: React.FC = () => {
                   ? "lg:justify-center"
                   : "lg:justify-start"
               }`}
-              
             >
-              
               <span
                 className={`menu-item-icon-size  ${
                   openSubmenu?.type === menuType && openSubmenu?.index === index
@@ -177,27 +172,26 @@ const AppSidebar: React.FC = () => {
                 />
               )}
             </button>
-          ) : (
-            nav.path && (
-              <Link
-                to={nav.path}
-                className={`menu-item group ${
-                  isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+          ) : nav.path && nav.name !== "Logout" ? (
+            <Link
+              to={nav.path}
+              className={`menu-item group ${
+                isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+              }`}
+            >
+              <span
+                className={`menu-item-icon-size ${
+                  isActive(nav.path)
+                    ? "menu-item-icon-active"
+                    : "menu-item-icon-inactive"
                 }`}
               >
-                <span
-                  className={`menu-item-icon-size ${
-                    isActive(nav.path)
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
-                  }`}
-                >
-                  {nav.icon}
-                </span>
-                {(isExpanded || isHovered || isMobileOpen) && (
+                {nav.icon}
+              </span>
+              {(isExpanded || isHovered || isMobileOpen) && (
                 <>
                   <span className="menu-item-text">{nav.name}</span>
-                  
+
                   {/* DYNAMIC BADGE LOGIC START */}
                   {nav.badge && (
                     <span className="ml-auto">
@@ -209,9 +203,20 @@ const AppSidebar: React.FC = () => {
                   {/* DYNAMIC BADGE LOGIC END */}
                 </>
               )}
-              </Link>
-            )
-          )}
+            </Link>
+          ) : nav.name === "Logout" ? (
+            <button
+              onClick={openLogoutModal}
+              className={`menu-item group menu-item-inactive`}
+            >
+              <span className="menu-item-icon-size menu-item-icon-inactive">
+                {nav.icon}
+              </span>
+              {(isExpanded || isHovered || isMobileOpen) && (
+                <span className="menu-item-text">{nav.name}</span>
+              )}
+            </button>
+          ) : null}
           {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
             <div
               ref={(el) => {
@@ -279,8 +284,8 @@ const AppSidebar: React.FC = () => {
           isExpanded || isMobileOpen
             ? "w-[290px]"
             : isHovered
-            ? "w-[290px]"
-            : "w-[90px]"
+              ? "w-[290px]"
+              : "w-[90px]"
         }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
@@ -312,7 +317,7 @@ const AppSidebar: React.FC = () => {
             </>
           ) : (
             <img
-              src="/images/dashboard/logo-icon.png"
+              src="/public/logo-icon-nbg.png"
               alt="Logo"
               width={40}
               height={32}
