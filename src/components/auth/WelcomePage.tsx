@@ -3,6 +3,7 @@ import { Brain, Database, TriangleAlert, ChartColumn, FileSearch, CircleCheckBig
 import { GroupIcon } from "../../icons";
 import Button from "../ui/button/Button";
 import logo from "../../../public/logo.png";
+import logob from "../../../public/AXIOM _VAULT_B.png"
 
 const lgImage = {
   width: "175px",
@@ -15,7 +16,8 @@ export default function WelcomePage() {
       <header>
         <div className="flex items-center space-x-2 p-5">
           <div className="">
-            <img src={logo} style={lgImage} alt="Logo" />
+            <img src={logo} style={lgImage} alt="Logo" className="dark:hidden" />
+            <img src={logob} style={lgImage} alt="Logo" className="hidden dark:block" />
           </div>
         </div>
       </header>

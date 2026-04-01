@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { CheckLineIcon } from "../../icons";
-import Logo from "../../../public/Logo.jpg";
+import logo from "../../../public/Logo.jpg";
+import logob from "../../../public/AXIOM _VAULT_B.png";
 import Button from "../ui/button/Button";
 
 
@@ -20,7 +21,8 @@ export default function ResetPasswordSuccessfulPage() {
     <div  className="flex flex-col flex-1 w-full mx-auto overflow-hidden h-screen">
       <header>
         <div className="p-5">
-          <img src={Logo} style={lgImage} alt="Logo" />
+          <img src={logo} style={lgImage} alt="Logo" className="dark:hidden" />
+            <img src={logob} style={lgImage} alt="Logo" className="hidden dark:block" />
         </div>
      </header>
 

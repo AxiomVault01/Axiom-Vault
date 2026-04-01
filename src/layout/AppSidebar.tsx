@@ -309,7 +309,7 @@ const AppSidebar: React.FC = () => {
               />
               <img
                 className="hidden dark:block"
-                src="/public/Logo.jpg"
+                src="/public/AXIOM _VAULT_B.png"
                 alt="Logo"
                 width={170}
                 height={40}

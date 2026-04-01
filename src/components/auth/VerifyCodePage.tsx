@@ -4,7 +4,8 @@ import { Link } from "react-router";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
 import { ChevronLeftIcon } from "../../icons";
-import Logo from "../../../public/Logo.jpg";
+import logo from "../../../public/Logo.jpg";
+import logob from "../../../public/AXIOM _VAULT_B.png";
 import { KeyRound } from "lucide-react";
 
 const lgImage = {
@@ -75,7 +76,8 @@ export default function VerifyCodePage() {
     <div className="flex flex-col flex-1 w-full mx-auto">
       <header>
         <div className="p-5">
-          <img src={Logo} style={lgImage} alt="Logo" />
+            <img src={logo} style={lgImage} alt="Logo" className="dark:hidden" />
+            <img src={logob} style={lgImage} alt="Logo" className="hidden dark:block" />
         </div>
       </header>
 
