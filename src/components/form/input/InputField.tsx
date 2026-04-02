@@ -73,7 +73,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
         disabled={disabled}
         required={required}
         className={inputClasses}
-        required
       />
 
       {hint && (

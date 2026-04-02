@@ -3,7 +3,7 @@ import Card from "../../components/settings/Card";
 import Input from "../../components/settings/Input";
 import Select from "../../components/settings/Select";
 import Toggle from "../../components/settings/Toggle";
-import { User, Bell, ChevronRight, Download, Trash2, Lock, Database } from "lucide-react";
+import { User, Bell, Download, Trash2, Lock, Database } from "lucide-react";
 
 function Settings() {
   const [criticalAlerts, setCriticalAlerts] = useState(true);

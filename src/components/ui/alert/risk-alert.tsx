@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 
 export default function RiskAlert() {
-  const [riskMsg, setRiskMsg] = useState(
+  const [riskMsg] = useState(
     "12 suspicious activities including duplicate bank accounts and unusual payment patterns. Immediate review recommended.",
   );
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import Badge from "../components/ui/badge/Badge";
 
 // Assume these icons are imported from an icon library
@@ -14,9 +14,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import LogoutIcon from "../icons/Logout-ion";
-// import LogoutIcon from "../icons/logout-ion";
 import SettingsIcon from "../icons/Settings-icon";
-// import { Modal } from "../components/ui/modal";
 
 type NavItem = {
   name: string;
@@ -131,6 +129,14 @@ const AppSidebar: React.FC = () => {
       }
     }
   }, [openSubmenu]);
+// added this fix for the handleSubmenuToggle
+  const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
+    if (openSubmenu?.type === menuType && openSubmenu?.index === index) {
+      setOpenSubmenu(null);
+    } else {
+      setOpenSubmenu({ type: menuType, index });
+    }
+  };
 
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
@@ -318,14 +324,14 @@ const AppSidebar: React.FC = () => {
           ) : (
             <>
               <img
-              className="dark:hidden"
+                className="dark:hidden"
                 src="/public/logo-icon-nbg.png"
                 alt="Logo"
                 width={40}
                 height={32}
               />
               <img
-              className="dark:block hidden"
+                className="dark:block hidden"
                 src="/public/AXIOM_VAULT_c.png"
                 alt="Logo"
                 width={40}
