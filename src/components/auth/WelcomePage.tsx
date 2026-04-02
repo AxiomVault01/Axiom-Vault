@@ -147,24 +147,24 @@ export default function WelcomePage() {
               </div>
             </dl>
             <div className="border-t-1 border-brand-100 mt-4 md:-mt-5">
-              <div className="flex flex-col md:flex-row items-center justify-center gap-10 ">
+              <div className="flex md:flex-row items-center gap-10 justify-center mt-2 ">
                 <div>
-                  <p className="font-bold text-brand-500 dark:text-gray-400">10k+</p>
-                  <span className="text-sm text-brand-500 dark:text-gray-400">
+                  <p className="font-bold text-brand-500 dark:text-gray-400 text-xs md:text-md">10k+</p>
+                  <span className="text-xs text-brand-500 dark:text-gray-400">
                     Records/Day
                   </span>
                 </div>
 
                 <div>
-                  <p className="font-bold text-brand-500 dark:text-gray-400 ">2s</p>
-                  <span className="text-sm text-brand-500 dark:text-gray-400">
+                  <p className="font-bold text-brand-500 dark:text-gray-400 text-xs md:text-md">2s</p>
+                  <span className="text-xs text-brand-500 dark:text-gray-400">
                     Detection Time
                   </span>
                 </div>
 
                 <div>
-                  <p className="font-bold text-brand-500 dark:text-gray-400">24/7</p>
-                  <span className="text-sm text-brand-500 dark:text-gray-400">Monitoring</span>
+                  <p className="font-bold text-brand-500 dark:text-gray-400 text-xs md:text-md">24/7</p>
+                  <span className="text-xs text-brand-500 dark:text-gray-400">Monitoring</span>
                 </div>
               </div>
             </div>
@@ -173,8 +173,7 @@ export default function WelcomePage() {
       </section>
       <footer className="bg-white p-5 text-brand-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-300">
         <p>
-          © 2026 Risk Command Center. Built for Government & Financial
-          Institutions.
+          © {new Date().getFullYear()} Risk Command Center. Built for Government & Financial Institutions.
         </p>
       </footer>
     </div>

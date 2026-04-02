@@ -308,14 +308,14 @@ const AppSidebar: React.FC = () => {
             <>
               <img
                 className="dark:hidden"
-                src="/public/full-logo-nbg.png"
+                src="/full-logo-nbg.png"
                 alt="Logo"
                 width={170}
                 height={40}
               />
               <img
                 className="hidden dark:block"
-                src="/public/AXIOM _VAULT_B.png"
+                src="/AXIOM _VAULT_B.png"
                 alt="Logo"
                 width={170}
                 height={40}
@@ -332,7 +332,7 @@ const AppSidebar: React.FC = () => {
               />
               <img
                 className="dark:block hidden"
-                src="/public/AXIOM_VAULT_c.png"
+                src="/AXIOM_VAULT_c.png"
                 alt="Logo"
                 width={40}
                 height={32}
