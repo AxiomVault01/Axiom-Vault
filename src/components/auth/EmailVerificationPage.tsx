@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
-import { KeyRound } from "lucide-react";
 import { ChevronLeftIcon, CheckLineIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -9,6 +8,7 @@ import Button from "../ui/button/Button";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
+import MessageModal from "../shared/MessageModal";
 
 
 const bgImage = {
@@ -32,6 +32,18 @@ export default function EmailVerificationPage() {
     const navigate = useNavigate();
     const inputRefs = useRef<HTMLInputElement[]>([]);
     const [timeLeft, setTimeLeft] = useState(60);
+   
+
+     const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+  // const seen = localStorage.getItem("modalShown");
+
+  if (!isOpen) {
+    setIsOpen(true);
+    // localStorage.setItem("modalShown", "true");
+  }
+}, []);
 
     useEffect(() => {
       if (timeLeft > 0) {
@@ -106,18 +118,8 @@ export default function EmailVerificationPage() {
                       </p>
                   </div>
                   <div className="p-5 pt-0">
-                      <div className="px-2 md:px-4 py-1 mb-5 w-full mt-2 text-sm text-white bg-brand-50 dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border rounded-lg">
-                          <div className="flex text-left gap-3">
-                               <span className="mt-1 text-brand-500 dark:text-white">
-                                 <KeyRound className="size-5"></KeyRound>
-                               </span>
-                               <span>
-                                  <p className="text-black font-semibold dark:text-white">Check Your Email</p>
-                                  <p className="text-gray-700 dark:text-gray-100">
-                                     We sent a 6-digit verification code to <span className="text-black font-semibold dark:text-white">janedoe@gmail.com</span> Didn't receive it?  {timeLeft > 0 ? `Resend in ${timeLeft} seconds` : <button onClick={handleResend} className="text-brand-500 font-semibold cursor-pointer dark:text-white">Resend Code</button>}
-                                  </p>
-                              </span>
-                          </div>
+                      <div className="">
+                         <MessageModal isOpen={isOpen} onClose={() => setIsOpen(false)} count="We sent a 6-digit verification code to" />
                       </div>
                        <form onSubmit={handleSubmit}>
                            <div className="space-y-4">
@@ -151,6 +153,11 @@ export default function EmailVerificationPage() {
                                    <CheckLineIcon></CheckLineIcon>
                                     Verify Code
                                </Button>
+                          </div>
+                          <div className="text-center mt-3">
+                             <p className="dark:text-white text-brand-500">
+                              {timeLeft > 0 ? `Resend in ${timeLeft} seconds` : <button onClick={handleResend} className="text-brand-500 font-semibold cursor-pointer dark:text-white">Resend Code</button>}
+                             </p>
                           </div>
                        </form>
                        <div className="mt-6 flex justify-center">

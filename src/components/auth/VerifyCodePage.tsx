@@ -7,6 +7,7 @@ import { ChevronLeftIcon } from "../../icons";
 import logo from "../../../public/Logo.jpg";
 import logob from "../../../public/AXIOM _VAULT_B.png";
 import { KeyRound } from "lucide-react";
+import MessageModal from "../shared/MessageModal";
 
 const lgImage = {
   width: "175px",
@@ -17,6 +18,18 @@ export default function VerifyCodePage() {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [error, setError] = useState("");
   const [timeLeft, setTimeLeft] = useState(60);
+
+
+   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+  // const seen = localStorage.getItem("modalShown");
+
+  if (!isOpen) {
+    setIsOpen(true);
+    // localStorage.setItem("modalShown", "true");
+  }
+}, []);
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -92,20 +105,8 @@ export default function VerifyCodePage() {
             </p>
           </div>
 
-          <div className="flex text-left gap-3  bg-blue-200/40 w-[350px] m-auto rounded-lg p-3 border-2 border-brand-200" >
-            <span className="mt-1 text-brand-500 dark:text-white">
-              <KeyRound className="size-5"></KeyRound>
-            </span>
-            <span>
-              <p className="text-black font-semibold dark:text-white text-sm mb-1">
-                Check Your Email
-              </p>
-              <p className="text-gray-700 dark:text-gray-100 text-xs">
-                We sent a 6-digit verification code to your mail. Didn't receive
-                it?{" "}
-               
-              </p>
-            </span>
+          <div className="" >
+           <MessageModal isOpen={isOpen} onClose={() => setIsOpen(false)} count="We sent a 4-digit verification code to" />
           </div>
 
           <div className="p-5">
