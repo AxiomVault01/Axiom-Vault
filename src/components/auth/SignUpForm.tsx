@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
-import { CircleCheckBig } from "lucide-react";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon, UserIcon, LockIcon} from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -10,6 +9,7 @@ import Checkbox from "../form/input/Checkbox";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
+import { SuccessMessageModal } from "../shared/MessageModal";
 
 
 const bgImage = {
@@ -30,6 +30,12 @@ export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+
+   const [isOpen, setIsOpen] = useState(false);
+  
+    useEffect(() => {
+      setIsOpen(true);
+  }, []);
   
   const [formData, setFormData] = useState({
   fullName: "",
@@ -127,18 +133,9 @@ export default function SignUpForm() {
               </p>
             </div>
             <div className="p-5">
-              <div className="px-2 md:px-4 py-1 mb-5 w-full text-sm text-white bg-gray-100 dark:bg-gray-500/20 border-orange-500 dark:border-orange-400 border rounded-lg">
-                <div className="flex text-left gap-3">
-                  <span className="mt-1 text-brand-500">
-                    <CircleCheckBig className="w-5 h-5 text-orange-900"></CircleCheckBig>
-                  </span>
-                  <span>
-                    <p className="text-black font-semibold">Email Verified!</p>
-                    <p className="text-gray-700 dark:text-gray-300 font-light">
-                      Your email <span className="text-black font-semibold">janedoe@gmail.com</span> has been verified. Complete your registration below.
-                    </p>
-                 </span>
-               </div>
+              {/* email verified modal */}
+              <div className="">
+                <SuccessMessageModal isOpen={isOpen} onClose={() => setIsOpen(false)}/>
              </div>
               
               <form onSubmit={handleSubmit}>

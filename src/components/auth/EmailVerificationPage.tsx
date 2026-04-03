@@ -114,7 +114,9 @@ export default function EmailVerificationPage() {
                   </div>
                   <div className="p-5 pt-0">
                       <div className="">
-                         <MessageModal isOpen={isOpen} onClose={() => setIsOpen(false)} count="We sent a 6-digit verification code to" />
+                         <MessageModal isOpen={isOpen} onClose={() => setIsOpen(false)} count="We sent a 6-digit verification code to" 
+                          change_mail="Not the correct email?" 
+                          actionlink={<Link to="/email-required">Change email address </Link>} />
                       </div>
                        <form onSubmit={handleSubmit}>
                            <div className="space-y-4">
