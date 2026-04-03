@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { Link } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon, UserIcon, LockIcon} from "../../icons";
 import Label from "../form/Label";
@@ -9,7 +9,7 @@ import Checkbox from "../form/input/Checkbox";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
-import { SuccessMessageModal } from "../shared/MessageModal";
+import { SuccessMessageModal, ErrorMessageModal } from "../shared/MessageModal";
 
 
 const bgImage = {
@@ -29,7 +29,7 @@ const BiImage = {
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
    const [isOpen, setIsOpen] = useState(false);
   
@@ -101,7 +101,7 @@ export default function SignUpForm() {
 
   if (validateForm()) {
     console.log("Form submitted", formData);
-    navigate("/signin");
+      setIsOpen(true);
    }
   };
 
@@ -264,6 +264,7 @@ export default function SignUpForm() {
                      Create Account
                    </Button>
                     
+                    {isOpen && <ErrorMessageModal isOpen={isOpen} onClose={() => setIsOpen(false)} />}
                   </div>
                 </div>
               </form>
@@ -274,11 +275,13 @@ export default function SignUpForm() {
                 </p>
               </div>
               <div className="mt-4">
-                <Link to="/signin">
-                  <Button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 hover:border-gray-400 dark:hover:text-gray-900 dark:text-gray-100">
-                    Sign In
-                  </Button>
-                </Link>
+                
+                  <Link to="/signin">
+                    <Button  className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 hover:border-gray-400 dark:hover:text-gray-900 dark:text-gray-100">
+                      Sign In
+                    </Button>
+                  </Link>
+               
               </div>
             </div>
           </div>
