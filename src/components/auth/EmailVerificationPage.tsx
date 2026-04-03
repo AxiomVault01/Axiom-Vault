@@ -37,12 +37,7 @@ export default function EmailVerificationPage() {
      const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-  const seen = localStorage.getItem("modalShown");
-
-  if (!seen) {
     setIsOpen(true);
-    localStorage.setItem("modalShown", "true");
-  }
 }, []);
 
     useEffect(() => {
