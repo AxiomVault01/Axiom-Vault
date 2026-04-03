@@ -24,7 +24,7 @@ export default function MessageModal({
           className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           onClick={onClose}
         />
-        <div className="relative z-10 flex flex-col  text-left gap-4 p-6 bg-brand-50 dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border-2 rounded-lg shadow-lg ">
+        <div className="relative z-10 flex flex-col  text-left gap-4 p-6 bg-[#fff] dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border-2 rounded-lg shadow-lg ">
           <div className="absolute top-2 right-2 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200  rounded-full p-1">
             <X size={18} onClick={onClose} />
           </div>
@@ -56,6 +56,7 @@ export default function MessageModal({
   );
 }
 
+// SUCCESS MODAL 
 export const SuccessMessageModal = ({ isOpen, onClose }: ModalProps) => {
     if (!isOpen) return null;
   return (
@@ -65,7 +66,7 @@ export const SuccessMessageModal = ({ isOpen, onClose }: ModalProps) => {
           className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           onClick={onClose}
         />
-        <div className="relative z-10 flex flex-col  text-left gap-4 p-6 bg-brand-50 dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border-2 rounded-lg shadow-lg ">
+        <div className="relative z-10 flex flex-col text-left gap-4 p-6 bg-[#fff] dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border-2 rounded-lg shadow-lg ">
           <div className="absolute top-2 right-2 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200  rounded-full p-1">
             <X size={18} onClick={onClose} />
           </div>

@@ -245,12 +245,12 @@ export default function SignUpForm() {
                     />
                     <p className="inline-block font-normal text-sm text-brand-800 dark:text-gray-400">
                       I agree to the{" "}
-                      <span className="text-error-500 dark:text-brand-500">
-                        <a href="/">Terms and Conditions,</a>
+                      <span className="text-error-500 dark:text-error-500">
+                        <Link to="/">Terms and Conditions,</Link>
                       </span>{" "}
                       and{" "}
-                      <span className="text-error-500 dark:text-brand-500">
-                        <a href="/">Privacy Policy </a>
+                      <span className="text-error-500 dark:text-error-500">
+                        <Link to="/">Privacy Policy </Link>
                       </span>{" "}
                       and confirm that this account is for official government
                       or institutional use.

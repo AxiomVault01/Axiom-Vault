@@ -28,13 +28,13 @@ export default function ResetPasswordSuccessfulPage() {
 
       {isOpen && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-          <div className="bg-white p-8 px-50 rounded-lg shadow-xl">
+          <div className="bg-white p-8 px-10 rounded-lg shadow-xl">
             <div className="w-18 h-18 bg-white rounded-full flex mx-auto items-center justify-center shadow-xl -mt-20">
               <CheckLineIcon className="size-10 bg-brand-500 p-2 text-white rounded-full"></CheckLineIcon>
 
             </div>
             <h2 className="text-2xl font-bold mt-5 mb-4 text-center">Done!</h2>
-            <p className="mb-6">Your password has been reset successfully!</p>
+            <p className="mb-6 text-center">Your password has been reset successfully!</p>
             <Link  to="/signin" className="text-sm ">
              <Button 
                onClick={() => setIsOpen(false)}

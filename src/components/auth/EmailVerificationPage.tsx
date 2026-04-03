@@ -130,6 +130,7 @@ export default function EmailVerificationPage() {
                                         key={index}
                                         type="text"
                                         value={digit}
+                                        inputMode="numeric"
                                         onChange={(e) => handleInputChange(e, index)}
                                         onKeyDown={(e) => handleKeyDown(e, index)}
                                         maxLength={1}
