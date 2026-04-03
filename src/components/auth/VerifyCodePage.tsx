@@ -6,7 +6,6 @@ import Button from "../ui/button/Button";
 import { ChevronLeftIcon } from "../../icons";
 import logo from "../../../public/Logo.jpg";
 import logob from "../../../public/AXIOM _VAULT_B.png";
-import { KeyRound } from "lucide-react";
 import MessageModal from "../shared/MessageModal";
 
 const lgImage = {
@@ -23,11 +22,11 @@ export default function VerifyCodePage() {
    const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-  // const seen = localStorage.getItem("modalShown");
+  const seen = localStorage.getItem("modalShown");
 
   if (!isOpen) {
     setIsOpen(true);
-    // localStorage.setItem("modalShown", "true");
+    localStorage.setItem("modalShown", "true");
   }
 }, []);
 
