@@ -19,7 +19,7 @@ const Toast = ({ message, isVisible, onClose }: ToastProps) => {
       className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 transition-transform duration-300 ${
         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
       } z-50`}>
- <div className="bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+ <div className="bg-brand-500 text-white px-4 py-2 rounded shadow-lg">
         {message}
       </div>
       </div>

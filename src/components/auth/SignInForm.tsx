@@ -200,7 +200,7 @@ export default function SignInForm() {
           </div>
         </div>
       </div>
-      <Toast message="Login successful!" isVisible={showToast} onClose={() => setShowToast(false)} />
+      <Toast message=" Login successful! 🎉" isVisible={showToast} onClose={() => setShowToast(false)} />
     </div>
   );
 }
