@@ -6,6 +6,7 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
+import Toast from "../ui/Toast";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
@@ -27,6 +28,7 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+  const [showToast, setShowToast] = useState(false);
 
   const [formData, setFormData] = useState({
   email: "",
@@ -74,7 +76,10 @@ export default function SignInForm() {
   e.preventDefault();
   if (validateForm()) {
     console.log("Form submitted", formData);
-    navigate("/dashboard"); 
+    setShowToast(true);
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 3000);
   }
  };
 
@@ -195,6 +200,7 @@ export default function SignInForm() {
           </div>
         </div>
       </div>
+      <Toast message="Login successful!" isVisible={showToast} onClose={() => setShowToast(false)} />
     </div>
   );
 }

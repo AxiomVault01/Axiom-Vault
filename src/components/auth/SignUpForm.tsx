@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Link } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon, UserIcon, LockIcon} from "../../icons";
 import Label from "../form/Label";
@@ -9,7 +9,7 @@ import Checkbox from "../form/input/Checkbox";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
-import { SuccessMessageModal, ErrorMessageModal } from "../shared/MessageModal";
+import { ErrorMessageModal } from "../shared/MessageModal";
 
 
 const bgImage = {
@@ -29,80 +29,84 @@ const BiImage = {
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-   const [isOpen, setIsOpen] = useState(false);
-  
-    useEffect(() => {
-      setIsOpen(true);
-  }, []);
-  
+  const [isOpen, setIsOpen] = useState(false);
+
+  //   useEffect(() => {
+  //     setIsOpen(true);
+  // }, []);
+
   const [formData, setFormData] = useState({
-  fullName: "",
-  password: "",
-  confirmPassword: "",
+    fullName: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({
-  fullName: "",
-  password: "",
-  confirmPassword: "",
-  checkbox: "",
-
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setFormData({
-    ...formData,
-    [e.target.name]: e.target.value,
-  });
-  };
-
-  const validateForm = () => {
-  const newErrors = {
     fullName: "",
     password: "",
     confirmPassword: "",
     checkbox: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const fullNamePattern = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
-  if (!formData.fullName.trim()) {
-    newErrors.fullName = "Full name is required";
-  } else if (!fullNamePattern.test(formData.fullName.trim())) {
-    newErrors.fullName = "Please enter your first, middle and last name, letters only";
-  }
+  const validateForm = () => {
+    const newErrors = {
+      fullName: "",
+      password: "",
+      confirmPassword: "",
+      checkbox: "",
+    };
 
-  const passwordPattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+    const fullNamePattern = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
+    } else if (!fullNamePattern.test(formData.fullName.trim())) {
+      newErrors.fullName =
+        "Please enter your first, middle and last name, letters only";
+    }
 
-  if (!passwordPattern.test(formData.password)) {
-    newErrors.password =
-    "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
-  }
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-  if (formData.password !== formData.confirmPassword) {
-  newErrors.confirmPassword = "Passwords do not match";
-  }
+    if (!passwordPattern.test(formData.password)) {
+      newErrors.password =
+        "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
+    }
 
-  if (!isChecked) {
-    newErrors.checkbox =
-    "You must agree to the Terms & Conditions and Privacy Policy, and confirm government or institutional official use before creating an account.";
-  }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
 
-  setErrors(newErrors);
+    if (!isChecked) {
+      newErrors.checkbox =
+        "You must agree to the Terms & Conditions and Privacy Policy, and confirm government or institutional official use before creating an account.";
+    }
 
-  return Object.values(newErrors).every((error) => error === "");
+    setErrors(newErrors);
 
- };
+    return Object.values(newErrors).every((error) => error === "");
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (validateForm()) {
-    console.log("Form submitted", formData);
+    if (validateForm()) {
+      console.log("Form submitted", formData);
       setIsOpen(true);
-   }
+    }
+  };
+  // close modal and navigate
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    navigate("/signin");
   };
 
   return (
@@ -121,8 +125,18 @@ export default function SignUpForm() {
           <div className="bg-white rounded-t-lg dark:border-gray-800 dark:bg-gray-900 rounded-lg">
             <div className="mb-5 sm:mb-3 p-8 bg-brand-500 rounded-t-lg">
               <div className="w-12 h-12 mb-3 bg-white dark:bg-gray-900 rounded-lg mx-auto p-1">
-               <img src={Bicon} style={BiImage} className="mx-auto dark:hidden" alt="Brand Icon" />
-              <img src={Biconw} style={BiImage} className="mx-auto hidden dark:block" alt="Brand Icon" />
+                <img
+                  src={Bicon}
+                  style={BiImage}
+                  className="mx-auto dark:hidden"
+                  alt="Brand Icon"
+                />
+                <img
+                  src={Biconw}
+                  style={BiImage}
+                  className="mx-auto hidden dark:block"
+                  alt="Brand Icon"
+                />
               </div>
 
               <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
@@ -135,9 +149,9 @@ export default function SignUpForm() {
             <div className="p-5">
               {/* email verified modal */}
               <div className="">
-                <SuccessMessageModal isOpen={isOpen} onClose={() => setIsOpen(false)}/>
-             </div>
-              
+                {/* <SuccessMessageModal isOpen={isOpen} onClose={() => setIsOpen(false)}/> */}
+              </div>
+
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   <div className="sm:col-span-1">
@@ -145,8 +159,17 @@ export default function SignUpForm() {
                       Full Name
                     </Label>
                     <div className="relative w-full max-w-md">
-                      <UserIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></UserIcon>
-                      <Input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleChange}  placeholder="First & Last Name" required className="w-full pl-10 pr-4 py-2" />
+                      <UserIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></UserIcon>
+                      <Input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        placeholder="First & Last Name"
+                        required
+                        className="w-full pl-10 pr-4 py-2"
+                      />
                     </div>
                     {errors.fullName && (
                       <p className="text-red-500 text-sm">{errors.fullName}</p>
@@ -191,10 +214,17 @@ export default function SignUpForm() {
                     <Label className="text-brand-800">Password</Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
-                        <Input className="w-full pl-10 pr-4 py-2" name="password" value={formData.password} onChange={handleChange} required placeholder="Enter Your Password"
-                        type={showPassword ? "text" : "password"} />
-                     </div>
+                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></LockIcon>
+                        <Input
+                          className="w-full pl-10 pr-4 py-2"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          required
+                          placeholder="Enter Your Password"
+                          type={showPassword ? "text" : "password"}
+                        />
+                      </div>
                       <span
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -217,10 +247,17 @@ export default function SignUpForm() {
                     </Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
-                        <Input className="w-full pl-10 pr-4 py-2" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required placeholder="Confirm Your Password"
-                        type={showPassword ? "text" : "password"} />
-                     </div>
+                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></LockIcon>
+                        <Input
+                          className="w-full pl-10 pr-4 py-2"
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          required
+                          placeholder="Confirm Your Password"
+                          type={showPassword ? "text" : "password"}
+                        />
+                      </div>
                       <span
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -233,7 +270,9 @@ export default function SignUpForm() {
                       </span>
                     </div>
                     {errors.password && (
-                      <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+                      <p className="text-red-500 text-sm">
+                        {errors.confirmPassword}
+                      </p>
                     )}
                   </div>
 
@@ -257,14 +296,24 @@ export default function SignUpForm() {
                     </p>
                   </div>
                   {errors.checkbox && (
-                    <p className="text-red-500 text-sm ml-8">{errors.checkbox}</p>
+                    <p className="text-red-500 text-sm ml-8">
+                      {errors.checkbox}
+                    </p>
                   )}
                   <div>
-                   <Button type="submit" className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6">
-                     Create Account
-                   </Button>
-                    
-                    {isOpen && <ErrorMessageModal isOpen={isOpen} onClose={() => setIsOpen(false)} />}
+                    <Button
+                      type="submit"
+                      className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
+                    >
+                      Create Account
+                    </Button>
+
+                    {
+                      <ErrorMessageModal
+                        isOpen={isOpen}
+                        onClose={handleCloseModal}
+                      />
+                    }
                   </div>
                 </div>
               </form>
@@ -275,13 +324,11 @@ export default function SignUpForm() {
                 </p>
               </div>
               <div className="mt-4">
-                
-                  <Link to="/signin">
-                    <Button  className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 hover:border-gray-400 dark:hover:text-gray-900 dark:text-gray-100">
-                      Sign In
-                    </Button>
-                  </Link>
-               
+                <Link to="/signin">
+                  <Button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 hover:border-gray-400 dark:hover:text-gray-900 dark:text-gray-100">
+                    Sign In
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
