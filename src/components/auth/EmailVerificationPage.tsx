@@ -8,7 +8,7 @@ import Button from "../ui/button/Button";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
-import MessageModal, { SuccessMessageModal } from "../shared/MessageModal";
+import { SuccessMessageModal } from "../shared/MessageModal";
 
 
 const bgImage = {
