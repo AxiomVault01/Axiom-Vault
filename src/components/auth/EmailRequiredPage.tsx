@@ -109,31 +109,6 @@ export default function EmailRequiredPage() {
             </div>
 
             <div className="p-5 pt-0 ">
-              {/* <div className="px-2 md:px-4 py-1 mb-5 w-full mt-2 text-sm text-white bg-gray-100 dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border rounded-lg">
-                <div className="flex text-left gap-3">
-                 <span className="mt-1 text-brand-500">
-                    <MailIcon className="w-5 h-5"></MailIcon>
-                 </span>
-                 <span>
-                   <p className="text-black font-semibold dark:text-white"> Email Verification Required</p>
-                   <p className="text-gray-700 dark:text-gray-100 font-light">
-                      We'll send a verification code to your email address to ensure security and authenticity.
-                   </p>
-                 </span>
-               </div>
-             </div> */}
-              {/* <div className="">
-                <MessageModal
-                  isOpen={isOpen}
-                  onClose={() => setIsOpen(false)}
-                  count="We sent a 6-digit verification code to"
-                  change_mail="Not the correct email?"
-                  actionlink={
-                    <Link to="/email-required">Change email address </Link>
-                  }
-                />
-              </div> */}
-
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   <Label className="text-brand-800 dark:text-white/90">
@@ -173,7 +148,7 @@ export default function EmailRequiredPage() {
                         count="We sent a 6-digit verification code to"
                         change_mail="Not the correct email?"
                         actionlink={
-                          <Link to="/email-required">
+                          <Link to="#" onClick={() => handleCloseModal() }>
                             Change email address{" "}
                           </Link>
                         }

@@ -51,6 +51,7 @@ export default function MessageModal({
               {change_mail} {actionlink}
             </p>
           </span>
+          <button onClick={onClose} type="button" className="bg-brand-500 text-md py-2 rounded-lg w-fit px-8 m-auto dark:bg-white dark:text-brand-500 cursor-pointer">ok</button>
         </div>
       </div>
     </div>
