@@ -27,21 +27,17 @@ const BiImage = {
 export default function EmailRequiredPage() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-
-  const [formData, setFormData] = useState({
-    email: "",
-  });
-
+  const [email, setEmail] = useState<string>("");
   const [errors, setErrors] = useState({
     email: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setFormData({
+  //     ...formData,
+  //     [e.target.name]: e.target.value,
+  //   });
+  // };
 
   const validateForm = () => {
     const newErrors = {
@@ -49,7 +45,7 @@ export default function EmailRequiredPage() {
     };
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(formData.email)) {
+    if (!emailPattern.test(email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
@@ -60,14 +56,15 @@ export default function EmailRequiredPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Form submitted", formData);
-      
-      setIsOpen(true)
+      console.log("Form submitted", email);
+
+      setIsOpen(true);
+      setEmail("");
     }
   };
   const handleCloseModal = () => {
-     setIsOpen(false);
-     navigate("/email-verification");
+    setIsOpen(false);
+    navigate("/email-verification");
   };
 
   return (
@@ -120,8 +117,8 @@ export default function EmailRequiredPage() {
                       type="email"
                       id="email"
                       name="email"
-                      value={formData.email}
-                      onChange={handleChange}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="auditor@agency.gov"
                       required
                       className="w-full pl-10 pr-4 py-2"
@@ -148,7 +145,7 @@ export default function EmailRequiredPage() {
                         count="We sent a 6-digit verification code to"
                         change_mail="Not the correct email?"
                         actionlink={
-                          <Link to="#" onClick={() => handleCloseModal() }>
+                          <Link to="#" onClick={() => handleCloseModal()}>
                             Change email address{" "}
                           </Link>
                         }
