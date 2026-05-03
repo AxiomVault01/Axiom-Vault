@@ -1,50 +1,61 @@
-import SummaryCard from "../../components/employeerecardcomponents/SummaryCard";
-import EmployeeTable from "../../components/employeerecardcomponents/EmployeeTable";
-import { Users, AlertTriangle, CheckCircle, Filter } from "lucide-react";
+import React, { useState } from "react";
+import FileUploadPage, { EmployeeRecord } from "./FileUploadPage";
+import ValidationResultsPage from "./ValidationResultsPage";
+import FinalRecords from "./FinalRecords";
 
-const EmployeeRecords = () => {
+type FlowStep = "upload" | "validation" | "records";
+
+export default function EmployeeRecords() {
+  const [step, setStep] = useState<FlowStep>("upload");
+  const [records, setRecords] = useState<EmployeeRecord[]>([]);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+  const handleValidationComplete = (data: EmployeeRecord[], file: File) => {
+    setRecords(data);
+    setUploadedFile(file);
+    setStep("validation");
+  };
+
+  const handleUploadToRecords = () => {
+    // Filter only validated records before sending to backend
+    const validRecords = records.filter((r) => r.status === "Validated");
+    console.log("Uploading to records:", validRecords);
+
+    // TODO: POST validRecords to your API endpoint, e.g.:
+    // await fetch("/api/employee-records", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(validRecords),
+    // });
+
+    setStep("records");
+  };
+
+  const handleCancelReupload = () => {
+    setRecords([]);
+    setUploadedFile(null);
+    setStep("upload");
+  };
+
+  if (step === "upload") {
+    return <FileUploadPage onValidationComplete={handleValidationComplete} />;
+  }
+
+  if (step === "validation" && uploadedFile) {
+    return (
+      <ValidationResultsPage
+        records={records}
+        file={uploadedFile}
+        onUploadToRecords={handleUploadToRecords}
+        onCancelReupload={handleCancelReupload}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 flex max-w-full dark:bg-black overflow-auto xl:overflow-hidden">
-      
-
-      <main className="flex-1 flex flex-col">
-        
-
-        <div className="p-4 md:p-8 space-y-6">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <SummaryCard
-              icon={<Users size={18} />}
-              value="8"
-              label="Total Employees"
-              bg="bg-brand-500/10 bg-brand-500"
-            />
-            <SummaryCard
-              icon={<AlertTriangle size={18} />}
-              value="5"
-              label="Flagged Records"
-              bg="bg-red-100 text-red-600"
-            />
-            <SummaryCard
-              icon={<CheckCircle size={18} />}
-              value="3"
-              label="Verified Clean"
-              bg="bg-green-100 text-green-600"
-            />
-            <SummaryCard
-              icon={<Filter size={18} />}
-              value="0"
-              label="Under Review"
-              bg="bg-gray-100 text-gray-600"
-            />
-          </div>
-
-          {/* Table */}
-          <EmployeeTable />
-        </div>
-      </main>
-    </div>
+    <FinalRecords
+      records={records}
+      onUploadFile={handleCancelReupload}
+    />
   );
-};
-
-export default EmployeeRecords;
+}
