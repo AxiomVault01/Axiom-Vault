@@ -1,50 +1,93 @@
-import SummaryCard from "../../components/employeerecardcomponents/SummaryCard";
-import EmployeeTable from "../../components/employeerecardcomponents/EmployeeTable";
-import { Users, AlertTriangle, CheckCircle, Filter } from "lucide-react";
+import { useState, useEffect } from "react";
+import FileUploadPage, { EmployeeRecord } from "./FileUploadPage";
+import ValidationResultsPage from "./ValidationResultsPage";
+import FinalRecords from "./FinalRecords";
 
-const EmployeeRecords = () => {
+type FlowStep = "upload" | "validation" | "records";
+
+const STORAGE_KEY_RECORDS = "axiomvault_employee_records";
+const STORAGE_KEY_STEP = "axiomvault_flow_step";
+
+function loadFromStorage(): { step: FlowStep; records: EmployeeRecord[] } {
+  try {
+    const step = (localStorage.getItem(STORAGE_KEY_STEP) as FlowStep) || "upload";
+    const raw = localStorage.getItem(STORAGE_KEY_RECORDS);
+    const records: EmployeeRecord[] = raw ? JSON.parse(raw) : [];
+    return { step, records };
+  } catch {
+    return { step: "upload", records: [] };
+  }
+}
+
+function saveToStorage(step: FlowStep, records: EmployeeRecord[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY_STEP, step);
+    localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(records));
+  } catch {
+    // storage quota exceeded — fail silently
+  }
+}
+
+function clearStorage() {
+  localStorage.removeItem(STORAGE_KEY_STEP);
+  localStorage.removeItem(STORAGE_KEY_RECORDS);
+}
+
+export default function EmployeeRecordsFlow() {
+  const saved = loadFromStorage();
+
+  const [step, setStep] = useState<FlowStep>(saved.step);
+  const [localRecords, setLocalRecords] = useState<EmployeeRecord[]>(saved.records);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+  // Sync step + records to localStorage whenever they change
+  useEffect(() => {
+    saveToStorage(step, localRecords);
+  }, [step, localRecords]);
+
+  const handleValidationComplete = (data: EmployeeRecord[], file: File) => {
+    setLocalRecords(data);
+    setUploadedFile(file);
+    setStep("validation");
+  };
+
+  const handleUploadToRecords = () => {
+    const validRecords = localRecords.filter((r) => r.status === "Validated");
+    setLocalRecords(validRecords);
+    setStep("records");
+
+    // TODO: POST to your API here
+    // await fetch("/api/employee-records", { method: "POST", body: JSON.stringify(validRecords) });
+  };
+
+  // Full reset — clears storage and goes back to upload
+  const handleCancelReupload = () => {
+    clearStorage();
+    setLocalRecords([]);
+    setUploadedFile(null);
+    setStep("upload");
+  };
+
+  if (step === "upload") {
+    return <FileUploadPage onValidationComplete={handleValidationComplete} />;
+  }
+
+  if (step === "validation" && uploadedFile) {
+    return (
+      <ValidationResultsPage
+        records={localRecords}
+        file={uploadedFile}
+        onUploadToRecords={handleUploadToRecords}
+        onCancelReupload={handleCancelReupload}
+      />
+    );
+  }
+
+  // "records" step — restored from localStorage if user navigated away and came back
   return (
-    <div className="min-h-screen bg-gray-100 flex max-w-full dark:bg-black overflow-auto xl:overflow-hidden">
-      
-
-      <main className="flex-1 flex flex-col">
-        
-
-        <div className="p-4 md:p-8 space-y-6">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <SummaryCard
-              icon={<Users size={18} />}
-              value="8"
-              label="Total Employees"
-              bg="bg-brand-500/10 bg-brand-500"
-            />
-            <SummaryCard
-              icon={<AlertTriangle size={18} />}
-              value="5"
-              label="Flagged Records"
-              bg="bg-red-100 text-red-600"
-            />
-            <SummaryCard
-              icon={<CheckCircle size={18} />}
-              value="3"
-              label="Verified Clean"
-              bg="bg-green-100 text-green-600"
-            />
-            <SummaryCard
-              icon={<Filter size={18} />}
-              value="0"
-              label="Under Review"
-              bg="bg-gray-100 text-gray-600"
-            />
-          </div>
-
-          {/* Table */}
-          <EmployeeTable />
-        </div>
-      </main>
-    </div>
+    <FinalRecords
+      records={localRecords}
+      onUploadFile={handleCancelReupload}
+    />
   );
-};
-
-export default EmployeeRecords;
+}
