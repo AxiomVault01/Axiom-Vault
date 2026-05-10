@@ -1,4 +1,4 @@
-import { useParams, useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import {
   X, Mail, Phone, MapPin, AlertTriangle,
   Building, Briefcase, Calendar, User, TrendingUp,
@@ -56,7 +56,7 @@ const payrollHistory = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 const EmployeeDetails = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 

@@ -36,10 +36,11 @@ async function parseFile(file: File): Promise<Record<string, string>[]> {
   const workbook = XLSX.read(buffer, { type: "array" });
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
-  return XLSX.utils.sheet_to_json<Record<string, string>>(sheet, {
+  const data = XLSX.utils.sheet_to_json(sheet, {
     defval: "",
     raw: false,
-  });
+  }) as Record<string, string>[];
+  return data;
 }
 
 function validateRows(rows: Record<string, string>[]): EmployeeRecord[] {
