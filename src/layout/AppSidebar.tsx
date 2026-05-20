@@ -15,6 +15,7 @@ import {
 import { useSidebar } from "../context/SidebarContext";
 import LogoutIcon from "../icons/Logout-ion";
 import SettingsIcon from "../icons/Settings-icon";
+import { ClipboardCheck, FileBox, Search } from "lucide-react";
 
 type NavItem = {
   name: string;
@@ -35,14 +36,19 @@ const navItems: NavItem[] = [
   },
   {
     icon: <AlertHexaIcon />,
-    name: "Risk Alerts",
+    name: "Alerts",
     path: "/alerts",
     badge: { color: "danger", content: "12" },
   },
   {
-    icon: <GroupIcon />,
-    name: "Employee Records",
-    path: "/employee-records",
+    icon: <Search size={16}/>,
+    name: "Investigations",
+    path: "/investigations",
+  },
+  {
+    icon: <ClipboardCheck />,
+    name: "Cases",
+    path: "/cases",
   },
   {
     icon: <PieChartIcon />,
@@ -53,6 +59,16 @@ const navItems: NavItem[] = [
     icon: <PageIcon />,
     name: "Reports",
     path: "/reports",
+  },
+  {
+    icon: <FileBox />,
+    name: "Evidence Archive",
+    path: "/evidence",
+  },
+  {
+    icon: <GroupIcon />,
+    name: "Employee Records",
+    path: "/employee-records",
   },
 ];
 

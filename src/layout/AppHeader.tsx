@@ -5,6 +5,7 @@ import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
+import { UploadIcon } from "lucide-react";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -159,7 +160,19 @@ const AppHeader: React.FC = () => {
           } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
-            {/* <!-- Dark Mode Toggler --> */}
+            {/* select the days to filter */}
+            <select className="text-xs flex items-center justify-center gap-2 bg-white px-3 py-2 rounded-lg text-brand-950 cursor-pointer font-normal border border-gray-300 dark:bg-gray-900 dark:text-white">
+             <option value="" disabled>Select Days</option>
+             <option value="" >Last 10 Days</option>
+             <option value="" >Last 15 Days</option>
+             <option value="" >Last 20 Days</option>
+             <option value="" >Last 25 Days</option>
+             <option value="" >Last 30 Days</option>
+            </select>
+            {/* <!-- upload button --> */}
+            <button className="text-xs flex items-center justify-center gap-2 bg-brand-950 px-3 py-2 rounded-lg text-white cursor-pointer font-bold">
+             <UploadIcon size={16}/> Upload
+              </button>
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
             <NotificationDropdown />

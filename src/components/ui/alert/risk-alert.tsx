@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { AlertHexaIcon, AngleRightIcon } from "../../../icons";
 import { Link } from "react-router";
+import { ArrowRight } from "lucide-react";
 
 
 export default function RiskAlert() {
   const [riskMsg] = useState(
-    "12 suspicious activities including duplicate bank accounts and unusual payment patterns. Immediate review recommended.",
+    "8 Critical anomalies detected across payroll and vendor payments",
   );
 
   return (
@@ -28,10 +29,10 @@ export default function RiskAlert() {
         <Link to={"/alerts"}>
           <button
             type="button"
-            className="flex justify-between gap-3 px-4 py-2 font-normal text-red-700"
+            className="flex items-center justify-between gap-2 px-4 py-2 font-medium text-xs text-red-700 bg-white rounded-xl border border-red-700 "
           >
-            View Details
-            <AngleRightIcon className="w-5 h-5" />
+            Review
+            <ArrowRight size={18} />
           </button>
         </Link>
       </div>
