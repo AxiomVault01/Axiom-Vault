@@ -147,7 +147,7 @@ const RiskAlertsTable: React.FC = () => {
     );
 
     return (
-        <div className="w-full bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden font-sans">
+        <div className="w-full bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden font-sans dark:bg-white/3 dark:text-white">
 
             {/* Top Filter and Search Action Row */}
             <div className="p-4 flex items-center justify-between gap-4">
@@ -158,12 +158,12 @@ const RiskAlertsTable: React.FC = () => {
                         placeholder="Search employees, accounts..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-gray-50 text-slate-700 placeholder-gray-400 text-sm pl-10 pr-4 py-2 rounded-lg border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                        className="w-full bg-gray-50 dark:bg-white/3  text-slate-700 placeholder-gray-400 text-sm pl-10 pr-4 py-2 rounded-lg border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
                     />
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button className="p-2 bg-gray-50 border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-100 transition-colors">
+                    <button className="p-2 bg-gray-50 border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-100 transition-colors dark:text-white dark:bg-white/3">
                         <SlidersHorizontal size={16} />
                     </button>
                     <Link to="/alerts">
@@ -178,7 +178,7 @@ const RiskAlertsTable: React.FC = () => {
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="bg-gray-100/70 border-b border-gray-100 text-[11px] font-semibold text-slate-700">
+                        <tr className="bg-gray-100/70 border-b   border-gray-100 text-[11px] font-semibold text-slate-700">
                             <th className="py-3 px-6">Alert Id</th>
                             <th className="py-3 px-6">Employee/Vendor</th>
                             <th className="py-3 px-6">Risk Type</th>
@@ -188,26 +188,26 @@ const RiskAlertsTable: React.FC = () => {
                             <th className="py-3 px-6 text-center">Status</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 text-[10px] text-gray-600">
+                    <tbody className="divide-y divide-gray-100 text-[10px] text-gray-600 dark:text-white">
                         {filteredAlerts.map((alert) => (
                             <tr key={alert.id} className="hover:bg-gray-50/50 transition-colors">
                                 {/* Alert ID */}
-                                <td className="py-4 px-6 text-gray-400 font-medium">
+                                <td className="py-4 px-6 text-gray-400 font-medium dark:text-white">
                                     {alert.id}
                                 </td>
 
                                 {/* Employee / Vendor */}
-                                <td className="py-4 px-6 font-medium text-slate-700">
+                                <td className="py-4 px-6 font-medium text-slate-700 dark:text-white">
                                     {alert.entityName}
                                 </td>
 
                                 {/* Risk Type */}
-                                <td className="py-4 px-6 text-gray-500">
+                                <td className="py-4 px-6 text-gray-500 dark:text-white">
                                     {alert.riskType}
                                 </td>
 
                                 {/* Department */}
-                                <td className="py-4 px-6 text-gray-500">
+                                <td className="py-4 px-6 text-gray-500 dark:text-white">
                                     {alert.department}
                                 </td>
 
@@ -227,7 +227,7 @@ const RiskAlertsTable: React.FC = () => {
                                                 style={{ width: `${alert.confidence}%` }}
                                             />
                                         </div>
-                                        <span className="text-[10px] font-semibold text-slate-700 whitespace-nowrap">
+                                        <span className="text-[10px] font-semibold text-slate-700 whitespace-nowrap dark:text-white">
                                             {alert.confidence}%
                                         </span>
                                     </div>

@@ -90,13 +90,13 @@ export const InvestigationQueues = () => {
                         <Badge type="level" value={queue.level} />
                     </div>
                     <div className="flex items-center gap-3 text-xs text-gray-700">
-                        <p className="flex items-center gap-2">{queue.icon} {queue.time}</p>
-                        <p>{queue.department}</p>
+                        <p className="flex items-center gap-2 dark:text-white">{queue.icon} {queue.time}</p>
+                        <p className="dark:text-white">{queue.department}</p>
 
                     </div>
                     <div className="flex items-center justify-between gap-3 text-xs text-gray-700 mt-7">
                         <Badge type="mode" value={queue.mode} />
-                        <p className="font-normal">Assigned To: {queue.assignedto}</p>
+                        <p className="font-normal dark:text-white">Assigned To: {queue.assignedto}</p>
 
                     </div>
 

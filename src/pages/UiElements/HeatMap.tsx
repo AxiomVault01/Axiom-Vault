@@ -165,13 +165,13 @@ const RiskHeatmap: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-4xl bg-white rounded-2xl p-6 shadow-sm border border-gray-100 font-sans">
+        <div className="w-full max-w-4xl bg-white rounded-2xl p-6 shadow-sm border border-gray-100 font-sans dark:text-white dark:bg-white/3">
 
             {/* Header Section */}
             <div className="flex items-start justify-between mb-8">
                 <div>
-                    <h2 className="text-xl font-bold text-slate-800">Risk Distribution Heatmap</h2>
-                    <p className="text-sm text-gray-400 mt-1">Risk count by department and type</p>
+                    <h2 className="text-xl font-bold text-slate-800 dark:text-white">Risk Distribution Heatmap</h2>
+                    <p className="text-sm text-gray-400 mt-1 dark:text-white">Risk count by department and type</p>
                 </div>
 
                 {/* View toggles & filter */}
@@ -207,7 +207,7 @@ const RiskHeatmap: React.FC = () => {
                                 {/* Empty corner header */}
                                 <th className="w-32 py-2 px-3"></th>
                                 {riskTypes.map((type) => (
-                                    <th key={type} className="w-28 py-2 px-3 text-center text-[11px] font-medium text-gray-400 leading-tight align-bottom pb-4">
+                                    <th key={type} className="w-28 py-2 px-3 text-center text-[11px] font-medium text-gray-400 dark:text-white leading-tight align-bottom pb-4">
                                         <div className="max-w-21.5 mx-auto wrap-break-words">
                                             {type}
                                         </div>
@@ -219,7 +219,7 @@ const RiskHeatmap: React.FC = () => {
                             {data.map((row) => (
                                 <tr key={row.department}>
                                     {/* Department Row Label */}
-                                    <td className="py-3 px-3 text-left text-xs font-medium text-gray-500 align-middle">
+                                    <td className="py-3 px-3 text-left text-xs font-medium text-gray-500 align-middle dark:text-white">
                                         {row.department}
                                     </td>
 
@@ -256,36 +256,36 @@ const RiskHeatmap: React.FC = () => {
 
             {/* Legend Section */}
             <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-700 mb-4">Severity Levels</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-4 dark:text-white">Severity Levels</h3>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
                     {/* High Severity */}
                     <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-lg bg-red-500 shadow-sm"></div>
-                        <span className="text-xs font-medium text-gray-600">High Risk</span>
+                        <span className="text-xs font-medium text-gray-600 dark:text-white">High Risk</span>
                     </div>
 
                     {/* Medium Severity */}
                     <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-lg bg-amber-600 shadow-sm"></div>
-                        <span className="text-xs font-medium text-gray-600">Medium Risk</span>
+                        <span className="text-xs font-medium text-gray-600 dark:text-white">Medium Risk</span>
                     </div>
 
                     {/* Low-Medium Severity */}
                     <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-lg bg-amber-200 border border-amber-300 shadow-sm"></div>
-                        <span className="text-xs font-medium text-gray-600">Low-Medium Risk</span>
+                        <span className="text-xs font-medium text-gray-600 dark:text-white">Low-Medium Risk</span>
                     </div>
 
                     {/* Low Severity */}
                     <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-lg bg-orange-50 border border-orange-100 shadow-sm"></div>
-                        <span className="text-xs font-medium text-gray-600">Low Risk</span>
+                        <span className="text-xs font-medium text-gray-600 dark:text-white">Low Risk</span>
                     </div>
 
                     {/* Safe/Vendor Fraud Low */}
                     <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-lg bg-emerald-100 border border-emerald-200 shadow-sm"></div>
-                        <span className="text-xs font-medium text-gray-600">Safe</span>
+                        <span className="text-xs font-medium text-gray-600 dark:text-white">Safe</span>
                     </div>
                 </div>
             </div>

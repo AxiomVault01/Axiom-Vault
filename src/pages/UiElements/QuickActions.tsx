@@ -197,10 +197,10 @@ const QuickActions = () => {
             System Status
           </span>
         </div>
-        <p style={{ fontSize: "13px", color: "#047857", margin: "4px 0" }}>
+        <p className="text-green-600 text-[13px]" >
           All monitoring systems operational
         </p>
-        <p style={{ fontSize: "12px", color: "#059669" }}>
+        <p className="text-green-600 text-[12px]">
           Last updated: 2 minutes ago
         </p>
       </div>

@@ -49,13 +49,13 @@ export const SystemActivity = () => {
             <h3 className="mb-1 text-[18px] font-semibold text-gray-900 dark:text-white/90">
                 System Activity
             </h3>
-            <div className=" flex itens-center justify-between text-xs">
+            <div className=" flex itens-center justify-between text-xs dark:text-white">
                 <p>Recent audit and investigation events </p>
 
             </div>
 
             {Activity.map((activity) => (
-                <div key={activity.id} className="bg-white p-3 mt-5 grid grid-cols-1 gap-2 rounded-lg drop-shadow-sm">
+                <div key={activity.id} className="bg-white p-3 mt-5 grid grid-cols-1 gap-2 rounded-lg drop-shadow-sm dark:bg-white/3 ">
 
                     <div className="flex gap-2">
                         <div className={`flex items-center justify-center  text-xs w-10 h-10 rounded ${activity.iconBg}`}>
@@ -63,11 +63,11 @@ export const SystemActivity = () => {
                         </div>
                         <div className="flex flex-col gap-2 w-full">
                             <div className={`flex justify-between items-center`}>
-                                <h1 className="text-sm text-gray-800">{activity.label}</h1>
+                                <h1 className="text-sm text-gray-800 dark:text-white">{activity.label}</h1>
                             </div>
                             <div className="flex justify-between items-center w-full">
-                                <h6 className="text-[10px] text-gray-500">{activity.description}</h6>
-                                <p className="text-[10px] text-gray-500">{activity.time}</p>
+                                <h6 className="text-[10px] text-gray-500 dark:text-white">{activity.description}</h6>
+                                <p className="text-[10px] text-gray-500 dark:text-white">{activity.time}</p>
                             </div>
                             
                         </div>
@@ -76,7 +76,7 @@ export const SystemActivity = () => {
                 </div>
             ))}
             <div className="flex justify-center">
-                <button className="mt-5 text-center text-[10px] text-blue-700 font-medium cursor-pointer">View Full Activity Log...</button>
+                <button className="mt-5 text-center text-[10px] text-blue-700 font-medium cursor-pointer dark:text-white">View Full Activity Log...</button>
             </div>
         </div>
     );
