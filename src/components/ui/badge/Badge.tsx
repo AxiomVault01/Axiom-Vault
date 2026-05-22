@@ -46,7 +46,7 @@ const Badge: React.FC<BadgeProps> = ({
       success:
         "bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500",
       error:
-        "bg-error-50 text-error-600 dark:bg-error-500/15 dark:text-error-500",
+        "bg-error-50 text-error-600 dark:bg-error-500/15 dark:text-error-500 text-xs",
       notify:
         "bg-error-500 text-white dark:bg-error-500/65 dark:text-white",
       warning:

@@ -10,8 +10,12 @@ import BasicTableOne from "../../components/tables/BasicTables/BasicTableOne";
 import ComponentCard from "../../components/common/ComponentCard";
 import QuickActions from "../UiElements/QuickActions";
 import RiskTrendsChart from "../../components/analytics/RiskTrendsChart";
-import RiskCategoriesChart from "../../components/analytics/Riskcategorieschart";
+// import RiskCategoriesChart from "../../components/analytics/Riskcategorieschart";
 import SuspiciousActivities from "../../components/employeerecardcomponents/SuspiciousActivities";
+import { InvestigationQueues } from "../UiElements/InvestigationQueue";
+import RiskHeatmap from "../UiElements/HeatMap";
+import RiskAlertsTable from "../UiElements/RiskAlertTable";
+import { SystemActivity } from "../UiElements/SystemActivity";
 
 export default function Home() {
   return (
@@ -28,29 +32,39 @@ export default function Home() {
           {/* <MonthlySalesChart /> */}
         </div>
 
-        <div className="col-span-12 space-y-12 xl:col-span-6">
-          <RiskTrendsChart className="lg:col-span-3" />
+        <div className="col-span-12 space-y-12 xl:col-span-6 flex gap-4">
+          <div className="flex flex-col itens-center gap-4 ">
+            <RiskTrendsChart />
+            <RiskHeatmap />
+          </div>
+          <InvestigationQueues />
         </div>
 
-        <div className="col-span-12 space-y-12 xl:col-span-6">
+        {/* <div className="col-span-12 space-y-12 xl:col-span-6">
           <RiskCategoriesChart className="lg:col-span-3" />
-        </div>
+        </div> */}
 
         <div className="col-span-12 xl:col-span-9">
+          <RiskAlertsTable />
+        </div>
+        {/* <div className="col-span-12 xl:col-span-9">
           <SuspiciousActivities />
-        </div>
+        </div> */}
 
-        <div className="col-span-12 xl:col-span-3">
+        <div className="col-span-12 xl:col-span-3 flex gap-3 ">
+          <SystemActivity />
           <QuickActions />
+
+
         </div>
 
-        <div className="col-span-12 xl:col-span-12">
+        {/* <div className="col-span-12 xl:col-span-12">
           <div className="space-y-6">
             <ComponentCard title="Flagged Employee Records" desc="Employees with suspicious activities detected by AI">
               <BasicTableOne />
             </ComponentCard>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
