@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowUp, ArrowDown, Minus, SlidersHorizontal } from 'lucide-react';
 
 // Define types for our data structure
@@ -17,6 +17,7 @@ interface RowData {
 
 const RiskHeatmap: React.FC = () => {
     const [viewMode, setViewMode] = useState<'weekly' | 'monthly'>('weekly');
+    const [tableData, setTableData] = useState<RowData[] | null>(null);
 
     // Column headers (Risk Types)
     const riskTypes = [
@@ -131,6 +132,13 @@ const RiskHeatmap: React.FC = () => {
         },
     ];
 
+    useEffect(() => {
+        setTableData(data);
+    }, []);
+
+    const isLoading = tableData === null;
+    const isEmpty = tableData !== null && tableData.length === 0;
+
     // Helper to get Tailwind classes based on severity level
     const getSeverityStyles = (severity: RiskCell['severity'], type: string) => {
         // Special case for the single green tile under Vendor Fraud
@@ -200,7 +208,24 @@ const RiskHeatmap: React.FC = () => {
 
             {/* Heatmap Grid Container with simulated right-side scrollbar */}
             <div className="flex gap-4 max-h-96 overflow-y-auto">
-                <div className="flex-1 overflow-x-auto overflow-y-auto cursort-pointer">
+                <div className="relative flex-1 overflow-x-auto overflow-y-auto cursor-pointer">
+                    {isLoading || isEmpty ? (
+                        <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/95 dark:bg-slate-900/90 p-6">
+                            <div className="max-w-xs text-center">
+                                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                                    <Minus className="h-5 w-5" strokeWidth={3} />
+                                </div>
+                                <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                                    {isLoading ? 'Loading heatmap data...' : 'No heatmap data available'}
+                                </p>
+                                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                    {isLoading
+                                        ? 'Please wait while the risk distribution loads.'
+                                        : 'There is currently no risk data to display. Adjust your filters or try again later.'}
+                                </p>
+                            </div>
+                        </div>
+                    ) : null}
                     <table className="w-full border-collapse">
                         <thead>
                             <tr>
@@ -216,7 +241,7 @@ const RiskHeatmap: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((row) => (
+                            {(tableData || []).map((row) => (
                                 <tr key={row.department}>
                                     {/* Department Row Label */}
                                     <td className="py-3 px-3 text-left text-xs font-medium text-gray-500 align-middle dark:text-white">

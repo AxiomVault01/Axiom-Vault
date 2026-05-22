@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, SlidersHorizontal } from 'lucide-react';
-import {Link} from "react-router"
+import { Link } from "react-router"
 
 // Define the shape of our data
 interface AlertItem {
@@ -17,6 +17,7 @@ interface AlertItem {
 
 const RiskAlertsTable: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [tableData, setTableData] = useState<AlertItem[] | null>(null);
 
     // Table rows containing mock data extracted from the screenshot
     const alerts: AlertItem[] = [
@@ -110,6 +111,22 @@ const RiskAlertsTable: React.FC = () => {
         },
     ];
 
+    useEffect(() => {
+        setTableData(alerts);
+    }, []);
+
+    const isLoading = tableData === null;
+    const isEmpty = tableData !== null && tableData.length === 0;
+
+    const filteredAlerts = (tableData || []).filter(
+        (alert) =>
+            alert.entityName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            alert.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            alert.riskType.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const showEmptyState = isLoading || isEmpty || filteredAlerts.length === 0;
+
     // Helper styles mapping for specific severity pills
     const getSeverityStyles = (color: AlertItem['severityColor']) => {
         switch (color) {
@@ -137,14 +154,6 @@ const RiskAlertsTable: React.FC = () => {
                 return 'bg-gray-100 text-gray-600';
         }
     };
-
-    // Filter rows matching input
-    const filteredAlerts = alerts.filter(
-        (alert) =>
-            alert.entityName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            alert.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            alert.riskType.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     return (
         <div className="w-full bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden font-sans dark:bg-white/3 dark:text-white">
@@ -175,7 +184,30 @@ const RiskAlertsTable: React.FC = () => {
             </div>
 
             {/* Main Alerts Table */}
-            <div className="overflow-x-auto">
+            <div className="relative overflow-x-auto">
+                {showEmptyState ? (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90 dark:bg-slate-900/90 p-6">
+                        <div className="max-w-sm text-center">
+                            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                                <Search className="h-5 w-5" />
+                            </div>
+                            <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                                {isLoading
+                                    ? 'Loading risk alerts...'
+                                    : isEmpty
+                                        ? 'No risk alerts available'
+                                        : `No alerts found for "${searchTerm}"`}
+                            </p>
+                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                {isLoading
+                                    ? 'Please wait while risk alerts are retrieved.'
+                                    : isEmpty
+                                        ? 'There are no alerts to display right now.'
+                                        : 'Try a different search term or clear the filter to see more results.'}
+                            </p>
+                        </div>
+                    </div>
+                ) : null}
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-gray-100/70 border-b   border-gray-100 text-[11px] font-semibold text-slate-700">
