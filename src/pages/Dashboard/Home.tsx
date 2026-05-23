@@ -32,7 +32,7 @@ export default function Home() {
           {/* <MonthlySalesChart /> */}
         </div>
 
-        <div className="col-span-12 space-y-12 xl:col-span-6 flex gap-4">
+        <div className="col-span-12 space-y-6 xl:col-span-12 flex gap-4 flex-col lg:flex-row  ">
           <div className="flex flex-col itens-center gap-4 ">
             <RiskTrendsChart />
             <RiskHeatmap />
@@ -44,14 +44,14 @@ export default function Home() {
           <RiskCategoriesChart className="lg:col-span-3" />
         </div> */}
 
-        <div className="col-span-12 xl:col-span-9">
+        <div className="col-span-12 xl:col-span-12">
           <RiskAlertsTable />
         </div>
         {/* <div className="col-span-12 xl:col-span-9">
           <SuspiciousActivities />
         </div> */}
 
-        <div className="col-span-12 xl:col-span-3 flex gap-3 ">
+        <div className="col-span-12 xl:col-span-12 flex flex-col md:flex-row gap-3 ">
           <SystemActivity />
           <QuickActions />
 

@@ -150,7 +150,7 @@ const QuickActions = () => {
   ];
 
   return (
-    <div className="xl:max-w-100 lg:w-150 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3 md:p-5">
+    <div className="xl:max-w-200 lg:w-full rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3 md:p-5">
       {/* Title */}
       <h3 className="mb-4 text-[18px] font-semibold text-gray-900 dark:text-white/90">
         Quick Actions

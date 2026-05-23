@@ -44,7 +44,7 @@ export const SystemActivity = () => {
     ];
 
     return (
-        <div className="xl:max-w-100 lg:w-full rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-white/3 md:p-5 h-fit">
+        <div className="xl:max-w-200 lg:w-full rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-white/3 md:p-5 h-fit">
             {/* Title */}
             <h3 className="mb-1 text-[18px] font-semibold text-gray-900 dark:text-white/90">
                 System Activity

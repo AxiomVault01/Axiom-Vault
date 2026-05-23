@@ -176,7 +176,7 @@ const RiskHeatmap: React.FC = () => {
         <div className="w-full max-w-4xl bg-white rounded-2xl p-6 shadow-sm border border-gray-100 font-sans dark:text-white dark:bg-white/3">
 
             {/* Header Section */}
-            <div className="flex items-start justify-between mb-8">
+            <div className="flex flex-col md:flex-row gap-4  items-start justify-between mb-8">
                 <div>
                     <h2 className="text-xl font-bold text-slate-800 dark:text-white">Risk Distribution Heatmap</h2>
                     <p className="text-sm text-gray-400 mt-1 dark:text-white">Risk count by department and type</p>
@@ -184,7 +184,7 @@ const RiskHeatmap: React.FC = () => {
 
                 {/* View toggles & filter */}
                 <div className="flex items-center gap-3">
-                    <div className="bg-gray-100 p-1 rounded-xl flex items-center text-xs font-medium">
+                    <div className="bg-gray-100 p-1 rounded-xl flex items-center text-xs font-medium ">
                         <button
                             onClick={() => setViewMode('weekly')}
                             className={`px-4 py-1.5 rounded-lg transition-all ${viewMode === 'weekly' ? 'bg-white text-slate-800 shadow-sm' : 'text-gray-500 hover:text-slate-800'

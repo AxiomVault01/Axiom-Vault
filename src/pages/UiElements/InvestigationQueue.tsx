@@ -69,11 +69,31 @@ export const InvestigationQueues = () => {
             department: "Procurement",
             assignedto: "Alex R."
         },
+        {
+            id: 5,
+            icon: <Clock size={14} />,
+            time: "3 hour ago",
+            label: "Vendor invoice anomaly pattern",
+            level: "High",
+            mode: "Escalated",
+            department: "Procurement",
+            assignedto: "Alex R."
+        },
+        // {
+        //     id: 6,
+        //     icon: <Clock size={14} />,
+        //     time: "3 hour ago",
+        //     label: "Vendor invoice anomaly pattern",
+        //     level: "Critical",
+        //     mode: "New Alert",
+        //     department: "Procurement",
+        //     assignedto: "Alex R."
+        // },
 
     ];
 
     return (
-        <div className="xl:max-w-100 lg:w-full rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-white/3 md:p-5 h-fit">
+        <div className="xl:max-w-200 lg:w-full rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-white/3 md:p-5">
             {/* Title */}
             <h3 className="mb-1 text-[18px] font-semibold text-gray-900 dark:text-white/90">
                 Investigation Queue
