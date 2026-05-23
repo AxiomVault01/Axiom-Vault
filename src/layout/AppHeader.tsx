@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router"; 
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
@@ -8,6 +7,7 @@ import UserDropdown from "../components/header/UserDropdown";
 import { UploadIcon } from "lucide-react";
 
 const AppHeader: React.FC = () => {
+  const navigate = useNavigate();
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -170,9 +170,12 @@ const AppHeader: React.FC = () => {
              <option value="" >Last 30 Days</option>
             </select>
             {/* <!-- upload button --> */}
-            <button className="text-xs flex items-center justify-center gap-2 bg-brand-950 px-3 py-2 rounded-lg text-white cursor-pointer font-bold">
-             <UploadIcon size={16}/> Upload
-              </button>
+            <button 
+              className="text-xs flex items-center justify-center gap-2 bg-brand-950 px-3 py-2 rounded-lg text-white cursor-pointer font-bold" 
+              onClick={() => navigate("/employee-records")} 
+            >
+              <UploadIcon size={16}/> Upload
+            </button>
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
             <NotificationDropdown />
