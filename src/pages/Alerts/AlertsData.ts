@@ -178,3 +178,73 @@ export const MOCK_ALERTS: Alert[] = [
     ],
   },
 ];
+
+
+{/** ALERT DETAILS */}
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+interface FlaggedRecord {
+  txnId: string;
+  date: string;
+  amount: string;
+  invoice: string;
+  approver: string;
+}
+
+interface TimelineEvent {
+  label: string;
+  sub: string;
+  date: string;
+  color: "red" | "blue" | "gray";
+}
+export interface EvidenceFile {
+  name: string;
+  size: string;
+  source: string;
+}
+
+// ── Extended mock data keyed by alert ID ──────────────────────────────────────
+export const DETAIL_DATA: Record<string, {
+  title: string;
+  flaggedRecords: FlaggedRecord[];
+  timeline: TimelineEvent[];
+  evidence: EvidenceFile[];
+  reviewers: string[];
+}> = {
+  "ALT-2847": {
+    title: "Duplicate vendor payment detected - identical invoice paid twice",
+    flaggedRecords: [
+      { txnId: "TXN-90214", date: "2026-05-08", amount: "$42,350.00", invoice: "INV-2024-8847", approver: "John Doe" },
+      { txnId: "TXN-90455", date: "2026-05-08", amount: "$42,350.00", invoice: "INV-2024-8847", approver: "John Doe" },
+    ],
+    timeline: [
+      { label: "Awaiting Decision", sub: "No action taken yet", date: "Today", color: "blue" },
+      { label: "Alert Generated", sub: "ALT-2847 created • Critical", date: "May 11", color: "red" },
+      { label: "Second payment", sub: "TXN-90455 • Paid 42,350.00", date: "May 8", color: "red" },
+      { label: "First Payment", sub: "TXN-90214 • Paid 42,350.00", date: "May 5", color: "blue" },
+      { label: "Invoice Submitted", sub: "INV-2024-8847 For 42,350.00", date: "May 3", color: "gray" },
+    ],
+    evidence: [
+      { name: "Invoice_INV-2024-8847.pdf", size: "342 KB", source: "System" },
+      { name: "Payment Approval Chain.pdf", size: "128 KB", source: "System" },
+    ],
+    reviewers: ["Sarah J. Miller (Auto-assigned)", "Jane Adeola", "Alex R.", "Lisa K."],
+  },
+  "ALT-2848": {
+    title: "Payments made to unverifiable ghost vendor entity",
+    flaggedRecords: [
+      { txnId: "TXN-00198", date: "2026-05-08", amount: "₦1,200,000", invoice: "INV-2024-0198", approver: "Alex R." },
+      { txnId: "TXN-00201", date: "2026-05-10", amount: "₦950,000",   invoice: "INV-2024-0201", approver: "Alex R." },
+    ],
+    timeline: [
+      { label: "Under Investigation", sub: "Assigned to Alex R.", date: "Today", color: "blue" },
+      { label: "Alert Generated", sub: "ALT-2848 created • Critical", date: "May 11", color: "red" },
+      { label: "Second Payment", sub: "TXN-00201 • Paid ₦950,000", date: "May 10", color: "red" },
+      { label: "First Payment", sub: "TXN-00198 • Paid ₦1,200,000", date: "May 8", color: "blue" },
+    ],
+    evidence: [
+      { name: "Vendor_Registration_Check.pdf", size: "210 KB", source: "System" },
+    ],
+    reviewers: ["Alex R.", "Sarah J. Miller (Auto-assigned)", "Lisa K."],
+  },
+};
