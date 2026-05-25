@@ -31,7 +31,7 @@ import EmployeeRecords from "./pages/employeeinfo/EmployeeRecords";
 import Profile from "./pages/newprofile/Profile";
 import EmployeeDetails from "./pages/employeeinfo/EmployeeDetails";
 import ReportsPage from "./components/reports/Reportspage";
-import AlertDetailPage from "./pages/Alerts/Alertdetailpage";
+import AlertDetailPage from "./pages/Alerts/AlertDetailPage";
 import AlertsPage from "./pages/Alerts/AlertsPage";
 // import WelcomePage from "./components/auth/WelcomePage";
 
