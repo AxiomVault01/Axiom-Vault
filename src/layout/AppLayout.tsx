@@ -24,18 +24,18 @@ const LayoutContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen xl:flex">
+    <div className="min-h-screen overflow-hidden xl:flex">
       <div>
         <AppSidebar />
         <Backdrop />
       </div>
       <div
-        className={`flex-1 transition-all duration-300 ease-in-out ${
-          isExpanded || isHovered ? "lg:ml-[290px]" : "lg:ml-[90px]"
+        className={`flex-1 flex flex-col overflow-hidden h-full transition-all duration-300 ease-in-out ${
+          isExpanded || isHovered ? "lg:ml-72.5" : "lg:ml-22.5"
         } ${isMobileOpen ? "ml-0" : ""}`}
       >
         <AppHeader />
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+        <div className="flex-1 overflow-hidden max-w-(--breakpoint-2xl) w-full mx-auto p-4 md:p-6">
           <Outlet />
         </div>
 
