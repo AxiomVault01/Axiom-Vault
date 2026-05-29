@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlertHexaIcon, AngleRightIcon } from "../../../icons";
+import { AlertHexaIcon } from "../../../icons";
 import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 

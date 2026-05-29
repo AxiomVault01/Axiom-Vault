@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router"; 
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
@@ -8,11 +7,12 @@ import UserDropdown from "../components/header/UserDropdown";
 import { UploadIcon } from "lucide-react";
 
 const AppHeader: React.FC = () => {
+  const navigate = useNavigate();
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
-  const handleToggle = () => {
+  const handleToggle = ():any => {
     if (window.innerWidth >= 1024) {
       toggleSidebar();
     } else {
@@ -143,10 +143,10 @@ const AppHeader: React.FC = () => {
                   ref={inputRef}
                   type="text"
                   placeholder="Search or type command..."
-                  className="dark:bg-dark-900 h-11 w-full  rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/[0.04] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
+                  className="dark:bg-dark-900 h-11 w-full  rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/4 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-107.5"
                 />
 
-                <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
+                <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-1.75 py-[4.5px] text-xs tracking-[-0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/3 dark:text-gray-400">
                   <span> ⌘ </span>
                   <span> K </span>
                 </button>
@@ -170,9 +170,12 @@ const AppHeader: React.FC = () => {
              <option value="" >Last 30 Days</option>
             </select>
             {/* <!-- upload button --> */}
-            <button className="text-xs flex items-center justify-center gap-2 bg-brand-950 px-3 py-2 rounded-lg text-white cursor-pointer font-bold">
-             <UploadIcon size={16}/> Upload
-              </button>
+            <button 
+              className="text-xs flex items-center justify-center gap-2 bg-brand-950 px-3 py-2 rounded-lg text-white cursor-pointer font-bold" 
+              onClick={() => navigate("/employee-records")} 
+            >
+              <UploadIcon size={16}/> Upload
+            </button>
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
             <NotificationDropdown />

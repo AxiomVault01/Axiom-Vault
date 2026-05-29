@@ -12,7 +12,7 @@ import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
 import Images from "./pages/UiElements/Images";
-import Alerts from "./pages/UiElements/Alerts";
+// import Alerts from "./pages/UiElements/Alerts";
 import Badges from "./pages/UiElements/Badges";
 import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
@@ -34,6 +34,9 @@ import ReportsPage from "./components/reports/Reportspage";
 import InvestigationsPage from "./pages/investigations/InvestigationsPage";
 import InvestigationDetails from "./pages/investigations/InvestigationDetails";
 import EscalateCasePage from "./pages/investigations/EscalateCasePage";
+import AlertDetailPage from "./pages/Alerts/AlertDetailPage";
+import AlertsPage from "./pages/Alerts/AlertsPage";
+// import WelcomePage from "./components/auth/WelcomePage";
 
 export default function App() {
   return (
@@ -55,7 +58,6 @@ export default function App() {
             <Route path="/investigations/:id" element={<InvestigationDetails/>}/>
             <Route path="/investigations/escalate" element={<EscalateCasePage/>}/>
 
-
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
@@ -67,8 +69,12 @@ export default function App() {
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />
 
+            {/* Alerts */}
+            <Route path="/alerts" element={<AlertsPage />} />
+            <Route path="/alerts/:id" element={<AlertDetailPage />} />
+
             {/* Ui Elements */}
-            <Route path="/alerts" element={<Alerts />} />
+            {/* <Route path="/alerts" element={<Alerts />} /> */}
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/badge" element={<Badges />} />
             <Route path="/buttons" element={<Buttons />} />
@@ -89,7 +95,10 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-code" element={<VerifyCode />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
+          <Route
+            path="/reset-password-successful"
+            element={<ResetPasswordSuccessful />}
+          />
           <Route path="/welcome" element={<Welcome />} />
 
           {/* Fallback Route */}
