@@ -31,6 +31,9 @@ import EmployeeRecords from "./pages/employeeinfo/EmployeeRecords";
 import Profile from "./pages/newprofile/Profile";
 import EmployeeDetails from "./pages/employeeinfo/EmployeeDetails";
 import ReportsPage from "./components/reports/Reportspage";
+import InvestigationsPage from "./pages/investigations/InvestigationsPage";
+import InvestigationDetails from "./pages/investigations/InvestigationDetails";
+import EscalateCasePage from "./pages/investigations/EscalateCasePage";
 import AlertDetailPage from "./pages/Alerts/AlertDetailPage";
 import AlertsPage from "./pages/Alerts/AlertsPage";
 // import WelcomePage from "./components/auth/WelcomePage";
@@ -49,12 +52,11 @@ export default function App() {
             <Route index path="/profile" element={<Profile />} />
             <Route index path="/reports" element={<ReportsPage />} />
             <Route index path="/settings" element={<Settings />} />
-            <Route
-              index
-              path="/employee-records"
-              element={<EmployeeRecords />}
-            />
+            <Route index path="/investigations" element={<InvestigationsPage />} />
+            <Route index path="/employee-records" element={<EmployeeRecords />}/>
             <Route index path="/employee/:id" element={<EmployeeDetails />} />
+            <Route path="/investigations/:id" element={<InvestigationDetails/>}/>
+            <Route path="/investigations/escalate" element={<EscalateCasePage/>}/>
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
