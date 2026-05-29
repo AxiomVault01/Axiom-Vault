@@ -8,7 +8,7 @@
 //   PieChartIcon,
 // } from "../../icons";
 // import Badge from "../ui/badge/Badge";
-import { AlertTriangle, Briefcase, IconNode, Search, Shield } from "lucide-react";
+import { AlertTriangle, Briefcase, Search, Shield } from "lucide-react";
 import { ReactNode } from "react";
 
 type Props = {
