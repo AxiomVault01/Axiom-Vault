@@ -5,6 +5,8 @@ import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
 import { Modal } from "../components/ui/modal";
 import { useNavigate } from "react-router";
+import { LogoutUser } from "../services/Axios";
+import toast from "react-hot-toast";
 
 const LayoutContent: React.FC = () => {
   const {
@@ -16,11 +18,23 @@ const LayoutContent: React.FC = () => {
   } = useSidebar();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // Here you can add any logout logic like clearing tokens, etc.
+    try {
+      await LogoutUser();
+      navigate("/");
+      closeLogoutModal();
+      toast.success('Logout Successful');
+    } catch (err: any) {
+      toast.error("Error logging you out", {
+        style: {
+          zIndex: 99999,
+
+        }, 
+      }) 
+    }
     // For now, just navigate to home/login page
-    navigate("/");
-    closeLogoutModal();
+    
   };
 
   return (

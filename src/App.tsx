@@ -37,11 +37,13 @@ import EscalateCasePage from "./pages/investigations/EscalateCasePage";
 import AlertDetailPage from "./pages/Alerts/AlertDetailPage";
 import AlertsPage from "./pages/Alerts/AlertsPage";
 // import WelcomePage from "./components/auth/WelcomePage";
+import { Toaster } from "react-hot-toast"
 
 export default function App() {
   return (
     <>
       <Router>
+        <Toaster  />
         <ScrollToTop />
         <Routes>
           <Route index path="/" element={<Welcome />} />
@@ -53,26 +55,21 @@ export default function App() {
             <Route index path="/reports" element={<ReportsPage />} />
             <Route index path="/settings" element={<Settings />} />
             <Route index path="/investigations" element={<InvestigationsPage />} />
-            <Route index path="/employee-records" element={<EmployeeRecords />}/>
+            <Route index path="/employee-records" element={<EmployeeRecords />} />
             <Route index path="/employee/:id" element={<EmployeeDetails />} />
-            <Route path="/investigations/:id" element={<InvestigationDetails/>}/>
-            <Route path="/investigations/escalate" element={<EscalateCasePage/>}/>
-
+            <Route path="/investigations/:id" element={<InvestigationDetails />} />
+            <Route path="/investigations/escalate" element={<EscalateCasePage />} />
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
-
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
-
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />
-
             {/* Alerts */}
             <Route path="/alerts" element={<AlertsPage />} />
             <Route path="/alerts/:id" element={<AlertDetailPage />} />
-
             {/* Ui Elements */}
             {/* <Route path="/alerts" element={<Alerts />} /> */}
             <Route path="/avatars" element={<Avatars />} />
@@ -80,12 +77,10 @@ export default function App() {
             <Route path="/buttons" element={<Buttons />} />
             <Route path="/images" element={<Images />} />
             <Route path="/videos" element={<Videos />} />
-
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
           </Route>
-
           {/* Auth Layout */}
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/signin" element={<SignIn />} />
@@ -100,7 +95,6 @@ export default function App() {
             element={<ResetPasswordSuccessful />}
           />
           <Route path="/welcome" element={<Welcome />} />
-
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>

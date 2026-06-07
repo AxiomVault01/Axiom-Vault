@@ -10,6 +10,9 @@ import Toast from "../ui/Toast";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
+import { LoginUser } from "../../services/Axios";
+import { Loader } from "lucide-react";
+import toast from "react-hot-toast";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -27,13 +30,13 @@ const BiImage = {
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-  email: "",
+    email: "",
   password: "",
   });
+    const navigate = useNavigate();
 
   const [errors, setErrors] = useState({
   email: "",
@@ -72,15 +75,56 @@ export default function SignInForm() {
   return !newErrors.email && !newErrors.password;
  };
 
- const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  if (validateForm()) {
-    console.log("Form submitted", formData);
-    setShowToast(true);
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 3000);
-  }
+ const handleSubmit = async (e: React.FormEvent) => {
+   e.preventDefault();
+   setLoading(true);
+   //  login logic
+   try {
+     const rawResponse = await LoginUser(formData.email!, formData.password!);
+     const response = rawResponse?.data ?? rawResponse;
+     const accessToken = response?.token ?? response?.accessToken;
+     const user = response?.user ?? response?.data?.user;
+
+     console.log("Login response:", rawResponse);
+     console.log("Access Token:", accessToken);
+     console.log("User:", user);
+
+     if (!accessToken || !user) {
+       throw new Error("Login response did not include token or user data");
+     }
+
+     localStorage.setItem("user", JSON.stringify(user));
+     localStorage.setItem("token", accessToken);
+     setFormData(formData)
+     setErrors(errors);
+
+     if (validateForm()) {
+       console.log("Form submitted", formData);
+       setShowToast(true);
+       toast.success("Login Successful")
+       setTimeout(() => {
+         navigate("/dashboard");
+       }, 3000);
+     }
+
+    //  const role = user.role;
+    //  if (role === "admin") {
+    //    navigate("/dashboard");
+    //  } else if (role === "cashier") {
+    //    navigate("/cashier-dashboard");
+    //  } else {
+    //    navigate("/login");
+    //  }
+   } catch (error: any) {
+     toast.error("Error loggin in",  error.message);
+     const errormessage =
+       error.response?.data?.message || error.message || "login failed";
+     setErrors(errormessage);
+   } finally {
+     setLoading(false);
+   }
+
+ 
  };
 
   return (
@@ -167,10 +211,16 @@ export default function SignInForm() {
                     </Link>
                   </div>
                   <div>
-                    <Button type="submit"
+                    <Button
+                    disabled={loading}
+                     type="submit"
                      className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-500 hover:border-gray-400 hover:text-gray-50 mt-6"
                      size="sm">
-                     Sign In
+                     
+                      {loading && (
+                        <Loader size={18} className="animate-spin"/>
+                      )}
+                      {loading ? 'Sigining in...' : 'Sign in'}
                     </Button>
                     
                   </div>
@@ -185,13 +235,13 @@ export default function SignInForm() {
 
               <div className="mt-6">
                 <Link to="/email-required">
-                  <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 dark:text-gray-200 dark:hover:text-gray-900">
+                  <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200  text-brand-100 dark:text-gray-200 dark:hover:text-gray-900">
                     Create Account
                   </button>
                 </Link>
               </div>
               <div className="mt-10 border-t-2 border-gray-100">
-                <p className="text-sm text-center mt-5 text-brand-100 dark:text-gray-400">
+                <p className="text-[10px] text-center mt-5 text-brand-100 dark:text-gray-400">
                   By signing in, you agree to our Terms of Service and Privacy
                   Policy
                 </p>
