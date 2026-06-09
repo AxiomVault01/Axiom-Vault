@@ -11,7 +11,7 @@ import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import { ErrorMessageModal } from "../shared/MessageModal";
 import { SigninClient } from "../../services/Axios";
-import { Loader } from "lucide-react";
+import { Loader, User } from "lucide-react";
 import toast from "react-hot-toast";
 
 
@@ -190,7 +190,7 @@ export default function SignUpForm() {
                       Full Name
                     </Label>
                     <div className="relative w-full max-w-md">
-                      <UserIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></UserIcon>
+                      <User className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50" />
                       <Input
                         type="text"
                         id="full_name"
@@ -246,7 +246,7 @@ export default function SignUpForm() {
                       Role
                     </Label>
                     <div className="relative w-full max-w-md">
-                      <UserIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></UserIcon>
+                      <UserIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50"></UserIcon>
                       <Input
                         type="text"
                         id="role"
@@ -267,7 +267,7 @@ export default function SignUpForm() {
                     <Label className="text-brand-800">Password</Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></LockIcon>
+                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50"></LockIcon>
                         <Input
                           className="w-full pl-10 pr-4 py-2"
                           name="password"
@@ -300,7 +300,7 @@ export default function SignUpForm() {
                     </Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></LockIcon>
+                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50"></LockIcon>
                         <Input
                           className="w-full pl-10 pr-4 py-2"
                           name="confirm_password"

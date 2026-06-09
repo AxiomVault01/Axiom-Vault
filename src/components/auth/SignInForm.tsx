@@ -11,7 +11,7 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import { LoginUser } from "../../services/Axios";
-import { Loader } from "lucide-react";
+import { Loader, Lock, Mail } from "lucide-react";
 import toast from "react-hot-toast";
 
 const bgImage = {
@@ -162,7 +162,7 @@ export default function SignInForm() {
                       Email Address
                     </Label>
                     <div className="relative w-full max-w-md">
-                      <MailIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon>
+                      <Mail  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none dark:text-gray-400 z-50" />
                       <Input type="email" id="email" name="email" placeholder="auditor@agency.gov" value={formData.email} onChange={handleChange} required className="w-full pl-10 pr-4 py-2" />
                     </div>
                     {errors.email && (
@@ -176,7 +176,7 @@ export default function SignInForm() {
                     </Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
+                        <Lock  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400 pointer-events-none z-50" />
                         <Input className="w-full pl-10 pr-4 py-2" name="password" value={formData.password} onChange={handleChange}  placeholder="Enter Your Password" required 
                         type={showPassword ? "text" : "password"} />
                      </div>

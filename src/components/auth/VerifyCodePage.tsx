@@ -7,6 +7,9 @@ import { ChevronLeftIcon } from "../../icons";
 import logo from "../../../public/Logo.jpg";
 import logob from "../../../public/AXIOM _VAULT_B.png";
 import MessageModal from "../shared/MessageModal";
+import { VerifyOTP } from "../../services/Axios";
+import toast from "react-hot-toast";
+import { Loader } from "lucide-react";
 
 const lgImage = {
   width: "175px",
@@ -17,9 +20,10 @@ export default function VerifyCodePage() {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [error, setError] = useState("");
   const [timeLeft, setTimeLeft] = useState(60);
+  const [loading, setLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
 
-   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsOpen(true);
@@ -62,21 +66,29 @@ export default function VerifyCodePage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoading(true)
     const code = otp.join("");
 
     if (code.length !== 4) {
       setError("Please enter the complete 4-digit code");
       return;
     }
+    try {
+      const res = await VerifyOTP();
+      console.log(res, "network response");
+      setError("");
+      console.log("OTP Verified:", code);
+      toast.success("OTP confirmed successfully");
+      navigate("/reset-password");
+    } catch (err: any) {
+      toast.error(err.message);
+    }finally{
+      setLoading(false)
+    }
 
-    setError("");
-
-    console.log("OTP Verified:", code);
-
-    navigate("/reset-password");
+   
   };
 
   return (
@@ -144,11 +156,15 @@ export default function VerifyCodePage() {
                 </div>
                 <div>
                   <Button
+                    disabled={loading}
                     type="submit"
                     className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs"
                     size="sm"
                   >
-                    Verify
+                    {loading && (
+                      <Loader size={18}/>
+                    )}
+                    {loading ? 'Verifying...' : 'Verify'}
                   </Button>
                 </div>
               </div>

@@ -181,4 +181,72 @@ const SigninClient: () => Promise<SigninProps> = async () => {
   }
 };
 export { SigninClient };
+  
+const ResetPassword = async () => {
+  const ResetPasswordPayload = {
+    email: "email",
+    new_password: "new_password",
+    code: "code",
+  };
+  try {
+    const response = await api.post("v1/auth/reset-password", ResetPasswordPayload);
+    if (response.data.accessToken) {
+      localStorage.setItem("token", response.data.accessToken);
+      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+    }
+    return response.data;
+  } catch (error: string | any) {
+    console.error(
+      "error resetting password",
+      error.response?.data || error?.message || error,
+    );
+    throw error;
+  }
+};
+export { ResetPassword };
+  
+  // forgot password
+const ForgotPassword = async () => {
+  const forgotpasswordpayload = {
+    email: "email",
+  };
+  try {
+    const response = await api.post("v1/auth/forgot-password", forgotpasswordpayload);
+    if (response.data.accessToken) {
+      localStorage.setItem("token", response.data.accessToken);
+      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+    }
+    return response.data;
+  } catch (error: string | any) {
+    console.error(
+      "Login error:",
+      error.response?.data || error?.message || error,
+    );
+    throw error;
+  }
+};
+export { ForgotPassword };
+  
+  // verify otp
+const VerifyOTP = async () => {
+  const OTPpayload = {
+    email: "email",
+    code: "code"
+  }
+  try {
+    const response = await api.post("v1/auth/verify-otp", OTPpayload);
+    if (response.data.accessToken) {
+      localStorage.setItem("token", response.data.accessToken);
+      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+    }
+    return response.data;
+  } catch (error: string | any) {
+    console.error(
+      "Login error:",
+      error.response?.data || error?.message || error,
+    );
+    throw error;
+  }
+};
+export { VerifyOTP };
 
