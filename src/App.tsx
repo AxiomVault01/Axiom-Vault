@@ -62,7 +62,7 @@ export default function App() {
           />
 
           {/* Protected Dashboard Layout */}
-          <Route element={<ProtectedRoute />}>
+          {/* <Route element={<ProtectedRoute />}> */}
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Home />} />
               <Route path="/analytics" element={<Analytics />} />
@@ -96,7 +96,7 @@ export default function App() {
               <Route path="/line-chart" element={<LineChart />} />
               <Route path="/bar-chart" element={<BarChart />} />
             </Route>
-          </Route>
+          {/* </Route> */}
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
