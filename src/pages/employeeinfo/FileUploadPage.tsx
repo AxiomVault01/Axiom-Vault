@@ -153,7 +153,7 @@ export default function FileUploadPage({
       }
 
       // Simulate async processing
-      await new Promise((res) => setTimeout(res, 800));
+      await new Promise((res) => setTimeout(res, 300));
       const records = validateRows(rows);
       onValidationComplete(records, file);
     } catch {
