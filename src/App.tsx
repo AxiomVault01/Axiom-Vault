@@ -37,6 +37,7 @@ import EscalateCasePage from "./pages/investigations/EscalateCasePage";
 import AlertDetailPage from "./pages/Alerts/AlertDetailPage";
 import AlertsPage from "./pages/Alerts/AlertsPage";
 import CasesPage from "./pages/Cases/CasesPage";
+import CaseDetailPage from "./pages/Cases/CasesDetails/CaseDetailPage";
 // import WelcomePage from "./components/auth/WelcomePage";
 
 export default function App() {
@@ -53,12 +54,29 @@ export default function App() {
             <Route index path="/profile" element={<Profile />} />
             <Route index path="/reports" element={<ReportsPage />} />
             <Route index path="/settings" element={<Settings />} />
-            <Route index path="/investigations" element={<InvestigationsPage />} />
-            <Route index path="/employee-records" element={<EmployeeRecords />}/>
+            <Route
+              index
+              path="/investigations"
+              element={<InvestigationsPage />}
+            />
+            <Route
+              index
+              path="/employee-records"
+              element={<EmployeeRecords />}
+            />
             <Route index path="/employee/:id" element={<EmployeeDetails />} />
-            <Route path="/investigations/:id" element={<InvestigationDetails/>}/>
-            <Route path="/investigations/escalate" element={<EscalateCasePage/>}/>
+            <Route
+              path="/investigations/:id"
+              element={<InvestigationDetails />}
+            />
+            <Route
+              path="/investigations/escalate"
+              element={<EscalateCasePage />}
+            />
+
+            {/* Cases Page */}
             <Route path="/cases" element={<CasesPage />} />
+            <Route path="/cases/:id" element={<CaseDetailPage />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
