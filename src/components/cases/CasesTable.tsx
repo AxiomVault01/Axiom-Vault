@@ -67,7 +67,7 @@ export default function CasesTable({ data }: Props) {
 
   const toggleSelection = <T,>(
     value: T,
-    selected: T[],
+    _selected: T[],
     setSelected: React.Dispatch<React.SetStateAction<T[]>>,
   ) => {
     setSelected((prev) =>
@@ -227,13 +227,13 @@ export default function CasesTable({ data }: Props) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowFilters((prev) => !prev)}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:border-gray-600 dark:bg-[#161950] dark:text-gray-200 dark:hover:bg-gray-900 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:border-gray-600 dark:bg-brand-950 dark:text-gray-200 dark:hover:bg-gray-900 transition-colors"
           >
             <Filter size={16} />
           </button>
           <button
             onClick={handleExport}
-            className="shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-sm font-semibold text-gray-700 rounded-lg transition-colors shadow-sm dark:bg-[#161950] dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-900"
+            className="shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-sm font-semibold text-gray-700 rounded-lg transition-colors shadow-sm dark:bg-brand-950 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-900"
           >
             Export All
             <DownloadIcon size={14} />
@@ -369,7 +369,7 @@ export default function CasesTable({ data }: Props) {
       {/* Table */}
       <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-white/3 dark:border-gray-700 shadow-sm">
         <div className="max-w-full overflow-x-auto custom-scrollbar">
-          <table className="min-w-[1400px] w-full">
+          <table className="min-w-350 w-full">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-100 text-[11px] font-semibold text-slate-500 uppercase tracking-wider dark:bg-white/3">
                 <th className="px-7 py-4 text-left text-xs font-semibold uppercase tracking-wide whitespace-nowrap dark:text-gray-400 text-gray-900 ">Case ID</th>
@@ -476,7 +476,7 @@ export default function CasesTable({ data }: Props) {
       {/* Linked Alert Modal Overlay */}
       {selectedAlertCase && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-[2px]">
-          <div className="bg-white rounded-xl p-6 w-[550px] max-w-[90vw] shadow-2xl dark:bg-gray-900 dark:border-gray-300 animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-xl p-6 w-137.5 max-w-[90vw] shadow-2xl dark:bg-gray-900 dark:border-gray-300 animate-in fade-in zoom-in duration-200">
             {/* Modal Internal Card */}
             <div className="border border-gray-200 rounded-xl overflow-hidden relative dark:border-gray-700 mb-6">
               {/* Red accent line */}
