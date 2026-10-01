@@ -10,6 +10,9 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import { ErrorMessageModal } from "../shared/MessageModal";
+import { SigninClient } from "../../services/Axios";
+import { Loader, User } from "lucide-react";
+import toast from "react-hot-toast";
 
 
 const bgImage = {
@@ -27,26 +30,32 @@ const BiImage = {
 };
 
 export default function SignUpForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setshowConfirmPassword] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
-  //   useEffect(() => {
-  //     setIsOpen(true);
-  // }, []);
-
   const [formData, setFormData] = useState({
-    fullName: "",
+    full_name: "",
+    organization: "",
+    department: "",
+    email: "",
+    username: "",
     password: "",
-    confirmPassword: "",
+    confirm_password: "",
+    role: "",
+   
   });
-
   const [errors, setErrors] = useState({
-    fullName: "",
+    full_name: "",
+    organization: "",
+    department: "",
+    email: "",
+    username: "",
     password: "",
-    confirmPassword: "",
+    confirm_password: "",
+    role: "",
     checkbox: "",
   });
 
@@ -59,17 +68,23 @@ export default function SignUpForm() {
 
   const validateForm = () => {
     const newErrors = {
-      fullName: "",
+      full_name: "",
+      organization: "",
+      department: "",
+      email: "",
+      username: "",
       password: "",
-      confirmPassword: "",
+      confirm_password: "",
+      role: "",
       checkbox: "",
     };
+    
 
     const fullNamePattern = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
-    } else if (!fullNamePattern.test(formData.fullName.trim())) {
-      newErrors.fullName =
+    if (!formData.full_name.trim()) {
+      newErrors.full_name = "Full name is required";
+    } else if (!fullNamePattern.test(formData.full_name.trim())) {
+      newErrors.full_name =
         "Please enter your first, middle and last name, letters only";
     }
 
@@ -81,8 +96,8 @@ export default function SignUpForm() {
         "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+    if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = "Passwords do not match";
     }
 
     if (!isChecked) {
@@ -95,13 +110,29 @@ export default function SignUpForm() {
     return Object.values(newErrors).every((error) => error === "");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =  async (e: React.FormEvent) => {
     e.preventDefault();
+      
+    setLoading(true);
 
-    if (validateForm()) {
-      console.log("Form submitted", formData);
-      setIsOpen(true);
-    }
+    try {
+      await SigninClient();
+      console.log(formData, "login res");
+      setFormData(formData);
+      if (validateForm()) {
+        console.log("Form submitted", formData);
+        setIsOpen(true);
+      }
+      toast.success("Account created successfully");
+    } catch (err: any) {
+      toast.error("Error creating account", err.message)
+      const errormessage =
+        err.response?.data?.message || err.message || "signup failed";
+      setErrors(errormessage);
+      } finally {
+      setLoading(false);
+     }
+   
   };
   // close modal and navigate
   const handleCloseModal = () => {
@@ -159,20 +190,20 @@ export default function SignUpForm() {
                       Full Name
                     </Label>
                     <div className="relative w-full max-w-md">
-                      <UserIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></UserIcon>
+                      <User className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50" />
                       <Input
                         type="text"
-                        id="fullName"
-                        name="fullName"
-                        value={formData.fullName}
+                        id="full_name"
+                        name="full_name"
+                        value={formData.full_name}
                         onChange={handleChange}
                         placeholder="First & Last Name"
                         required
                         className="w-full pl-10 pr-4 py-2"
                       />
                     </div>
-                    {errors.fullName && (
-                      <p className="text-red-500 text-sm">{errors.fullName}</p>
+                    {errors.full_name && (
+                      <p className="text-red-500 text-sm">{errors.full_name}</p>
                     )}
                   </div>
 
@@ -210,11 +241,33 @@ export default function SignUpForm() {
                     </div>
                   </div>
 
+                  <div className="sm:col-span-1">
+                    <Label className="text-brand-800 dark:text-white/90">
+                      Role
+                    </Label>
+                    <div className="relative w-full max-w-md">
+                      <UserIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50"></UserIcon>
+                      <Input
+                        type="text"
+                        id="role"
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                        placeholder="Enter your role"
+                        required
+                        className="w-full pl-10 pr-4 py-2"
+                      />
+                    </div>
+                    {errors.role && (
+                      <p className="text-red-500 text-sm">{errors.role}</p>
+                    )}
+                  </div>
+
                   <div>
                     <Label className="text-brand-800">Password</Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></LockIcon>
+                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50"></LockIcon>
                         <Input
                           className="w-full pl-10 pr-4 py-2"
                           name="password"
@@ -247,22 +300,22 @@ export default function SignUpForm() {
                     </Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></LockIcon>
+                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50"></LockIcon>
                         <Input
                           className="w-full pl-10 pr-4 py-2"
-                          name="confirmPassword"
-                          value={formData.confirmPassword}
+                          name="confirm_password"
+                          value={formData.confirm_password}
                           onChange={handleChange}
                           required
                           placeholder="Confirm Your Password"
-                          type={showPassword ? "text" : "password"}
+                          type={showConfirmPassword ? "text" : "password"}
                         />
                       </div>
                       <span
-                        onClick={() => setShowPassword(!showPassword)}
+                        onClick={() => setshowConfirmPassword(!showConfirmPassword)}
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                       >
-                        {showPassword ? (
+                        {showConfirmPassword ? (
                           <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
                         ) : (
                           <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
@@ -271,12 +324,12 @@ export default function SignUpForm() {
                     </div>
                     {errors.password && (
                       <p className="text-red-500 text-sm">
-                        {errors.confirmPassword}
+                        {errors.confirm_password}
                       </p>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-3 p-2 bg-brand-50 border-1 border-brand-700 rounded-lg dark:border-gray-800 dark:bg-white/[0.1]">
+                  <div className="flex items-center gap-3 p-2 bg-brand-50 border border-brand-700 rounded-lg dark:border-gray-800 dark:bg-white/10">
                     <Checkbox
                       className="w-5 h-5"
                       checked={isChecked}
@@ -302,10 +355,14 @@ export default function SignUpForm() {
                   )}
                   <div>
                     <Button
+                    disabled={loading}
                       type="submit"
-                      className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
-                    >
-                      Create Account
+                      className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6 disabled:bg-gray-200 disabled:cursor-not-allowed"
+                    >                       
+                      {loading && (
+                        <Loader size={18} className="animate-spin"/>
+                      )}
+                      {loading ? 'Creating account...' : 'Create account'}
                     </Button>
 
                     {

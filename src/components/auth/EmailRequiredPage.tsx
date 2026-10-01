@@ -9,6 +9,7 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import MessageModal from "../shared/MessageModal";
+import { Mail } from "lucide-react";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -112,7 +113,7 @@ export default function EmailRequiredPage() {
                     Work Email Address
                   </Label>
                   <div className="relative w-full max-w-md">
-                    <MailIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon>
+                    <Mail className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50" />
                     <Input
                       type="email"
                       id="email"
