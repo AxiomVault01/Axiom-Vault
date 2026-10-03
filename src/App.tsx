@@ -36,8 +36,8 @@ import InvestigationDetails from "./pages/investigations/InvestigationDetails";
 import EscalateCasePage from "./pages/investigations/EscalateCasePage";
 import AlertDetailPage from "./pages/Alerts/AlertDetailPage";
 import AlertsPage from "./pages/Alerts/AlertsPage";
-import CasesPage from "./pages/Cases/CasesPage";
-import CaseDetailPage from "./pages/Cases/CasesDetails/CaseDetailPage";
+// import CasesPage from "./pages/Cases/CasesPage";
+// import CaseDetailPage from "./pages/Cases/CasesDetails/CaseDetailPage";
 // import WelcomePage from "./components/auth/WelcomePage";
 import { Toaster } from "react-hot-toast"
 import ProtectedRoute from "./components/Protectedroute/ProtectedRoute";
