@@ -59,6 +59,7 @@ export default function EmailRequiredPage() {
     return !newErrors.email;
   };
 
+  sessionStorage.setItem("email", email)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
@@ -69,10 +70,9 @@ export default function EmailRequiredPage() {
       const payload = {
         email,
       };
-      const res = await api.put(`/auth/send-otp`, payload);
+      const res = await api.post(`/auth/send-otp`, payload);
       console.log(res, "email verification response")
       toast.success("otp sent to your email");
-      sessionStorage.setItem("email", email)
       setEmail("");
       setIsOpen(true);
     } catch (err: any) {

@@ -10,7 +10,7 @@ import Toast from "../ui/Toast";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
-import { LoginUser } from "../../services/Axios";
+import api from "../../services/Axios";
 import { Loader, Lock, Mail } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -80,7 +80,11 @@ export default function SignInForm() {
    setLoading(true);
    //  login logic
    try {
-     const rawResponse = await LoginUser(formData.email!, formData.password!);
+    const payload = {
+      email: "",
+      password: ""
+    }
+     const rawResponse = await api.post(`/auth/login`, payload);
      const response = rawResponse?.data ?? rawResponse;
      const accessToken = response?.token ?? response?.accessToken;
      const user = response?.user ?? response?.data?.user;

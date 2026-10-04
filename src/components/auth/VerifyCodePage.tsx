@@ -7,9 +7,10 @@ import { ChevronLeftIcon } from "../../icons";
 import logo from "../../../public/Logo.jpg";
 import logob from "../../../public/AXIOM _VAULT_B.png";
 import MessageModal from "../shared/MessageModal";
-import { VerifyOTP } from "../../services/Axios";
+import api from "../../services/Axios";
 import toast from "react-hot-toast";
 import { Loader } from "lucide-react";
+
 
 const lgImage = {
   width: "175px",
@@ -17,9 +18,9 @@ const lgImage = {
 };
 
 export default function VerifyCodePage() {
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(42);
   const [loading, setLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,15 +47,30 @@ export default function VerifyCodePage() {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    if (value && index < 3) {
+    if (value && index < 6) {
       inputsRef.current[index + 1]?.focus();
     }
   };
 
-  const handleResend = () => {
-    setTimeLeft(60);
+  const handleResend = async () => {
+    setTimeLeft(42);
     // TODO: Call API to resend OTP
     console.log("Resend OTP requested");
+    const email = sessionStorage.getItem("email");
+    try {
+      const payload = {
+        email,
+      };
+      const res = await api.put(`/auth/resend-otp`, payload);
+      console.log(res, "email verification response");
+      console.log(payload);
+      toast.success("otp sent to your email");
+      setIsOpen(true);
+    } catch (err: any) {
+      console.error(err.message, "error re-sending otp code");
+      toast.error(err.message, err.data?.message);
+    } finally {
+    }
   };
 
   const handleKeyDown = (
@@ -65,19 +81,24 @@ export default function VerifyCodePage() {
       inputsRef.current[index - 1]?.focus();
     }
   };
-
+const email = sessionStorage.getItem("email");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true)
     const code = otp.join("");
-
-    if (code.length !== 4) {
-      setError("Please enter the complete 4-digit code");
+    
+    if (code.length !== 6) {
+      setError("Please enter the complete 6-digit code");
       return;
     }
+    const payload = {
+      email, 
+      code
+    }
     try {
-      const res = await VerifyOTP();
+      setLoading(true)
+      const res = await api.post(`/auth/verify-reset-code`, payload);
       console.log(res, "network response");
+      sessionStorage.setItem("reset_token", res.data.reset_token)
       setError("");
       console.log("OTP Verified:", code);
       toast.success("OTP confirmed successfully");
@@ -162,7 +183,7 @@ export default function VerifyCodePage() {
                     size="sm"
                   >
                     {loading && (
-                      <Loader size={18}/>
+                      <Loader size={18} className="animate-spin"/>
                     )}
                     {loading ? 'Verifying...' : 'Verify'}
                   </Button>

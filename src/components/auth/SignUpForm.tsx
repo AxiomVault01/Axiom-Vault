@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon, UserIcon, LockIcon} from "../../icons";
+import {
+  ChevronLeftIcon,
+  EyeCloseIcon,
+  EyeIcon,
+} from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
@@ -10,10 +14,9 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import { ErrorMessageModal } from "../shared/MessageModal";
-import { SigninClient } from "../../services/Axios";
-import { Loader, User } from "lucide-react";
+import api from "../../services/Axios";
+import { Loader, Lock, User } from "lucide-react";
 import toast from "react-hot-toast";
-
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -40,22 +43,16 @@ export default function SignUpForm() {
     full_name: "",
     organization: "",
     department: "",
-    email: "",
-    username: "",
     password: "",
-    confirm_password: "",
-    role: "",
-   
+    re_enter_password: "",
+    checkbox: "",
   });
   const [errors, setErrors] = useState({
     full_name: "",
     organization: "",
     department: "",
-    email: "",
-    username: "",
     password: "",
-    confirm_password: "",
-    role: "",
+    re_enter_password: "",
     checkbox: "",
   });
 
@@ -71,14 +68,10 @@ export default function SignUpForm() {
       full_name: "",
       organization: "",
       department: "",
-      email: "",
-      username: "",
       password: "",
-      confirm_password: "",
-      role: "",
+      re_enter_password: "",
       checkbox: "",
     };
-    
 
     const fullNamePattern = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
     if (!formData.full_name.trim()) {
@@ -96,8 +89,8 @@ export default function SignUpForm() {
         "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
     }
 
-    if (formData.password !== formData.confirm_password) {
-      newErrors.confirm_password = "Passwords do not match";
+    if (formData.password !== formData.re_enter_password) {
+      newErrors.re_enter_password = "Passwords do not match";
     }
 
     if (!isChecked) {
@@ -109,30 +102,36 @@ export default function SignUpForm() {
 
     return Object.values(newErrors).every((error) => error === "");
   };
-
-  const handleSubmit =  async (e: React.FormEvent) => {
+  const verification_token = sessionStorage.getItem("code");
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-      
     setLoading(true);
 
     try {
-      await SigninClient();
-      console.log(formData, "login res");
+      const Payload = {
+        verification_token,
+        full_name: "",
+        organization: "",
+        department: "",
+        password: "",
+        re_enter_password: "",
+      };
+      await api.post(`/auth/signup`, Payload);
+      console.log(Payload, "login res");
       setFormData(formData);
       if (validateForm()) {
         console.log("Form submitted", formData);
-        setIsOpen(true);
       }
+      setIsOpen(true);
       toast.success("Account created successfully");
     } catch (err: any) {
-      toast.error("Error creating account", err.message)
       const errormessage =
-        err.response?.data?.message || err.message || "signup failed";
+      err.response?.data?.message || err.message || "signup failed";
+      toast.error(err.message, errormessage);
       setErrors(errormessage);
-      } finally {
+    } finally {
       setLoading(false);
-     }
-   
+    }
   };
   // close modal and navigate
   const handleCloseModal = () => {
@@ -241,7 +240,7 @@ export default function SignUpForm() {
                     </div>
                   </div>
 
-                  <div className="sm:col-span-1">
+                  {/* <div className="sm:col-span-1">
                     <Label className="text-brand-800 dark:text-white/90">
                       Role
                     </Label>
@@ -251,7 +250,7 @@ export default function SignUpForm() {
                         type="text"
                         id="role"
                         name="role"
-                        value={formData.role}
+                        value={formData. role}
                         onChange={handleChange}
                         placeholder="Enter your role"
                         required
@@ -261,13 +260,13 @@ export default function SignUpForm() {
                     {errors.role && (
                       <p className="text-red-500 text-sm">{errors.role}</p>
                     )}
-                  </div>
+                  </div> */}
 
                   <div>
                     <Label className="text-brand-800">Password</Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50"></LockIcon>
+                        <Lock className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50" />
                         <Input
                           className="w-full pl-10 pr-4 py-2"
                           name="password"
@@ -300,11 +299,11 @@ export default function SignUpForm() {
                     </Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50"></LockIcon>
+                        <Lock className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50" />
                         <Input
                           className="w-full pl-10 pr-4 py-2"
-                          name="confirm_password"
-                          value={formData.confirm_password}
+                          name="re_enter_password"
+                          value={formData.re_enter_password}
                           onChange={handleChange}
                           required
                           placeholder="Confirm Your Password"
@@ -312,7 +311,9 @@ export default function SignUpForm() {
                         />
                       </div>
                       <span
-                        onClick={() => setshowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setshowConfirmPassword(!showConfirmPassword)
+                        }
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
                       >
                         {showConfirmPassword ? (
@@ -324,7 +325,7 @@ export default function SignUpForm() {
                     </div>
                     {errors.password && (
                       <p className="text-red-500 text-sm">
-                        {errors.confirm_password}
+                        {errors.re_enter_password}
                       </p>
                     )}
                   </div>
@@ -355,14 +356,12 @@ export default function SignUpForm() {
                   )}
                   <div>
                     <Button
-                    disabled={loading}
+                      disabled={loading}
                       type="submit"
                       className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6 disabled:bg-gray-200 disabled:cursor-not-allowed"
-                    >                       
-                      {loading && (
-                        <Loader size={18} className="animate-spin"/>
-                      )}
-                      {loading ? 'Creating account...' : 'Create account'}
+                    >
+                      {loading && <Loader size={18} className="animate-spin" />}
+                      {loading ? "Creating account..." : "Create account"}
                     </Button>
 
                     {

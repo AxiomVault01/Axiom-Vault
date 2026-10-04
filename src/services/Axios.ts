@@ -42,13 +42,13 @@ const processQueue = (error: any, token: string | null = null) => {
 
 const isAuthRequest = (url?: string) =>
   typeof url === "string" &&
-  (url.includes("auth/login") || url.includes("auth/refresh"));
+  (url.includes("/auth/login") || url.includes("/auth/token/refresh"));
 
 const redirectToLogin = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  if (window.location.pathname !== "/login") {
-    window.location.href = "/login";
+  if (window.location.pathname !== "/signin") {
+    window.location.href = "/signin";
   }
 };
 
@@ -87,7 +87,7 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const res = await api.post("/auth/refresh");
+      const res = await api.post("/auth/token/refresh");
       const newAccessToken = res.data.accessToken;
       localStorage.setItem("token", newAccessToken);
       api.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -106,27 +106,27 @@ api.interceptors.response.use(
 
 export default api;
 
-const LoginUser = async (email: string, password: string) => {
-  try {
-    const response = await api.post("v1/auth/login", { email, password });
-    if (response.data.accessToken) {
-      localStorage.setItem("token", response.data.accessToken);
-      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
-    }
-    return response.data;
-  } catch (error: string | any) {
-    console.error(
-      "Login error:",
-      error.response?.data || error?.message || error,
-    );
-    throw error;
-  }
-};
-export { LoginUser };
+// const LoginUser = async (email: string, password: string) => {
+//   try {
+//     const response = await api.post("/auth/login", { email, password });
+//     if (response.data.accessToken) {
+//       localStorage.setItem("token", response.data.accessToken);
+//       api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+//     }
+//     return response.data;
+//   } catch (error: string | any) {
+//     console.error(
+//       "Login error:",
+//       error.response?.data || error?.message || error,
+//     );
+//     throw error;
+//   }
+// };
+// export { LoginUser };
 
 const LogoutUser = async () => {
   try {
-    const response = await api.post("v1/auth/logout");
+    const response = await api.post("/auth/logout");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     delete api.defaults.headers.Authorization;
@@ -145,65 +145,61 @@ const LogoutUser = async () => {
 
 export { LogoutUser };
   
-interface SigninProps {
-  user: {
-    full_name: string;
-    organization: string;
-    department: string;
-    email: string;
-    username: string;
-    password: string;
-    confirm_password: string;
-    role: string;
-  };
-}
+// interface SigninProps {
+//   user: {
+//     full_name: string;
+//     organization: string;
+//     department: string;
+//     password: string;
+//     re_enter_password: string;
+//     role: string;
+//   };
+// }
 
-const SigninClient: () => Promise<SigninProps> = async () => {
-  const payload = {
-    full_name: "full_name",
-    organization: "organization",
-    department: "department",
-    email: "email",
-    username: "username",
-    password: "password",
-    confirm_password: "confirm_password",
-    role: "role",
-  };
-  try {
-    const response = await api.post(`v1/auth/signup`, payload);
-    return response.data;
-  } catch (error: string | any) {
-    console.error(
-      "Signup error:",
-      error.response?.data || error?.message || error,
-    );
-    throw error;
-  }
-};
-export { SigninClient };
+// const SigninClient: () => Promise<SigninProps> = async () => {
+//   const payload = {
+//     full_name: "full_name",
+//     organization: "organization",
+//     department: "department",
+//     password: "password",
+//     re_enter_password: "re_enter_password",
+//     role: "role",
+//   };
+//   try {
+//     const response = await api.post(`/auth/signup`, payload);
+//     return response.data;
+//   } catch (error: string | any) {
+//     console.error(
+//       "Signup error:",
+//       error.response?.data || error?.message || error,
+//     );
+//     throw error;
+//   }
+// };
+// export { SigninClient };
   
-const ResetPassword = async () => {
-  const ResetPasswordPayload = {
-    email: "email",
-    new_password: "new_password",
-    code: "code",
-  };
-  try {
-    const response = await api.post("v1/auth/reset-password", ResetPasswordPayload);
-    if (response.data.accessToken) {
-      localStorage.setItem("token", response.data.accessToken);
-      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
-    }
-    return response.data;
-  } catch (error: string | any) {
-    console.error(
-      "error resetting password",
-      error.response?.data || error?.message || error,
-    );
-    throw error;
-  }
-};
-export { ResetPassword };
+// const ResetPassword = async () => {
+//   const ResetPasswordPayload = {
+//     email: "",
+//     new_password: "",
+//     code: "",
+//   };
+//   try {
+//     const response = await api.post("/auth/reset-password", ResetPasswordPayload);
+//     if (response.data.accessToken) {
+//       localStorage.setItem("token", response.data.accessToken);
+//       api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+//     }
+//     return response.data;
+//   } catch (error: string | any) {
+//     console.error(
+//       "error resetting password",
+//       error.response?.data || error?.message || error,
+//     );
+//     throw error;
+//   }
+// };
+// export { ResetPassword };
   
   // forgot password
 const ForgotPassword = async () => {
@@ -211,7 +207,7 @@ const ForgotPassword = async () => {
     email: "email",
   };
   try {
-    const response = await api.post("v1/auth/forgot-password", forgotpasswordpayload);
+    const response = await api.post("/auth/forgot-password", forgotpasswordpayload);
     if (response.data.accessToken) {
       localStorage.setItem("token", response.data.accessToken);
       api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
@@ -228,25 +224,25 @@ const ForgotPassword = async () => {
 export { ForgotPassword };
   
   // verify otp
-const VerifyOTP = async () => {
-  const OTPpayload = {
-    email: "email",
-    code: "code"
-  }
-  try {
-    const response = await api.post("v1/auth/verify-otp", OTPpayload);
-    if (response.data.accessToken) {
-      localStorage.setItem("token", response.data.accessToken);
-      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
-    }
-    return response.data;
-  } catch (error: string | any) {
-    console.error(
-      "Login error:",
-      error.response?.data || error?.message || error,
-    );
-    throw error;
-  }
-};
-export { VerifyOTP };
+// const VerifyOTP = async () => {
+//   const OTPpayload = {
+//     email: "email",
+//     code: "code"
+//   }
+//   try {
+//     const response = await api.post("/auth/verify-otp", OTPpayload);
+//     if (response.data.accessToken) {
+//       localStorage.setItem("token", response.data.accessToken);
+//       api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+//     }
+//     return response.data;
+//   } catch (error: string | any) {
+//     console.error(
+//       "Login error:",
+//       error.response?.data || error?.message || error,
+//     );
+//     throw error;
+//   }
+// };
+// export { VerifyOTP };
 

@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
     setErrors(newErrors);
     return !newErrors.email;
   };
-
+sessionStorage.setItem("email", formData.email);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true)

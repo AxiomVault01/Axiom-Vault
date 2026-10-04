@@ -70,6 +70,7 @@ export default function EmailVerificationPage() {
       inputRefs.current[index - 1]?.focus();
     }
   };
+  const email = sessionStorage.getItem("email");
 
   const handleResend = async () => {
     setTimeLeft(42);
@@ -78,16 +79,18 @@ export default function EmailVerificationPage() {
     try {
       const payload = {
         email,
+        code
       };
       const res = await api.put(`/auth/resend-otp`, payload);
       console.log(res, "email verification response");
+      console.log(payload)
       toast.success("otp sent to your email");
       setIsOpen(true);
     } catch (err: any) {
-      console.error(err.message, "error sending otp code");
+      console.error(err.message, "error re-sending otp code");
       toast.error(err.message, err.data?.message);
     } finally {
-      setLoading(false);
+      
     }
   };
 
@@ -100,7 +103,6 @@ export default function EmailVerificationPage() {
     return true;
   };
 
-  const email = sessionStorage.getItem("email");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateCode()) {
@@ -116,6 +118,7 @@ export default function EmailVerificationPage() {
       console.log(res, "email verification response");
       toast.success("otp sent to your email");
       setIsOpen(true);
+      sessionStorage.setItem("code", res.data);
     } catch (err: any) {
       console.error(err.message, "error sending otp code");
       toast.error(err.message, err.data?.message);
