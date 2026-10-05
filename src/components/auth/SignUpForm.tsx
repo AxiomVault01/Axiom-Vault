@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
-import {
-  ChevronLeftIcon,
-  EyeCloseIcon,
-  EyeIcon,
-} from "../../icons";
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
@@ -56,7 +52,9 @@ export default function SignUpForm() {
     checkbox: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -102,7 +100,7 @@ export default function SignUpForm() {
 
     return Object.values(newErrors).every((error) => error === "");
   };
-  const verification_token = sessionStorage.getItem("code");
+  const verification_token = localStorage.getItem("code");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -110,23 +108,24 @@ export default function SignUpForm() {
     try {
       const Payload = {
         verification_token,
-        full_name: "",
-        organization: "",
-        department: "",
-        password: "",
-        re_enter_password: "",
+        full_name: formData.full_name,
+        organization: formData.organization,
+        department: formData.department,
+        password: formData.password,
+        re_enter_password: formData.re_enter_password,
       };
-      await api.post(`/auth/signup`, Payload);
+      const res = await api.post(`/auth/signup/`, Payload);
       console.log(Payload, "login res");
       setFormData(formData);
       if (validateForm()) {
         console.log("Form submitted", formData);
       }
       setIsOpen(true);
-      toast.success("Account created successfully");
+      // localStorage.setItem("data", JSON.stringify(res.data));
+      toast.success(res.data.message);
     } catch (err: any) {
       const errormessage =
-      err.response?.data?.message || err.message || "signup failed";
+        err.response?.data?.message || err.message || "signup failed";
       toast.error(err.message, errormessage);
       setErrors(errormessage);
     } finally {
@@ -144,11 +143,11 @@ export default function SignUpForm() {
       <div className="flex flex-col flex-1 w-full mx-auto overflow-y-auto lg:w-1/2 no-scrollbar">
         <div className="w-full max-w-md mx-auto mb-5 sm:pt-10">
           <Link
-            to="/"
+            to="/email-verification"
             className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-200 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon className="size-5" />
-            Back to Home
+            Back
           </Link>
         </div>
         <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10">
@@ -213,8 +212,11 @@ export default function SignUpForm() {
                       </Label>
                       <Input
                         type="text"
-                        id="org"
-                        name="org"
+                        id="organization"
+                        name="organization"
+                        value={formData.organization}
+                        onChange={handleChange}
+                        className="w-full pl-4 pr-4 py-2"
                         placeholder="Agency Name"
                         required
                       />
@@ -224,8 +226,10 @@ export default function SignUpForm() {
                         Department
                       </Label>
                       <select
-                        name="dept"
-                        id="dept"
+                        name="department"
+                        id="department"
+                        value={formData.department}
+                        onChange={handleChange}
                         required
                         className="w-full px-2 py-3 border border-gray-300 dark:border-gray-600 dark:text-gray-200 text-sm rounded-lg focus:outline-none focus:dark:bg-gray-900 focus:dark:text-white"
                       >

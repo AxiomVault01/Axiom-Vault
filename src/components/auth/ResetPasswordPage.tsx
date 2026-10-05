@@ -73,10 +73,10 @@ const reset_token = sessionStorage.getItem("reset_token")
     try {
       const payload = {
         reset_token,
-        new_password: "" ,
-        re_enter_password: "",
+        new_password: formData.new_password ,
+        re_enter_password: formData.re_enter_password,
       };
-      const resetPassword = await api.post(`/auth/reset-password`, payload);
+      const resetPassword = await api.post(`/auth/reset-password/`, payload);
       console.log(resetPassword, "API response");
       toast.success("Password reset successful you will be redirected to the login page");
       setTimeout(() => {
@@ -145,7 +145,7 @@ const reset_token = sessionStorage.getItem("reset_token")
                     <Input
                       className="w-full pl-10 pr-4 py-2"
                       placeholder="Enter Your New Password"
-                      name="password"
+                      name="new_password"
                       value={formData.new_password}
                       onChange={handleChange}
                       required

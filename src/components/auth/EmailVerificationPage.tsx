@@ -70,7 +70,7 @@ export default function EmailVerificationPage() {
       inputRefs.current[index - 1]?.focus();
     }
   };
-  const email = sessionStorage.getItem("email");
+  const email = localStorage.getItem("email");
 
   const handleResend = async () => {
     setTimeLeft(42);
@@ -79,12 +79,12 @@ export default function EmailVerificationPage() {
     try {
       const payload = {
         email,
-        code
+        // code: code.join(""),
       };
-      const res = await api.put(`/auth/resend-otp`, payload);
+      const res = await api.post(`/auth/resend-otp/`, payload);
       console.log(res, "email verification response");
       console.log(payload)
-      toast.success("otp sent to your email");
+      toast.success(res.data.message);
       setIsOpen(true);
     } catch (err: any) {
       console.error(err.message, "error re-sending otp code");
@@ -107,18 +107,19 @@ export default function EmailVerificationPage() {
     e.preventDefault();
     if (validateCode()) {
       console.log("Code verified:", code.join(""));
+      
     }
-    // setIsOpen(true);
+    setLoading(true);
     try {
       const payload = {
         email,
-        code,
+        code: code.join(""),
       };
-      const res = await api.put(`/auth/verify-otp`, payload);
+      const res = await api.post(`/auth/verify-otp/`, payload);
       console.log(res, "email verification response");
-      toast.success("otp sent to your email");
+      toast.success(res.data.message);
       setIsOpen(true);
-      sessionStorage.setItem("code", res.data);
+      localStorage.setItem("code", res.data.verification_token);
     } catch (err: any) {
       console.error(err.message, "error sending otp code");
       toast.error(err.message, err.data?.message);
@@ -138,11 +139,11 @@ export default function EmailVerificationPage() {
       <div className="flex flex-col flex-1 w-full mx-auto">
         <div className="w-full max-w-md pt-10 mx-auto">
           <Link
-            to="/welcome"
+            to="/email-required"
             className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-200 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon className="size-5" />
-            Back to Home
+            Back
           </Link>
         </div>
         <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10">

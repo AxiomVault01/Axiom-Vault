@@ -20,7 +20,7 @@ const lgImage = {
 export default function VerifyCodePage() {
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
-  const [timeLeft, setTimeLeft] = useState(42);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [loading, setLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,7 +53,7 @@ export default function VerifyCodePage() {
   };
 
   const handleResend = async () => {
-    setTimeLeft(42);
+    setTimeLeft(60);
     // TODO: Call API to resend OTP
     console.log("Resend OTP requested");
     const email = sessionStorage.getItem("email");
@@ -61,7 +61,7 @@ export default function VerifyCodePage() {
       const payload = {
         email,
       };
-      const res = await api.put(`/auth/resend-otp`, payload);
+      const res = await api.put(`/auth/resend-otp/`, payload);
       console.log(res, "email verification response");
       console.log(payload);
       toast.success("otp sent to your email");
@@ -96,7 +96,7 @@ const email = sessionStorage.getItem("email");
     }
     try {
       setLoading(true)
-      const res = await api.post(`/auth/verify-reset-code`, payload);
+      const res = await api.post(`/auth/verify-reset-code/`, payload);
       console.log(res, "network response");
       sessionStorage.setItem("reset_token", res.data.reset_token)
       setError("");

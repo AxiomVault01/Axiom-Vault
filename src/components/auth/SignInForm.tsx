@@ -77,56 +77,35 @@ export default function SignInForm() {
 
  const handleSubmit = async (e: React.FormEvent) => {
    e.preventDefault();
+   if (!validateForm()) return;
+
    setLoading(true);
    //  login logic
    try {
     const payload = {
-      email: "",
-      password: ""
+      email: formData.email,
+      password: formData.password,
     }
-     const rawResponse = await api.post(`/auth/login`, payload);
-     const response = rawResponse?.data ?? rawResponse;
-     const accessToken = response?.token ?? response?.accessToken;
-     const user = response?.user ?? response?.data?.user;
-
-     console.log("Login response:", rawResponse);
-     console.log("Access Token:", accessToken);
-     console.log("User:", user);
-
-     if (!accessToken || !user) {
-       throw new Error("Login response did not include token or user data");
-     }
-
-     localStorage.setItem("user", JSON.stringify(user));
-     localStorage.setItem("token", accessToken);
-     setFormData(formData)
-     setErrors(errors);
-
-     if (validateForm()) {
-       console.log("Form submitted", formData);
-       setShowToast(true);
-       toast.success("Login Successful")
-       setTimeout(() => {
-         navigate("/dashboard");
-       }, 3000);
-     }
-
-    //  const role = user.role;
-    //  if (role === "admin") {
-    //    navigate("/dashboard");
-    //  } else if (role === "cashier") {
-    //    navigate("/cashier-dashboard");
-    //  } else {
-    //    navigate("/login");
-    //  }
-   } catch (error: any) {
-     toast.error("Error loggin in",  error.message);
-     const errormessage =
-       error.response?.data?.message || error.message || "login failed";
-     setErrors(errormessage);
-   } finally {
-     setLoading(false);
-   }
+     const rawResponse = await api.post(`/auth/login/`, payload);
+     const token = rawResponse.data.access;
+     localStorage.setItem("token", token);
+     localStorage.setItem("email", formData.email);
+     console.log(token, "token");
+     console.log(rawResponse, "API response");
+      console.log(rawResponse, "API response");
+      if (rawResponse.status === 200) {
+        toast.success("Login successful! 🎉")
+        setShowToast(true)
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
+      }
+    } catch (err: any) {
+      console.error(err.message, "error logging in");
+      toast.error(err.message, err.data?.message);
+    } finally {
+      setLoading(false);
+    }
 
  
  };
@@ -136,11 +115,11 @@ export default function SignInForm() {
       <div className="flex flex-col flex-1 w-full mx-auto">
         <div className="w-full max-w-md pt-10 mx-auto">
           <Link
-            to="/"
+            to="/signup"
             className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-200 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon className="size-5" />
-            Back to Home
+            Back
           </Link>
         </div>
         <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10">

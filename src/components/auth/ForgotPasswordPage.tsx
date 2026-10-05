@@ -9,7 +9,7 @@ import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import logo from "../../../public/Logo.jpg";
 import logob from "../../../public/AXIOM _VAULT_B.png";
 import { Loader, Mail } from "lucide-react";
-import { ForgotPassword } from "../../services/Axios";
+import api, { ForgotPassword } from "../../services/Axios";
 import toast from "react-hot-toast";
 
 
@@ -61,7 +61,9 @@ sessionStorage.setItem("email", formData.email);
 
     // forgot password logic to send otp
     try {
-      const res = await ForgotPassword();
+      const res = await api.post("/auth/forgot-password/", {
+        email: formData.email,
+      });
       console.log(res, "forgot password")
       toast.success("OTP sent successfully");
       if (validateForm()) {

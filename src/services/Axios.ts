@@ -88,7 +88,7 @@ api.interceptors.response.use(
 
     try {
       const res = await api.post("/auth/token/refresh");
-      const newAccessToken = res.data.accessToken;
+      const newAccessToken = res.data.access;
       localStorage.setItem("token", newAccessToken);
       api.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
       processQueue(null, newAccessToken);
@@ -207,10 +207,10 @@ const ForgotPassword = async () => {
     email: "email",
   };
   try {
-    const response = await api.post("/auth/forgot-password", forgotpasswordpayload);
-    if (response.data.accessToken) {
-      localStorage.setItem("token", response.data.accessToken);
-      api.defaults.headers.Authorization = `Bearer ${response.data.accessToken}`;
+    const response = await api.post("/auth/forgot-password/", forgotpasswordpayload);
+    if (response.data.access) {
+      localStorage.setItem("token", response.data.access);
+      api.defaults.headers.Authorization = `Bearer ${response.data.access}`;
     }
     return response.data;
   } catch (error: string | any) {
