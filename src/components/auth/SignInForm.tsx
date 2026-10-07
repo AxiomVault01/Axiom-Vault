@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon, LockIcon, MailIcon } from "../../icons";
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
@@ -10,6 +10,9 @@ import Toast from "../ui/Toast";
 import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
+import api from "../../services/Axios";
+import { Loader, Lock, Mail } from "lucide-react";
+import toast from "react-hot-toast";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -27,13 +30,13 @@ const BiImage = {
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-  email: "",
+    email: "",
   password: "",
   });
+    const navigate = useNavigate();
 
   const [errors, setErrors] = useState({
   email: "",
@@ -72,15 +75,39 @@ export default function SignInForm() {
   return !newErrors.email && !newErrors.password;
  };
 
- const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  if (validateForm()) {
-    console.log("Form submitted", formData);
-    setShowToast(true);
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 3000);
-  }
+ const handleSubmit = async (e: React.FormEvent) => {
+   e.preventDefault();
+   if (!validateForm()) return;
+
+   setLoading(true);
+   //  login logic
+   try {
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+    }
+     const rawResponse = await api.post(`/auth/login/`, payload);
+     const token = rawResponse.data.access;
+     localStorage.setItem("token", token);
+     localStorage.setItem("email", formData.email);
+     console.log(token, "token");
+     console.log(rawResponse, "API response");
+      console.log(rawResponse, "API response");
+      if (rawResponse.status === 200) {
+        toast.success("Login successful! 🎉")
+        setShowToast(true)
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
+      }
+    } catch (err: any) {
+      console.error(err.message, "error logging in");
+      toast.error(err.message, err.data?.message);
+    } finally {
+      setLoading(false);
+    }
+
+ 
  };
 
   return (
@@ -88,11 +115,11 @@ export default function SignInForm() {
       <div className="flex flex-col flex-1 w-full mx-auto">
         <div className="w-full max-w-md pt-10 mx-auto">
           <Link
-            to="/"
+            to="/signup"
             className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-200 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon className="size-5" />
-            Back to Home
+            Back
           </Link>
         </div>
         <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10">
@@ -118,7 +145,7 @@ export default function SignInForm() {
                       Email Address
                     </Label>
                     <div className="relative w-full max-w-md">
-                      <MailIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon>
+                      <Mail  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none dark:text-gray-400 z-50" />
                       <Input type="email" id="email" name="email" placeholder="auditor@agency.gov" value={formData.email} onChange={handleChange} required className="w-full pl-10 pr-4 py-2" />
                     </div>
                     {errors.email && (
@@ -132,7 +159,7 @@ export default function SignInForm() {
                     </Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <LockIcon  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" ></LockIcon>
+                        <Lock  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400 pointer-events-none z-50" />
                         <Input className="w-full pl-10 pr-4 py-2" name="password" value={formData.password} onChange={handleChange}  placeholder="Enter Your Password" required 
                         type={showPassword ? "text" : "password"} />
                      </div>
@@ -167,10 +194,16 @@ export default function SignInForm() {
                     </Link>
                   </div>
                   <div>
-                    <Button type="submit"
+                    <Button
+                    disabled={loading}
+                     type="submit"
                      className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-500 hover:border-gray-400 hover:text-gray-50 mt-6"
                      size="sm">
-                     Sign In
+                     
+                      {loading && (
+                        <Loader size={18} className="animate-spin"/>
+                      )}
+                      {loading ? 'Sigining in...' : 'Sign in'}
                     </Button>
                     
                   </div>
@@ -185,13 +218,13 @@ export default function SignInForm() {
 
               <div className="mt-6">
                 <Link to="/email-required">
-                  <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200 dark:text-gray-200 dark:hover:text-gray-900">
+                  <button className="flex items-center border border-gray-400 justify-center w-full px-4 py-3 text-sm font-medium transition rounded-lg shadow-theme-xs hover:bg-gray-200  text-brand-100 dark:text-gray-200 dark:hover:text-gray-900">
                     Create Account
                   </button>
                 </Link>
               </div>
               <div className="mt-10 border-t-2 border-gray-100">
-                <p className="text-sm text-center mt-5 text-brand-100 dark:text-gray-400">
+                <p className="text-[10px] text-center mt-5 text-brand-100 dark:text-gray-400">
                   By signing in, you agree to our Terms of Service and Privacy
                   Policy
                 </p>

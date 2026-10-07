@@ -9,6 +9,9 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import MessageModal from "../shared/MessageModal";
+import { Loader, Mail } from "lucide-react";
+import api from "../../services/Axios";
+import toast from "react-hot-toast";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -23,7 +26,9 @@ const BiImage = {
   width: "30.53px",
   height: "40px",
 };
-
+export interface emailProps {
+email: string;
+}
 export default function EmailRequiredPage() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +36,7 @@ export default function EmailRequiredPage() {
   const [errors, setErrors] = useState({
     email: "",
   });
+  const [loading, setLoading] = useState<boolean>(false)
 
   // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setFormData({
@@ -53,18 +59,34 @@ export default function EmailRequiredPage() {
     return !newErrors.email;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
       console.log("Form submitted", email);
-
-      setIsOpen(true);
+    }
+    setLoading(true)
+    try {
+      const payload = {
+        email,
+      };
+      const res = await api.post(`/auth/send-otp/`, payload);
+      console.log(res, "email verification response")
+      toast.success(res.data.message);
+      localStorage.setItem("email", email)
       setEmail("");
+      setIsOpen(true);
+    } catch (err: any) {
+      console.error(err.message, "error sending otp code")
+      toast.error(err.message,  err.data?.message);
+    } finally {
+      setLoading(false)
+      
     }
   };
   const handleCloseModal = () => {
     setIsOpen(false);
     navigate("/email-verification");
+    
   };
 
   return (
@@ -112,7 +134,7 @@ export default function EmailRequiredPage() {
                     Work Email Address
                   </Label>
                   <div className="relative w-full max-w-md">
-                    <MailIcon className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></MailIcon>
+                    <Mail className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-50" />
                     <Input
                       type="email"
                       id="email"
@@ -130,12 +152,17 @@ export default function EmailRequiredPage() {
                 </div>
                 <div>
                   <Button
+                    disabled={loading}
                     type="submit"
                     className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
                     size="sm"
                   >
-                    <PaperPlaneIcon></PaperPlaneIcon>
-                    Send Verification Code
+                    {loading ? (
+                      <Loader size={20} className="animate-spin" />
+                    ) : (
+                      <PaperPlaneIcon></PaperPlaneIcon>
+                    )}
+                    {loading ? "" : "Send Verification Code"}
                   </Button>
                   {isOpen && (
                     <div className="">

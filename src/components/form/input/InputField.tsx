@@ -38,7 +38,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
   success = false,
   error = false,
   hint,
-  required = false,
+  // required = false,
   maxLength,
   inputMode,
  }, ref) => {
@@ -71,7 +71,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
         maxLength={maxLength}
         inputMode={inputMode}
         disabled={disabled}
-        required={required}
+        // required={required}
         className={inputClasses}
       />
 

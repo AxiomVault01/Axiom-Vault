@@ -9,7 +9,9 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import { SuccessMessageModal } from "../shared/MessageModal";
-
+import api from "../../services/Axios";
+import toast from "react-hot-toast";
+import { Loader } from "lucide-react";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -25,74 +27,111 @@ const BiImage = {
   height: "40px",
 };
 
-
 export default function EmailVerificationPage() {
-    const [code, setCode] = useState<string[]>(['','','','','','']);
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
-    const inputRefs = useRef<HTMLInputElement[]>([]);
-    const [timeLeft, setTimeLeft] = useState(60);
-   
+  const [code, setCode] = useState<string[]>(["", "", "", "", "", ""]);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const inputRefs = useRef<HTMLInputElement[]>([]);
+  const [timeLeft, setTimeLeft] = useState(42);
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-     const [isOpen, setIsOpen] = useState(false);
+  //   useEffect(() => {
+  //     setIsOpen(true);
+  // }, []);
 
-//   useEffect(() => {
-//     setIsOpen(true);
-// }, []);
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [timeLeft]);
 
-    useEffect(() => {
-      if (timeLeft > 0) {
-        const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-        return () => clearTimeout(timer);
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    const value = e.target.value;
+    if (/^\d$/.test(value) || value === "") {
+      const newCode = [...code];
+      newCode[index] = value;
+      setCode(newCode);
+      if (value && index < 5) {
+        inputRefs.current[index + 1]?.focus();
       }
-    }, [timeLeft]);
+    }
+  };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-      const value = e.target.value;
-      if (/^\d$/.test(value) || value === '') {
-        const newCode = [...code];
-        newCode[index] = value;
-        setCode(newCode);
-        if (value && index < 5) {
-          inputRefs.current[index + 1]?.focus();
-        }
-      }
-    };
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+  const email = localStorage.getItem("email");
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-      if (e.key === 'Backspace' && !code[index] && index > 0) {
-        inputRefs.current[index - 1]?.focus();
-      }
-    };
+  const handleResend = async () => {
+    setTimeLeft(42);
+    // TODO: Call API to resend OTP
+    console.log("Resend OTP requested");
+    try {
+      const payload = {
+        email,
+        // code: code.join(""),
+      };
+      const res = await api.post(`/auth/resend-otp/`, payload);
+      console.log(res, "email verification response");
+      console.log(payload)
+      toast.success(res.data.message);
+      setIsOpen(true);
+    } catch (err: any) {
+      console.error(err.message, "error re-sending otp code");
+      toast.error(err.message, err.data?.message);
+    } finally {
+      
+    }
+  };
 
-    const handleResend = () => {
-      setTimeLeft(60);
-      // TODO: Call API to resend OTP
-      console.log("Resend OTP requested");
-    };
+  const validateCode = () => {
+    if (code.some((d) => d === "")) {
+      setError("Please enter all 6 digits");
+      return false;
+    }
+    setError("");
+    return true;
+  };
 
-    const validateCode = () => {
-      if (code.some(d => d === '')) {
-        setError("Please enter all 6 digits");
-        return false;
-      }
-      setError("");
-      return true;
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (validateCode()) {
-      console.log("Code verified:", code.join(''));
-    
-      setIsOpen(true)
+      console.log("Code verified:", code.join(""));
+      
+    }
+    setLoading(true);
+    try {
+      const payload = {
+        email,
+        code: code.join(""),
+      };
+      const res = await api.post(`/auth/verify-otp/`, payload);
+      console.log(res, "email verification response");
+      toast.success(res.data.message);
+      setIsOpen(true);
+      localStorage.setItem("code", res.data.verification_token);
+    } catch (err: any) {
+      console.error(err.message, "error sending otp code");
+      toast.error(err.message, err.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
   // close modal and navigate
   const handleCloseModal = () => {
-     setIsOpen(false);
-       navigate("/signup");
+    setIsOpen(false);
+    navigate("/signup");
+    sessionStorage.clear();
   };
 
   return (
@@ -100,11 +139,11 @@ export default function EmailVerificationPage() {
       <div className="flex flex-col flex-1 w-full mx-auto">
         <div className="w-full max-w-md pt-10 mx-auto">
           <Link
-            to="/welcome"
+            to="/email-required"
             className="inline-flex items-center text-sm text-white transition-colors hover:text-brand-200 dark:text-gray-200 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon className="size-5" />
-            Back to Home
+            Back
           </Link>
         </div>
         <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto mb-10">
@@ -161,12 +200,17 @@ export default function EmailVerificationPage() {
                 </div>
                 <div>
                   <Button
+                    disabled={loading}
                     type="submit"
-                    className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6"
+                    className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs mt-6 disabled:bg-gray-300 disabled:cursor-not-allowed"
                     size="sm"
                   >
-                    <CheckLineIcon></CheckLineIcon>
-                    Verify Code
+                    {loading ? (
+                      <Loader size={20} className="animate-spin" />
+                    ) : (
+                      <CheckLineIcon></CheckLineIcon>
+                    )}
+                    {loading ? "Verifying Code" : " Verify Code"}
                   </Button>
                 </div>
                 <div className="">
