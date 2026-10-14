@@ -30,7 +30,7 @@ export default function InvestigationHeader(){
                        <Download size={16}/>
                        Export Report
                    </button>
-                   <button onClick={() =>navigate("/investigations/escalate") } className="rounded-md border border-stroke bg-brand-500 text-white px-2 py-1 text-sm font-medium flex-shrink-0
+                   <button onClick={() =>navigate("/case/escalate") } className="rounded-md border border-stroke bg-brand-500 text-white px-2 py-1 text-sm font-medium flex-shrink-0
                         dark:border-strokedark dark:bg-boxdark">
                         Escalate Case
                    </button>

@@ -44,7 +44,7 @@ export default function EscalateCasePage(){
 
             <EscalationSuccessModal isOpen={showSuccessModal} onClose={() => { document.body.style.overflow = "";
                 setShowSuccessModal(false);
-                navigate("/investigations");}}
+                navigate("/cases");}}
             />
         </div>
    )

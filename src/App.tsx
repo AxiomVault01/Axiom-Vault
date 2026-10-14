@@ -8,6 +8,7 @@ import ForgotPassword from "./pages/AuthPages/ForgotPassword";
 import VerifyCode from "./pages/AuthPages/VerifyCode";
 import ResetPassword from "./pages/AuthPages/ResetPassword";
 import ResetPasswordSuccessful from "./pages/AuthPages/ResetPasswordSuccessful";
+import AddTeamMember from "./pages/AuthPages/AddTeamMember";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -62,20 +63,23 @@ export default function App() {
             path="/reset-password-successful"
             element={<ResetPasswordSuccessful />}
           />
+          <Route path="/add-team-member" element={<AddTeamMember />} />
 
           {/* Protected Dashboard Layout */}
-          <Route element={<ProtectedRoute />}>
+          {/* <Route element={<ProtectedRoute />}> */}
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Home />} />
+              <Route path="/alerts" element={<AlertsPage />} />
+              <Route path="/alerts/:id" element={<AlertDetailPage />} />
+              <Route path="/cases" element={<InvestigationsPage />} />
+              <Route path="/case/:id" element={<InvestigationDetails />} />
+              <Route path="/case/escalate" element={<EscalateCasePage />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/investigations" element={<InvestigationsPage />} />
               <Route path="/employee-records" element={<EmployeeRecords />} />
               <Route path="/employee/:id" element={<EmployeeDetails />} />
-              <Route path="/investigations/:id" element={<InvestigationDetails />} />
-              <Route path="/investigations/escalate" element={<EscalateCasePage />} />
               {/* Others Page */}
               <Route path="/profile" element={<UserProfiles />} />
               <Route path="/calendar" element={<Calendar />} />
@@ -85,8 +89,6 @@ export default function App() {
               {/* Tables */}
               <Route path="/basic-tables" element={<BasicTables />} />
               {/* Alerts */}
-              <Route path="/alerts" element={<AlertsPage />} />
-              <Route path="/alerts/:id" element={<AlertDetailPage />} />
               {/* Ui Elements */}
               {/* <Route path="/alerts" element={<Alerts />} /> */}
               <Route path="/avatars" element={<Avatars />} />
@@ -98,7 +100,7 @@ export default function App() {
               <Route path="/line-chart" element={<LineChart />} />
               <Route path="/bar-chart" element={<BarChart />} />
             </Route>
-          </Route>
+          {/* </Route> */}
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

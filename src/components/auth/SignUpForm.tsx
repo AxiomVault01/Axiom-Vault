@@ -115,10 +115,10 @@ export default function SignUpForm() {
         re_enter_password: formData.re_enter_password,
       };
       const res = await api.post(`/auth/signup/`, Payload);
-      console.log(Payload, "login res");
+      // console.log(Payload, "login res");
       setFormData(formData);
       if (validateForm()) {
-        console.log("Form submitted", formData);
+        // console.log("Form submitted", formData);
       }
       setIsOpen(true);
       // localStorage.setItem("data", JSON.stringify(res.data));

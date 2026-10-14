@@ -90,9 +90,9 @@ export default function SignInForm() {
      const token = rawResponse.data.access;
      localStorage.setItem("token", token);
      localStorage.setItem("email", formData.email);
-     console.log(token, "token");
-     console.log(rawResponse, "API response");
-      console.log(rawResponse, "API response");
+    //  console.log(token, "token");
+    //  console.log(rawResponse, "API response");
+    //   console.log(rawResponse, "API response");
       if (rawResponse.status === 200) {
         toast.success("Login successful! 🎉")
         setShowToast(true)
@@ -101,7 +101,7 @@ export default function SignInForm() {
         }, 2000);
       }
     } catch (err: any) {
-      console.error(err.message, "error logging in");
+      // console.error(err.message, "error logging in");
       toast.error(err.message, err.data?.message);
     } finally {
       setLoading(false);

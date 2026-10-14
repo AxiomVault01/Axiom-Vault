@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router";
-import { ChevronLeftIcon, MailIcon, PaperPlaneIcon } from "../../icons";
+import { ChevronLeftIcon, PaperPlaneIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";

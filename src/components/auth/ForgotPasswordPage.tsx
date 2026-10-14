@@ -3,13 +3,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
-// import { InfoIcon, ChevronLeftIcon, MailIcon } from "../../icons";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import logo from "../../../public/Logo.jpg";
 import logob from "../../../public/AXIOM _VAULT_B.png";
 import { Loader, Mail } from "lucide-react";
-import api, { ForgotPassword } from "../../services/Axios";
+import api from "../../services/Axios";
 import toast from "react-hot-toast";
 
 

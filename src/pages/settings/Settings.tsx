@@ -3,7 +3,17 @@ import Card from "../../components/settings/Card";
 import Input from "../../components/settings/Input";
 import Select from "../../components/settings/Select";
 import Toggle from "../../components/settings/Toggle";
-import { User, Bell, Download, Trash2, Lock, Database } from "lucide-react";
+import { Link } from "react-router";
+import {
+  User,
+  Users,
+  UserPlus,
+  Bell,
+  Download,
+  Trash2,
+  Lock,
+  Database,
+} from "lucide-react";
 
 function Settings() {
   const [criticalAlerts, setCriticalAlerts] = useState(true);
@@ -66,6 +76,32 @@ function Settings() {
           <button className="mt-6 bg-brand-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300">
             Save Changes
           </button>
+        </Card>
+
+        {/* Team Members */}
+        <Card className="dark:bg-white/[0.03] dark:border-gray-700">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="bg-brand-500/10 p-2 rounded-lg">
+                <Users className="w-5 h-5 text-brand-500" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Team Members
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Add colleagues to your AxiomVault workspace
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/add-team-member"
+              className="inline-flex items-center justify-center gap-2 bg-brand-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300"
+            >
+              <UserPlus className="w-4 h-4" />
+              Add Team Member
+            </Link>
+          </div>
         </Card>
 
         {/* Notification Preferences */}

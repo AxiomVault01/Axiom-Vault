@@ -42,14 +42,14 @@ const navItems: NavItem[] = [
   },
   {
     icon: <Search size={16}/>,
-    name: "Investigations",
-    path: "/investigations",
-  },
-  {
-    icon: <ClipboardCheck />,
     name: "Cases",
     path: "/cases",
   },
+  // {
+  //   icon: <ClipboardCheck />,
+  //   name: "Cases",
+  //   path: "/cases",
+  // },
   {
     icon: <PieChartIcon />,
     name: "Analytics",
