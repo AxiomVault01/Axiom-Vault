@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router";
 import { MOCK_ALERTS, Alert, Severity, AlertStatus } from "./AlertsData";
+import { useHasUploadedData } from "../../hooks/useHasUploadedData";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -28,14 +29,14 @@ type SeverityFilter = "All" | Severity;
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
-      <div className="w-18 h-18 rounded-full bg-gray-200 dark:bg-gray-400 flex items-center justify-center mb-4">
+      <div className="w-20 h-20 rounded-3xl bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 flex items-center justify-center mb-5">
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <circle cx="12" cy="12" r="8" stroke="#1a2e4a" strokeWidth="1.8"/>
-          <path d="M18 18l5 5" stroke="#1a2e4a" strokeWidth="1.8" strokeLinecap="round"/>
+          <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.8"/>
+          <path d="M18 18l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
         </svg>
       </div>
       <h3 className="text-base font-semibold text-gray-800 mb-2 dark:text-gray-300">No Alert yet</h3>
-      <p className="text-sm text-gray-500 max-w-sm leading-4.5 mb-8">
+      <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-8 dark:text-gray-400">
         Alert are automatically generated when suspicious patterns are detected
         in uploaded payroll or vendor payment data. upload your data to start
         detecting anomalies.
@@ -51,7 +52,7 @@ function EmptyState() {
             { n: 3, title: "Take Action on Alerts", desc: "Escalate critical alerts to cases, mark false positives, or archive low priority findings" },
           ].map(({ n, title, desc }) => (
             <div key={n} className="flex gap-3">
-              <div className="w-6 h-6 rounded-full bg-[#1a2e4a] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 ">
+              <div className="w-6 h-6 rounded-full bg-blue-700 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                 {n}
               </div>
               <div>
@@ -65,7 +66,7 @@ function EmptyState() {
 
       {/* Upload CTA */}
       <div className="w-full max-w-xs border bg-white border-gray-200 rounded-xl p-6 px-8 text-center dark:border-gray-600 dark:bg-white/3">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="mx-auto mb-3">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="mx-auto mb-3 text-gray-700 dark:text-gray-300">
           <path d="M14 4v14M8 10l6-6 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M4 22h20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
         </svg>
@@ -75,7 +76,7 @@ function EmptyState() {
         </p>
         <Link
           to="/employee-records"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-red-400 hover:underline underline-offset-2"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#B86C41] hover:underline underline-offset-2"
         >
           Get Started
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -92,11 +93,16 @@ function EmptyState() {
 const SEV_FILTERS: SeverityFilter[] = ["All", "Critical", "High", "Medium", "Low"];
 
 interface AlertsPageProps {
-  /** Pass an empty array to show the empty state */
+  /** Pass an empty array to show the empty state. Defaults to mock alerts once data has been uploaded. */
   alerts?: Alert[];
 }
 
-export default function AlertsPage({ alerts = MOCK_ALERTS }: AlertsPageProps) {
+export default function AlertsPage({ alerts: alertsProp }: AlertsPageProps) {
+  const hasData = useHasUploadedData();
+  const alerts = useMemo(
+    () => alertsProp ?? (hasData ? MOCK_ALERTS : []),
+    [alertsProp, hasData],
+  );
   const [search, setSearch] = useState("");
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>("All");
 

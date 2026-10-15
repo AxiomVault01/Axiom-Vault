@@ -12,23 +12,45 @@ export interface EmployeeRecord {
   bankAccount: string;
   status: "Validated" | "Error";
   errors?: string[];
+  issues?: ValidationIssue[];
 }
 
+export interface ValidationIssue {
+  column: string;
+  type: "Missing Value" | "Empty Field" | "Invalid Format";
+  message: string;
+}
+
+// Shown in the "Required Columns (payroll)" panel
 const REQUIRED_COLUMNS = [
   "Employee ID",
   "Full Name",
   "Department",
   "Position",
-  "Bank Account",
+  "Bank Account Number",
+  "Salary Amount",
+  "Payment Date",
+  "Attendance Days",
+  "Employment Status and Exit Date",
+  "Approver ID",
 ];
 
-const COLUMN_MAP: Record<string, keyof EmployeeRecord> = {
-  "employee id": "employeeId",
-  "full name": "fullName",
-  department: "department",
-  position: "position",
-  "bank account": "bankAccount",
+// Columns enforced during validation: lower-cased header -> accepted aliases
+const COLUMN_MAP: Record<string, string[]> = {
+  "employee id": ["employee id"],
+  "full name": ["full name"],
+  department: ["department"],
+  position: ["position"],
+  "bank account": ["bank account", "bank account number"],
 };
+
+function pick(row: Record<string, string>, column: string): string {
+  for (const alias of COLUMN_MAP[column]) {
+    const value = String(row[alias] ?? "").trim();
+    if (value) return value;
+  }
+  return "";
+}
 
 async function parseFile(file: File): Promise<Record<string, string>[]> {
   const XLSX = await import("xlsx");
@@ -48,20 +70,30 @@ function validateRows(rows: Record<string, string>[]): EmployeeRecord[] {
     const errors: string[] = [];
     const normalizedRow: Record<string, string> = {};
     Object.entries(row).forEach(([k, v]) => {
-      normalizedRow[k.toLowerCase()] = v;
+      normalizedRow[k.trim().toLowerCase()] = v;
     });
 
-    const employeeId = normalizedRow["employee id"] ?? "";
-    const fullName = normalizedRow["full name"] ?? "";
-    const department = normalizedRow["department"] ?? "";
-    const position = normalizedRow["position"] ?? "";
-    const bankAccount = normalizedRow["bank account"] ?? "";
+    const employeeId = pick(normalizedRow, "employee id");
+    const fullName = pick(normalizedRow, "full name");
+    const department = pick(normalizedRow, "department");
+    const position = pick(normalizedRow, "position");
+    const bankAccount = pick(normalizedRow, "bank account");
 
-    if (!employeeId) errors.push("Missing Employee ID");
-    if (!fullName) errors.push("Missing Full Name");
-    if (!department) errors.push("Missing Department");
-    if (!position) errors.push("Missing Position");
-    if (!bankAccount) errors.push("Missing Bank Account");
+    const issues: ValidationIssue[] = [];
+    if (!employeeId)
+      issues.push({ column: "Employee ID", type: "Missing Value", message: "Employee ID is required" });
+    if (!fullName)
+      issues.push({ column: "Employee", type: "Missing Value", message: "Employee name is required" });
+    if (!department)
+      issues.push({ column: "Department", type: "Empty Field", message: "Department cannot be blank" });
+    if (!position)
+      issues.push({ column: "Position", type: "Empty Field", message: "Position cannot be blank" });
+    if (!bankAccount)
+      issues.push({ column: "Bank Account", type: "Missing Value", message: "Bank account number is required" });
+    else if (!/^\d{6,20}$/.test(bankAccount.replace(/[\s-]/g, "")))
+      issues.push({ column: "Bank Account", type: "Invalid Format", message: "Must be a valid account number" });
+
+    issues.forEach((issue) => errors.push(`${issue.column}: ${issue.message}`));
 
     return {
       employeeId,
@@ -71,6 +103,7 @@ function validateRows(rows: Record<string, string>[]): EmployeeRecord[] {
       bankAccount,
       status: errors.length === 0 ? "Validated" : "Error",
       errors,
+      issues,
     };
   });
 }
@@ -82,6 +115,7 @@ export default function FileUploadPage({
   const [file, setFile] = useState<File | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback((f: File) => {
@@ -103,6 +137,7 @@ export default function FileUploadPage({
       return;
     }
     setError(null);
+    setProgress(0);
     setFile(f);
   }, []);
 
@@ -125,9 +160,11 @@ export default function FileUploadPage({
     if (!file) return;
     setIsValidating(true);
     setError(null);
+    setProgress(15);
 
     try {
       const rows = await parseFile(file);
+      setProgress(60);
 
       if (rows.length === 0) {
         setError("The file appears to be empty or unreadable.");
@@ -137,9 +174,9 @@ export default function FileUploadPage({
 
       // Check headers
       const firstRow = rows[0];
-      const headers = Object.keys(firstRow).map((h) => h.toLowerCase());
+      const headers = Object.keys(firstRow).map((h) => h.trim().toLowerCase());
       const missingCols = Object.keys(COLUMN_MAP).filter(
-        (col) => !headers.includes(col),
+        (col) => !COLUMN_MAP[col].some((alias) => headers.includes(alias)),
       );
 
       if (missingCols.length > 0) {
@@ -149,15 +186,18 @@ export default function FileUploadPage({
             .join(", ")}`,
         );
         setIsValidating(false);
+        setProgress(0);
         return;
       }
 
       // Simulate async processing
       await new Promise((res) => setTimeout(res, 300));
       const records = validateRows(rows);
+      setProgress(100);
       onValidationComplete(records, file);
     } catch {
       setError("Failed to read the file. Please check it and try again.");
+      setProgress(0);
     } finally {
       setIsValidating(false);
     }
@@ -172,8 +212,7 @@ export default function FileUploadPage({
         Initial File Upload
       </h1>
       <p className="dark:text-gray-400 text-[var(--color-text-secondary)] mb-8 text-[0.95rem]">
-        Upload your organization's employee database to begin the risk
-        assessment and compliance audit process
+        Upload payroll or vendor payment data to begin anomaly detection
       </p>
 
       <div className="flex flex-col-reverse sm:flex-row gap-6 items-start">
@@ -204,10 +243,10 @@ export default function FileUploadPage({
 
             {/* Cloud Upload Icon */}
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-              <circle cx="24" cy="24" r="24" fill="#1a2e4a" />
+              <circle cx="24" cy="24" r="24" fill="#C7D7F5" />
               <path
                 d="M16 28c-2.2-0.5-4-2.5-4-5a5 5 0 0 1 8.3-3.8A7 7 0 1 1 31 28"
-                stroke="white"
+                stroke="#1E4FA8"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -215,7 +254,7 @@ export default function FileUploadPage({
               />
               <path
                 d="M20 32l4-4 4 4M24 28v8"
-                stroke="white"
+                stroke="#1E4FA8"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -276,6 +315,7 @@ export default function FileUploadPage({
                   e.stopPropagation();
                   setFile(null);
                   setError(null);
+                  setProgress(0);
                 }}
                 className="bg-transparent border border-gray-500 rounded-[6px] px-3 py-1 cursor-pointer text-[0.8rem] text-[var(--color-text-secondary)] dark:text-gray-400"
               >
@@ -353,6 +393,34 @@ export default function FileUploadPage({
               </>
             )}
           </button>
+
+          {/* Upload progress */}
+          <div className="mt-4 flex items-center gap-4 rounded-lg border border-gray-100 bg-white px-4 py-4 dark:border-gray-800 dark:bg-white/[0.03]">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="shrink-0 text-[#1a2e4a] dark:text-gray-300">
+              <path
+                d="M2 5.5A1.5 1.5 0 0 1 3.5 4h4l2 2h7A1.5 1.5 0 0 1 18 7.5v7a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 2 14.5v-9z"
+                fill="currentColor"
+              />
+            </svg>
+            <div className="min-w-0 flex-1">
+              <p className="mb-2 truncate text-xs text-gray-700 dark:text-gray-300">
+                {file
+                  ? `${file.name} (${(file.size / 1024).toFixed(1)} KB)`
+                  : "No file was selected"}
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                  <div
+                    className="h-full rounded-full bg-[#1a2e4a] transition-all duration-300 dark:bg-blue-500"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <span className="w-9 text-right text-xs text-gray-500 dark:text-gray-400">
+                  {progress}%
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Required Columns Panel */}
@@ -383,7 +451,7 @@ export default function FileUploadPage({
               />
             </svg>
             <span className="font-bold text-[0.9rem] dark:text-white">
-              Required Columns
+              Required Columns (payroll)
             </span>
           </div>
           <p className="text-[0.8rem] text-[var(--color-text-secondary)] mb-3 leading-normal dark:text-gray-400">

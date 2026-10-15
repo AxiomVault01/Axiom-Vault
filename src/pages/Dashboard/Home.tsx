@@ -16,14 +16,21 @@ import { InvestigationQueues } from "../UiElements/InvestigationQueue";
 import RiskHeatmap from "../UiElements/HeatMap";
 import RiskAlertsTable from "../UiElements/RiskAlertTable";
 import { SystemActivity } from "../UiElements/SystemActivity";
+import DashboardEmptyState from "../../components/ecommerce/DashboardEmptyState";
+import { useHasUploadedData } from "../../hooks/useHasUploadedData";
 
 export default function Home() {
+  const hasData = useHasUploadedData();
+
   return (
     <>
       <PageMeta
         title="Axiom Vault | Dashboard"
         description="Axiom Vault is an AI enabled fraud detection and prevention platform that helps businesses identify and mitigate fraudulent activities in real-time, ensuring the security of their operations and customers."
       />
+      {!hasData ? (
+        <DashboardEmptyState />
+      ) : (
       <div className="grid grid-cols-12 gap-4 md:gap-6">
         <div className="col-span-12 space-y-12 xl:col-span-12">
           <RiskAlert />
@@ -66,6 +73,7 @@ export default function Home() {
           </div>
         </div> */}
       </div>
+      )}
     </>
   );
 }

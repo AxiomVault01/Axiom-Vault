@@ -2,11 +2,9 @@ import { useState, useEffect } from "react";
 import FileUploadPage, { EmployeeRecord } from "./FileUploadPage";
 import ValidationResultsPage from "./ValidationResultsPage";
 import FinalRecords from "./FinalRecords";
+import { STORAGE_KEY_RECORDS, STORAGE_KEY_STEP } from "../../hooks/useHasUploadedData";
 
 type FlowStep = "upload" | "validation" | "records";
-
-const STORAGE_KEY_RECORDS = "axiomvault_employee_records";
-const STORAGE_KEY_STEP = "axiomvault_flow_step";
 
 function loadFromStorage(): { step: FlowStep; records: EmployeeRecord[] } {
   try {

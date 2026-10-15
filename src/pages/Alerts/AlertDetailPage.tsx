@@ -1,5 +1,5 @@
 import { useLocation, useParams, useNavigate } from "react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   MOCK_ALERTS,
   Alert,
@@ -7,6 +7,11 @@ import {
   DETAIL_DATA,
   EvidenceFile,
 } from "./AlertsData";
+import {
+  AlertSuccessModal,
+  FalsePositiveModal,
+  NoReviewerModal,
+} from "../../components/alerts/AlertActionModals";
 
 // Fallback for alerts without extended detail
 function buildFallbackDetail(alert: Alert) {
@@ -66,6 +71,12 @@ export default function AlertDetailPage() {
   const navigate = useNavigate();
   const [note, setNote] = useState("");
   const [reviewer, setReviewer] = useState("");
+  const [modal, setModal] = useState<
+    "none" | "noReviewer" | "falsePositive" | "converted" | "dismissed"
+  >("none");
+  const reviewerSelectRef = useRef<HTMLSelectElement>(null);
+  const closeModal = () => setModal("none");
+  const goToDashboard = () => navigate("/dashboard");
 
   const alert: Alert | undefined = useMemo(() => {
     if (location.state?.alert) return location.state.alert as Alert;
@@ -98,6 +109,22 @@ export default function AlertDetailPage() {
   // reviewer default
   const reviewerOptions = detail.reviewers;
   const activeReviewer = reviewer || reviewerOptions[0];
+
+  // Converting with only the auto-assigned reviewer asks for confirmation first
+  const handleConvertToCase = () => {
+    if (!reviewer && /auto-assigned/i.test(activeReviewer)) {
+      setModal("noReviewer");
+    } else {
+      // TODO: POST conversion to the API
+      setModal("converted");
+    }
+  };
+
+  const handleChangeReviewer = () => {
+    closeModal();
+    reviewerSelectRef.current?.focus();
+    reviewerSelectRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
 
   return (
     <div className="min-h-full bg-white dark:bg-transparent">
@@ -133,12 +160,15 @@ export default function AlertDetailPage() {
           </h1>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-4 mt-4 md:mt-1">
-          <button className="px-4 py-2 text-sm font-semibold border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-white dark:hover:bg-white/5">
+          <button
+            onClick={() => setModal("falsePositive")}
+            className="px-4 py-2 text-sm font-semibold border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-white dark:hover:bg-white/5"
+          >
             Mark False Positive
           </button>
           <button
             className="px-4 py-2 text-sm font-semibold bg-[#1a2e4a] text-white rounded-lg hover:bg-[#152438] transition-colors"
-            onClick={() => navigate("/investigations")}
+            onClick={handleConvertToCase}
           >
             Convert to Case
           </button>
@@ -397,6 +427,7 @@ export default function AlertDetailPage() {
               </label>
               <div className="relative">
                 <select
+                  ref={reviewerSelectRef}
                   value={activeReviewer}
                   onChange={(e) => setReviewer(e.target.value)}
                   className="w-full appearance-none border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-white/3 dark:border-gray-700 dark:text-white pr-8"
@@ -447,6 +478,32 @@ export default function AlertDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* ── Action modals ────────────────────────────────────────────── */}
+      <NoReviewerModal
+        isOpen={modal === "noReviewer"}
+        onClose={closeModal}
+        onAcceptAndConvert={() => setModal("converted")}
+        onChangeReviewer={handleChangeReviewer}
+      />
+      <FalsePositiveModal
+        isOpen={modal === "falsePositive"}
+        onClose={closeModal}
+        // TODO: POST the dismissal reason to the API
+        onConfirm={() => setModal("dismissed")}
+      />
+      <AlertSuccessModal
+        isOpen={modal === "converted"}
+        onClose={closeModal}
+        message="Alert Successfully Converted"
+        onGoToDashboard={goToDashboard}
+      />
+      <AlertSuccessModal
+        isOpen={modal === "dismissed"}
+        onClose={closeModal}
+        message="Alert Successfully Dismissed"
+        onGoToDashboard={goToDashboard}
+      />
     </div>
   );
 }

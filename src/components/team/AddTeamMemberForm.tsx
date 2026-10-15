@@ -118,8 +118,8 @@ export default function AddTeamMemberForm() {
         confirm_password: formData.confirm_password,
         phone_number: formData.phone_number.trim(),
       };
-      // const res = await api.post(CREATE_TEAM_MEMBER_URL, payload);
-      // toast.success(res.data?.message || "Team member created");
+      const res = await api.post(CREATE_TEAM_MEMBER_URL, payload);
+      toast.success(res.data?.message || "Team member created");
       setCreatedMember(formData);
     } catch (err: any) {
       const errormessage =

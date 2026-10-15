@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { ArrowRight, LucideIcon } from "lucide-react";
 
 interface QuickActionProps {
   icon: LucideIcon;
@@ -6,36 +6,38 @@ interface QuickActionProps {
   title: string;
   description: string;
   buttonText: string;
+  href?: string;
 }
 
 export default function QuickActionCard({
   icon: Icon,
-  iconColor = "", 
+  iconColor = "text-gray-800 dark:text-gray-200",
   title,
   description,
   buttonText,
+  href,
 }: QuickActionProps) {
   return (
-    <div className="rounded-xl border border-stroke bg-white p-6 shadow-sm dark:border-strokedark dark:bg-boxdark">
-      <div className="mb-4 flex justify-center">
-        <div className="rounded-full bg-gray-100 p-3">
-          <Icon size={22} className={iconColor} />
-        </div>
+    <div className="rounded-xl border border-gray-200 bg-white px-6 py-6 text-center dark:border-gray-700 dark:bg-white/3">
+      <div className="mb-3 flex justify-center">
+        <Icon size={26} className={iconColor} />
       </div>
 
-      <h3 className="text-center font-semibold text-black dark:text-white">
+      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
         {title}
       </h3>
 
-      <p className="mt-2 text-center text-sm text-gray-500">
+      <p className="mt-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
         {description}
       </p>
 
-      <button
-        className="mt-5 flex w-full items-center text-orange-500 justify-center gap-2 text-sm font-medium text-primary hover:underline">
+      <a
+        href={href}
+        className="mt-4 inline-flex items-center justify-center gap-1.5 text-sm font-medium text-[#B86C41] hover:underline underline-offset-2"
+      >
         {buttonText}
-        →
-      </button>
+        <ArrowRight size={14} />
+      </a>
     </div>
   );
 }

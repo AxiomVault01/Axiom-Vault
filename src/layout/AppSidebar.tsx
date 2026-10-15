@@ -15,7 +15,7 @@ import {
 import { useSidebar } from "../context/SidebarContext";
 import LogoutIcon from "../icons/Logout-ion";
 import SettingsIcon from "../icons/Settings-icon";
-import { ClipboardCheck, FileBox, Search } from "lucide-react";
+import { FileBox, Search } from "lucide-react";
 
 type NavItem = {
   name: string;

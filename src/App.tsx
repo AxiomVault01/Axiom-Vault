@@ -37,8 +37,8 @@ import InvestigationDetails from "./pages/investigations/InvestigationDetails";
 import EscalateCasePage from "./pages/investigations/EscalateCasePage";
 import AlertDetailPage from "./pages/Alerts/AlertDetailPage";
 import AlertsPage from "./pages/Alerts/AlertsPage";
-// import CasesPage from "./pages/Cases/CasesPage";
-// import CaseDetailPage from "./pages/Cases/CasesDetails/CaseDetailPage";
+import CasesPage from "./pages/Cases/CasesPage";
+import CaseDetailPage from "./pages/Cases/CasesDetails/CaseDetailPage";
 // import WelcomePage from "./components/auth/WelcomePage";
 import { Toaster } from "react-hot-toast"
 import ProtectedRoute from "./components/Protectedroute/ProtectedRoute";
@@ -66,12 +66,14 @@ export default function App() {
           <Route path="/add-team-member" element={<AddTeamMember />} />
 
           {/* Protected Dashboard Layout */}
-          {/* <Route element={<ProtectedRoute />}> */}
+          <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Home />} />
               <Route path="/alerts" element={<AlertsPage />} />
               <Route path="/alerts/:id" element={<AlertDetailPage />} />
-              <Route path="/cases" element={<InvestigationsPage />} />
+              <Route path="/cases" element={<CasesPage />} />
+              <Route path="/cases/:id" element={<CaseDetailPage />} />
+              <Route path="/investigations" element={<InvestigationsPage />} />
               <Route path="/case/:id" element={<InvestigationDetails />} />
               <Route path="/case/escalate" element={<EscalateCasePage />} />
               <Route path="/analytics" element={<Analytics />} />
@@ -88,9 +90,7 @@ export default function App() {
               <Route path="/form-elements" element={<FormElements />} />
               {/* Tables */}
               <Route path="/basic-tables" element={<BasicTables />} />
-              {/* Alerts */}
               {/* Ui Elements */}
-              {/* <Route path="/alerts" element={<Alerts />} /> */}
               <Route path="/avatars" element={<Avatars />} />
               <Route path="/badge" element={<Badges />} />
               <Route path="/buttons" element={<Buttons />} />
@@ -100,7 +100,7 @@ export default function App() {
               <Route path="/line-chart" element={<LineChart />} />
               <Route path="/bar-chart" element={<BarChart />} />
             </Route>
-          {/* </Route> */}
+          </Route>
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

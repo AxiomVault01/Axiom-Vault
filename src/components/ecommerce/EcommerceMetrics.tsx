@@ -21,7 +21,7 @@ type Props = {
   bgcolor?: string;
 };
 
- export default function EcommerceMetrics() {
+ export default function EcommerceMetrics({ empty = false }: { empty?: boolean }) {
 
 
   const metrics:Props[] = [
@@ -57,7 +57,7 @@ type Props = {
       icon: <Shield size={16}/> , 
       statuscolor: "text-amber-500",
       bgcolor: "bg-amber-100",
-      label: "Risk Esposure Score",
+      label: "Risk Exposure Score",
       amount: 72,
       description: "Out of 100 - High risk level"
     },
@@ -78,11 +78,11 @@ type Props = {
              {metric.label}
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-             {metric.amount}
+             {empty ? 0 : metric.amount}
             </h4>
           </div>
             <span className="flex items-center text-gray-500 gap-1 pt-1 text-xs">
-              {metric.description}
+              {empty ? "No data available yet" : metric.description}
             </span>
           
         </div>
