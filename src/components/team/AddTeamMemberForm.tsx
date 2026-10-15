@@ -8,6 +8,8 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import api from "../../services/Axios";
+import { useQueryClient } from "@tanstack/react-query";
+import { teamMemberKeys } from "../../hooks/useTeamMembers";
 import {
   Check,
   CircleCheck,
@@ -21,7 +23,7 @@ import {
 import toast from "react-hot-toast";
 
 // TODO: confirm the team member endpoint with the backend team
-const CREATE_TEAM_MEMBER_URL = "/auth/team-members/";
+const CREATE_TEAM_MEMBER_URL = "/team/members/";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -53,6 +55,7 @@ const iconClass =
 
 export default function AddTeamMemberForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState<FormFields>(emptyForm);
   const [errors, setErrors] = useState<FormFields>(emptyForm);
   const [showPassword, setShowPassword] = useState(false);
@@ -113,13 +116,14 @@ export default function AddTeamMemberForm() {
       const payload = {
         full_name: formData.full_name.trim(),
         role: formData.role.trim(),
+        phone_number: formData.phone_number.trim(),
         email: formData.email.trim(),
         password: formData.password,
         confirm_password: formData.confirm_password,
-        phone_number: formData.phone_number.trim(),
       };
       const res = await api.post(CREATE_TEAM_MEMBER_URL, payload);
       toast.success(res.data?.message || "Team member created");
+      queryClient.invalidateQueries({ queryKey: teamMemberKeys.all });
       setCreatedMember(formData);
     } catch (err: any) {
       const errormessage =

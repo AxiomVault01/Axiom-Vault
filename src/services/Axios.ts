@@ -1,4 +1,5 @@
 import axios from "axios";
+import { queryClient } from "./queryClient";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -112,6 +113,8 @@ const LogoutUser = async () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     delete api.defaults.headers.Authorization;
+    // Drop cached data so the next user doesn't see this user's data
+    queryClient.clear();
     return response.data;
   } catch (error: string | any) {
     console.error(
@@ -121,6 +124,7 @@ const LogoutUser = async () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     delete api.defaults.headers.Authorization;
+    queryClient.clear();
     throw error;
   }
 };

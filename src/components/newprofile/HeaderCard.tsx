@@ -19,7 +19,8 @@ const HeaderCard = () => {
   const handleCameraClick = () => {
     fileInputRef.current?.click();
   };
-
+  const user = localStorage.getItem("user");
+  const userData = user ? JSON.parse(user) : null;
   return (
     <div className="bg-brand-500 text-white rounded-2xl p-6 md:p-8 shadow-lg relative overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -57,22 +58,22 @@ const HeaderCard = () => {
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold">Sarah Anderson</h2>
-            <p className="text-blue-100">Senior Auditor</p>
-            <p className="text-blue-200 text-sm">Internal Audit Division</p>
+            <h2 className="text-2xl font-semibold">{userData?.full_name || "Guest User"}</h2>
+            <p className="text-blue-100">{userData?.job_title || "Job Title"}</p>
+            <p className="text-blue-200 text-sm">{userData?.department || "Department"}</p>
           </div>
         </div>
 
         <button className="bg-white/20 hover:bg-white/30 transition px-4 py-2 rounded-lg text-sm flex gap-2 items-center">
-         <Edit size={14}/> Edit Profile
+          <Edit size={14} /> Edit Profile
         </button>
       </div>
 
       {/* Info Boxes */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-        <InfoBox title="Employee ID" value="EMP-2847" />
-        <InfoBox title="Join Date" value="January 15, 2022" />
-        <InfoBox title="Last Login" value="Today, 9:24 AM" />
+        <InfoBox title="Employee ID" value={userData?.employee_id || "EMP-2847"} />
+        <InfoBox title="Join Date" value={userData?.join_date || "January 15, 2022"} />
+        <InfoBox title="Last Login" value={userData?.last_login || "Today, 9:24 AM"} />
       </div>
     </div>
   );

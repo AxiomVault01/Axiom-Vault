@@ -85,11 +85,13 @@ export default function SignInForm() {
     const payload = {
       email: formData.email,
       password: formData.password,
+      role: "super_admin",
     }
      const rawResponse = await api.post(`/auth/login/`, payload);
      const token = rawResponse.data.access;
      localStorage.setItem("token", token);
      localStorage.setItem("email", formData.email);
+     localStorage.setItem("user", JSON.stringify(rawResponse.data.user));
     //  console.log(token, "token");
     //  console.log(rawResponse, "API response");
     //   console.log(rawResponse, "API response");

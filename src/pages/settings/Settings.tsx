@@ -3,6 +3,7 @@ import Card from "../../components/settings/Card";
 import Input from "../../components/settings/Input";
 import Select from "../../components/settings/Select";
 import Toggle from "../../components/settings/Toggle";
+import TeamMembersList from "../../components/team/TeamMembersList";
 import { Link } from "react-router";
 import {
   User,
@@ -101,6 +102,10 @@ function Settings() {
               <UserPlus className="w-4 h-4" />
               Add Team Member
             </Link>
+          </div>
+
+          <div className="mt-6">
+            <TeamMembersList />
           </div>
         </Card>
 

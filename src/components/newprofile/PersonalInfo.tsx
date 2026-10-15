@@ -1,6 +1,8 @@
 import { User, Mail, Phone, Building, Shield } from "lucide-react";
 
 const PersonalInfo = () => {
+   const user = localStorage.getItem("user");
+   const userData = user ? JSON.parse(user) : null;
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border dark:bg-white/[0.03] dark:border-gray-700 dark:text-white">
       <h3 className="font-semibold text-lg mb-6">Personal Information</h3>
@@ -9,24 +11,24 @@ const PersonalInfo = () => {
         <Info
           icon={<User size={18} />}
           label="Full Name"
-          value="Sarah Anderson"
+          value={userData?.full_name || "Guest User"}
         />
         <Info
           icon={<Mail size={18} />}
           label="Email Address"
-          value="sarah.anderson@rcc.gov"
+          value={userData?.email || "randomuser@pimjo.com"} 
         />
         <Info
           icon={<Phone size={18} />}
           label="Phone Number"
-          value="+234 803 456 7890"
+          value={userData?.phone_number || "+234 803 456 7890"}
         />
         <Info
           icon={<Building size={18} />}
           label="Department"
-          value="Internal Audit Division"
+          value={userData?.department || "Internal Audit Division"}
         />
-        <Info icon={<Shield size={18} />} label="Role" value="Senior Auditor" />
+        <Info icon={<Shield size={18} />} label="Role" value={userData?.account_type || "Senior Auditor"} />
       </div>
     </div>
   );

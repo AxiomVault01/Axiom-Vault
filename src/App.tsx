@@ -28,6 +28,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import Analytics from "./components/analytics/Analytics";
 import Settings from "./pages/settings/Settings";
+import TeamMemberDetails from "./pages/team/TeamMemberDetails";
 import EmployeeRecords from "./pages/employeeinfo/EmployeeRecords";
 import Profile from "./pages/newprofile/Profile";
 import EmployeeDetails from "./pages/employeeinfo/EmployeeDetails";
@@ -80,6 +81,7 @@ export default function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/team-members/:id" element={<TeamMemberDetails />} />
               <Route path="/employee-records" element={<EmployeeRecords />} />
               <Route path="/employee/:id" element={<EmployeeDetails />} />
               {/* Others Page */}
