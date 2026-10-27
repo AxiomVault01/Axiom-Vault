@@ -16,11 +16,11 @@ import { InvestigationQueues } from "../UiElements/InvestigationQueue";
 import RiskHeatmap from "../UiElements/HeatMap";
 import RiskAlertsTable from "../UiElements/RiskAlertTable";
 import { SystemActivity } from "../UiElements/SystemActivity";
-import DashboardEmptyState from "../../components/ecommerce/DashboardEmptyState";
-import { useHasUploadedData } from "../../hooks/useHasUploadedData";
+// import DashboardEmptyState from "../../components/ecommerce/DashboardEmptyState";
+// import { useHasUploadedData } from "../../hooks/useHasUploadedData";
 
 export default function Home() {
-  const hasData = useHasUploadedData();
+  // const hasData = useHasUploadedData();
 
   return (
     <>
