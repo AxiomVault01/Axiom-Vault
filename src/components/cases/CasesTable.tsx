@@ -5,13 +5,16 @@ import {
   Filter,
   ChevronDown,
   ChevronUp,
-  DownloadIcon,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Case, CaseStatus, Severity } from "../../pages/Cases/CasesData";
 
 interface Props {
   data: Case[];
+  // Where each case's detail page lives (team members use their own area)
+  basePath?: string;
 }
 
 type StatusFilter = "All" | CaseStatus;
@@ -20,17 +23,55 @@ const STAT_FILTERS: StatusFilter[] = [
   "New",
   "Investigating",
   "Under Review",
+  "Escalated",
   "Closed",
 ];
+
+const PAGE_SIZE = 10;
 
 const STATUS_STYLES: Record<CaseStatus, string> = {
   New: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   Open: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
   Investigating: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
   "Under Review": "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  Escalated: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  Closed: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400",
+  Escalated: "bg-[#0B1F44] text-white dark:bg-blue-950 dark:text-blue-200",
+  Closed: "bg-gray-400 text-gray-900 dark:bg-gray-700 dark:text-gray-300",
 };
+
+export function exportCasesCsv(cases: Case[]) {
+  const headers = [
+    "Case ID",
+    "Linked Alert",
+    "Department",
+    "Status",
+    "Assigned To",
+    "Severity",
+    "Created",
+    "Last Updated",
+    "Evidence Count",
+  ];
+  const rows = cases.map((c) =>
+    [
+      c.id,
+      c.linkedAlert.id,
+      c.employee.department,
+      c.status,
+      c.assignedTo,
+      c.severity,
+      c.created,
+      c.lastUpdated,
+      c.evidence.length,
+    ].join(","),
+  );
+  const csv = [headers.join(","), ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "cases.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 const SEVERITY_STYLES: Record<Severity, string> = {
   Critical: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
@@ -39,7 +80,7 @@ const SEVERITY_STYLES: Record<Severity, string> = {
   Low: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
 };
 
-export default function CasesTable({ data }: Props) {
+export default function CasesTable({ data, basePath = "/cases" }: Props) {
   const navigate = useNavigate();
 
   // Search + pill filter
@@ -84,6 +125,7 @@ export default function CasesTable({ data }: Props) {
       New: data.filter((c) => c.status === "New").length,
       Investigating: data.filter((c) => c.status === "Investigating").length,
       "Under Review": data.filter((c) => c.status === "Under Review").length,
+      Escalated: data.filter((c) => c.status === "Escalated").length,
       Closed: data.filter((c) => c.status === "Closed").length,
     }),
     [data],
@@ -130,51 +172,23 @@ export default function CasesTable({ data }: Props) {
     selectedInvestigators,
   ]);
 
-  const handleExport = () => {
-    const headers = [
-      "Case ID",
-      "Linked Alert",
-      "Department",
-      "Status",
-      "Assigned To",
-      "Severity",
-      "Created",
-      "Last Updated",
-      "Evidence Count",
-    ];
-    const rows = filteredCases.map((c) =>
-      [
-        c.id,
-        c.linkedAlert.id,
-        c.employee.department,
-        c.status,
-        c.assignedTo,
-        c.severity,
-        c.created,
-        c.lastUpdated,
-        c.evidence.length,
-      ].join(","),
-    );
-    const csv = [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "cases.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  // Pagination — clamp the page when filters shrink the result set
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(filteredCases.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const pagedCases = filteredCases.slice(pageStart, pageStart + PAGE_SIZE);
 
   return (
     <div className="space-y-4 text-slate-800 dark:text-slate-200">
       {/* Status Filter Pills */}
-      <div className="flex flex-wrap gap-2 mt-5 mb-4">
+      <div className="flex flex-wrap gap-2 mt-5 mb-4 w-fit max-w-full rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-white/3">
         {STAT_FILTERS.map((f) => {
           const active = statusFilter === f;
           const pill: Record<StatusFilter, string> = {
             All: active
-              ? "bg-[#1a2e4a] text-white dark:bg-blue-600"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700",
+              ? "bg-[#B86C41] text-white ring-2 ring-[#B86C41]/40 ring-offset-1 dark:ring-offset-gray-900"
+              : "bg-[#B86C41]/15 text-[#B86C41] hover:bg-[#B86C41]/25 dark:text-orange-300",
             New: active
               ? "bg-blue-500 text-white"
               : "bg-blue-100 text-blue-700 hover:bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50",
@@ -188,16 +202,16 @@ export default function CasesTable({ data }: Props) {
               ? "bg-purple-500 text-white"
               : "bg-purple-100 text-purple-700 hover:bg-purple-50 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50",
             Escalated: active
-              ? "bg-red-600 text-white"
-              : "bg-red-100 text-red-700 hover:bg-red-50 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50",
+              ? "bg-[#0B1F44] text-white ring-2 ring-[#B86C41]/60 ring-offset-1 dark:bg-blue-950 dark:ring-offset-gray-900"
+              : "bg-[#0B1F44] text-white hover:bg-[#152438] dark:bg-blue-950 dark:text-blue-200",
             Closed: active
-              ? "bg-gray-500 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700",
+              ? "bg-gray-500 text-white ring-2 ring-[#B86C41]/60 ring-offset-1 dark:ring-offset-gray-900"
+              : "bg-gray-400 text-gray-900 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600",
           };
           return (
             <button
               key={f}
-              onClick={() => setStatusFilter(f)}
+              onClick={() => { setStatusFilter(f); setPage(1); }}
               className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-colors ${pill[f]}`}
             >
               {f === "All"
@@ -208,9 +222,9 @@ export default function CasesTable({ data }: Props) {
         })}
       </div>
 
-      {/* Search + Filter + Export */}
-      <div className="flex items-center justify-between gap-3 relative">
-        <div className="relative flex-1 max-w-md">
+      {/* Search + Filter */}
+      <div className="flex items-center gap-3 relative max-w-xl">
+        <div className="relative flex-1">
           <Search
             size={18}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -219,7 +233,7 @@ export default function CasesTable({ data }: Props) {
             type="text"
             placeholder="Search cases by ID, Alert, Dept, or Assignee..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-[#101828] dark:text-white dark:focus:border-blue-400"
           />
         </div>
@@ -230,13 +244,6 @@ export default function CasesTable({ data }: Props) {
             className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:border-gray-600 dark:bg-brand-950 dark:text-gray-200 dark:hover:bg-gray-900 transition-colors"
           >
             <Filter size={16} />
-          </button>
-          <button
-            onClick={handleExport}
-            className="shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-sm font-semibold text-gray-700 rounded-lg transition-colors shadow-sm dark:bg-brand-950 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-900"
-          >
-            Export All
-            <DownloadIcon size={14} />
           </button>
         </div>
 
@@ -387,7 +394,7 @@ export default function CasesTable({ data }: Props) {
 
             <tbody className="divide-y divide-gray-100 text-sm text-gray-600 dark:divide-gray-700 dark:text-gray-300">
               {filteredCases.length > 0 ? (
-                filteredCases.map((item) => (
+                pagedCases.map((item) => (
                   <tr
                     key={item.id}
                     className="hover:bg-gray-50 transition-colors dark:hover:bg-white/5"
@@ -446,7 +453,7 @@ export default function CasesTable({ data }: Props) {
                     <td className="px-4 py-4.5 align-middle text-center">
                       <button
                         onClick={() =>
-                          navigate(`/cases/${item.id}`, {
+                          navigate(`${basePath}/${item.id}`, {
                             state: { case: item },
                           })
                         }
@@ -470,6 +477,46 @@ export default function CasesTable({ data }: Props) {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-gray-600 dark:text-gray-400">
+          {filteredCases.length === 0
+            ? "Showing 0 cases"
+            : `Showing ${pageStart + 1}-${pageStart + pagedCases.length} of ${filteredCases.length} cases`}
+        </p>
+        <div className="flex items-center gap-2 text-xs">
+          <button
+            onClick={() => setPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="flex items-center gap-1 px-2 py-1 text-gray-600 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-400 dark:hover:text-white"
+          >
+            <ChevronLeft size={14} />
+            Previous
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+            <button
+              key={n}
+              onClick={() => setPage(n)}
+              className={`flex h-6 w-6 items-center justify-center rounded text-xs font-semibold ${
+                n === currentPage
+                  ? "bg-[#0B1F44] text-white dark:bg-blue-600"
+                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/5"
+              }`}
+            >
+              {String(n).padStart(2, "0")}
+            </button>
+          ))}
+          <button
+            onClick={() => setPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="flex items-center gap-1 px-2 py-1 text-gray-600 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-400 dark:hover:text-white"
+          >
+            Next
+            <ChevronRight size={14} />
+          </button>
         </div>
       </div>
 
@@ -519,4 +566,4 @@ export default function CasesTable({ data }: Props) {
       )}
     </div>
   );
-}
+}

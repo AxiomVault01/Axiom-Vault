@@ -1,176 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowUp, ArrowDown, Minus, SlidersHorizontal } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Minus, SlidersHorizontal } from 'lucide-react';
+import { useDashboardHeatmap } from '../../hooks/useDashboardData';
+import { HEATMAP_PERIODS, HeatmapPeriod } from '../../services/DashboardDataAPI';
 
-// Define types for our data structure
-interface RiskCell {
-    count: number;
-    trend: 'up' | 'down' | 'stable';
-    severity: 'low' | 'low-medium' | 'medium' | 'high';
-}
+type CellSeverity = 'safe' | 'low' | 'low-medium' | 'medium' | 'high';
 
-interface RowData {
-    department: string;
-    risks: {
-        [key: string]: RiskCell;
-    };
-}
+const PERIOD_LABELS: Record<HeatmapPeriod, string> = {
+    weekly: 'Weekly',
+    monthly: 'Monthly',
+    yearly: 'Yearly',
+};
+
+// Buckets a cell by its share of the busiest cell in the current period
+const getSeverity = (count: number, max: number): CellSeverity => {
+    if (count <= 0 || max <= 0) return 'safe';
+    const ratio = count / max;
+    if (ratio >= 0.75) return 'high';
+    if (ratio >= 0.5) return 'medium';
+    if (ratio >= 0.25) return 'low-medium';
+    return 'low';
+};
+
+// Helper to get Tailwind classes based on severity level
+const getSeverityStyles = (severity: CellSeverity) => {
+    switch (severity) {
+        case 'high':
+            return 'bg-red-500 text-white font-medium';
+        case 'medium':
+            return 'bg-amber-600 text-white font-medium';
+        case 'low-medium':
+            return 'bg-amber-200 text-amber-900 border border-amber-300';
+        case 'low':
+            return 'bg-orange-50 text-amber-900 border border-orange-100';
+        case 'safe':
+        default:
+            return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+    }
+};
 
 const RiskHeatmap: React.FC = () => {
-    const [viewMode, setViewMode] = useState<'weekly' | 'monthly'>('weekly');
-    const [tableData, setTableData] = useState<RowData[] | null>(null);
+    const [viewMode, setViewMode] = useState<HeatmapPeriod>('weekly');
+    const { data, isLoading, isError } = useDashboardHeatmap(viewMode);
 
-    // Column headers (Risk Types)
-    const riskTypes = [
-        'Duplicate Payments',
-        'Ghost Workers',
-        'Salary Anomalies',
-        'Approval Violations',
-        'Vendor Fraud',
-    ];
+    const riskTypes = data?.risk_types ?? [];
+    const departments = data?.departments ?? [];
 
-    // Row data mimicking your screenshot
-    const data: RowData[] = [
-        {
-            department: 'HR',
-            risks: {
-                'Duplicate Payments': { count: 3, trend: 'up', severity: 'low-medium' },
-                'Ghost Workers': { count: 12, trend: 'up', severity: 'high' },
-                'Salary Anomalies': { count: 8, trend: 'down', severity: 'medium' },
-                'Approval Violations': { count: 2, trend: 'stable', severity: 'low' },
-                'Vendor Fraud': { count: 1, trend: 'down', severity: 'low' },
-            },
-        },
-        {
-            department: 'Admin',
-            risks: {
-                'Duplicate Payments': { count: 7, trend: 'up', severity: 'medium' },
-                'Ghost Workers': { count: 4, trend: 'stable', severity: 'low' },
-                'Salary Anomalies': { count: 4, trend: 'stable', severity: 'low' },
-                'Approval Violations': { count: 5, trend: 'up', severity: 'medium' },
-                'Vendor Fraud': { count: 3, trend: 'stable', severity: 'low' },
-            },
-        },
-        {
-            department: 'Finance',
-            risks: {
-                'Duplicate Payments': { count: 2, trend: 'stable', severity: 'low' },
-                'Ghost Workers': { count: 8, trend: 'down', severity: 'medium' },
-                'Salary Anomalies': { count: 7, trend: 'up', severity: 'medium' },
-                'Approval Violations': { count: 5, trend: 'up', severity: 'medium' },
-                'Vendor Fraud': { count: 2, trend: 'down', severity: 'low' },
-            },
-        },
-        {
-            department: 'Operations',
-            risks: {
-                'Duplicate Payments': { count: 2, trend: 'stable', severity: 'low' },
-                'Ghost Workers': { count: 9, trend: 'up', severity: 'medium' },
-                'Salary Anomalies': { count: 8, trend: 'up', severity: 'high' },
-                'Approval Violations': { count: 6, trend: 'down', severity: 'low' },
-                'Vendor Fraud': { count: 9, trend: 'stable', severity: 'medium' },
-            },
-        },
-        {
-            department: 'Procurement',
-            risks: {
-                'Duplicate Payments': { count: 15, trend: 'up', severity: 'high' },
-                'Ghost Workers': { count: 6, trend: 'up', severity: 'low' },
-                'Salary Anomalies': { count: 11, trend: 'up', severity: 'high' },
-                'Approval Violations': { count: 9, trend: 'stable', severity: 'low' },
-                'Vendor Fraud': { count: 4, trend: 'down', severity: 'low' },
-            },
-        },
-        {
-            department: 'IT',
-            risks: {
-                'Duplicate Payments': { count: 5, trend: 'down', severity: 'medium' },
-                'Ghost Workers': { count: 3, trend: 'stable', severity: 'low' },
-                'Salary Anomalies': { count: 6, trend: 'up', severity: 'medium' },
-                'Approval Violations': { count: 8, trend: 'up', severity: 'high' },
-                'Vendor Fraud': { count: 7, trend: 'up', severity: 'medium' },
-            },
-        },
-        {
-            department: 'Marketing',
-            risks: {
-                'Duplicate Payments': { count: 4, trend: 'up', severity: 'low-medium' },
-                'Ghost Workers': { count: 2, trend: 'stable', severity: 'low' },
-                'Salary Anomalies': { count: 5, trend: 'up', severity: 'medium' },
-                'Approval Violations': { count: 3, trend: 'stable', severity: 'low' },
-                'Vendor Fraud': { count: 6, trend: 'down', severity: 'medium' },
-            },
-        },
-        {
-            department: 'Sales',
-            risks: {
-                'Duplicate Payments': { count: 9, trend: 'up', severity: 'high' },
-                'Ghost Workers': { count: 5, trend: 'up', severity: 'low-medium' },
-                'Salary Anomalies': { count: 10, trend: 'up', severity: 'high' },
-                'Approval Violations': { count: 7, trend: 'up', severity: 'medium' },
-                'Vendor Fraud': { count: 2, trend: 'stable', severity: 'low' },
-            },
-        },
-        {
-            department: 'Legal',
-            risks: {
-                'Duplicate Payments': { count: 1, trend: 'stable', severity: 'low' },
-                'Ghost Workers': { count: 4, trend: 'down', severity: 'low' },
-                'Salary Anomalies': { count: 3, trend: 'stable', severity: 'low' },
-                'Approval Violations': { count: 4, trend: 'up', severity: 'low-medium' },
-                'Vendor Fraud': { count: 2, trend: 'down', severity: 'low' },
-            },
-        },
-        {
-            department: 'Compliance',
-            risks: {
-                'Duplicate Payments': { count: 6, trend: 'up', severity: 'medium' },
-                'Ghost Workers': { count: 7, trend: 'up', severity: 'medium' },
-                'Salary Anomalies': { count: 9, trend: 'up', severity: 'high' },
-                'Approval Violations': { count: 10, trend: 'up', severity: 'high' },
-                'Vendor Fraud': { count: 5, trend: 'up', severity: 'medium' },
-            },
-        },
-    ];
-
-    useEffect(() => {
-        setTableData(data);
-    }, []);
-
-    const isLoading = tableData === null;
-    const isEmpty = tableData !== null && tableData.length === 0;
-
-    // Helper to get Tailwind classes based on severity level
-    const getSeverityStyles = (severity: RiskCell['severity'], type: string) => {
-        // Special case for the single green tile under Vendor Fraud
-        if (type === 'Vendor Fraud' && severity === 'low') {
-            return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+    // department -> risk_type -> count
+    const { counts, max } = useMemo(() => {
+        const counts: Record<string, Record<string, number>> = {};
+        let max = 0;
+        for (const cell of data?.cells ?? []) {
+            (counts[cell.department] ??= {})[cell.risk_type] = cell.count;
+            max = Math.max(max, cell.count);
         }
+        return { counts, max };
+    }, [data]);
 
-        switch (severity) {
-            case 'high':
-                return 'bg-red-500 text-white font-medium';
-            case 'medium':
-                return 'bg-amber-600 text-white font-medium';
-            case 'low-medium':
-                return 'bg-amber-200 text-amber-900 border border-amber-300';
-            case 'low':
-            default:
-                return 'bg-orange-50 text-amber-900 border border-orange-100';
-        }
-    };
-
-    // Helper to render the specific trend arrow icons
-    const renderTrendIcon = (trend: RiskCell['trend']) => {
-        switch (trend) {
-            case 'up':
-                return <ArrowUp className="w-3 h-3 ml-0.5 inline" strokeWidth={3} />;
-            case 'down':
-                return <ArrowDown className="w-3 h-3 ml-0.5 inline" strokeWidth={3} />;
-            case 'stable':
-            default:
-                return <Minus className="w-3 h-3 ml-0.5 inline" strokeWidth={3} />;
-        }
-    };
+    const isEmpty = !isLoading && (isError || departments.length === 0 || riskTypes.length === 0);
 
     return (
         <div className="w-full max-w-4xl bg-white rounded-2xl p-6 shadow-sm border border-gray-100 font-sans dark:text-white dark:bg-white/3">
@@ -185,20 +71,16 @@ const RiskHeatmap: React.FC = () => {
                 {/* View toggles & filter */}
                 <div className="flex items-center gap-3">
                     <div className="bg-gray-100 p-1 rounded-xl flex items-center text-xs font-medium ">
-                        <button
-                            onClick={() => setViewMode('weekly')}
-                            className={`px-4 py-1.5 rounded-lg transition-all ${viewMode === 'weekly' ? 'bg-white text-slate-800 shadow-sm' : 'text-gray-500 hover:text-slate-800'
-                                }`}
-                        >
-                            Weekly
-                        </button>
-                        <button
-                            onClick={() => setViewMode('monthly')}
-                            className={`px-4 py-1.5 rounded-lg transition-all ${viewMode === 'monthly' ? 'bg-white text-slate-800 shadow-sm' : 'text-gray-500 hover:text-slate-800'
-                                }`}
-                        >
-                            Monthly
-                        </button>
+                        {HEATMAP_PERIODS.map((period) => (
+                            <button
+                                key={period}
+                                onClick={() => setViewMode(period)}
+                                className={`px-4 py-1.5 rounded-lg transition-all ${viewMode === period ? 'bg-white text-slate-800 shadow-sm' : 'text-gray-500 hover:text-slate-800'
+                                    }`}
+                            >
+                                {PERIOD_LABELS[period]}
+                            </button>
+                        ))}
                     </div>
                     <button className="p-2 border border-gray-200 text-gray-500 rounded-xl hover:bg-gray-50 transition-colors">
                         <SlidersHorizontal className="w-4 h-4" />
@@ -206,9 +88,9 @@ const RiskHeatmap: React.FC = () => {
                 </div>
             </div>
 
-            {/* Heatmap Grid Container with simulated right-side scrollbar */}
+            {/* Heatmap Grid Container */}
             <div className="flex gap-4 max-h-96 overflow-y-auto">
-                <div className="relative flex-1 overflow-x-auto overflow-y-auto cursor-pointer">
+                <div className="relative flex-1 overflow-x-auto overflow-y-auto cursor-pointer min-h-40">
                     {isLoading || isEmpty ? (
                         <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/95 dark:bg-slate-900/90 p-6">
                             <div className="max-w-xs text-center">
@@ -216,12 +98,18 @@ const RiskHeatmap: React.FC = () => {
                                     <Minus className="h-5 w-5" strokeWidth={3} />
                                 </div>
                                 <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                                    {isLoading ? 'Loading heatmap data...' : 'No heatmap data available'}
+                                    {isLoading
+                                        ? 'Loading heatmap data...'
+                                        : isError
+                                            ? "Couldn't load heatmap data"
+                                            : 'No heatmap data available'}
                                 </p>
                                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                     {isLoading
                                         ? 'Please wait while the risk distribution loads.'
-                                        : 'There is currently no risk data to display. Adjust your filters or try again later.'}
+                                        : isError
+                                            ? 'Something went wrong. Please try again later.'
+                                            : 'There is currently no risk data to display. Adjust your filters or try again later.'}
                                 </p>
                             </div>
                         </div>
@@ -241,28 +129,25 @@ const RiskHeatmap: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {(tableData || []).map((row) => (
-                                <tr key={row.department}>
+                            {departments.map((department) => (
+                                <tr key={department}>
                                     {/* Department Row Label */}
                                     <td className="py-3 px-3 text-left text-xs font-medium text-gray-500 align-middle dark:text-white">
-                                        {row.department}
+                                        {department}
                                     </td>
 
                                     {/* Heatmap Matrix Cells */}
                                     {riskTypes.map((type) => {
-                                        const cell = row.risks[type];
+                                        const count = counts[department]?.[type] ?? 0;
                                         return (
                                             <td key={type} className="p-2 text-center align-middle ">
                                                 <div
+                                                    title={`${department} · ${type}: ${count}`}
                                                     className={`w-10 h-10 mx-auto rounded-lg flex items-center justify-center text-xs font-semibold shadow-sm transition-all hover:scale-105  ${getSeverityStyles(
-                                                        cell.severity,
-                                                        type
+                                                        getSeverity(count, max)
                                                     )}`}
                                                 >
-                                                    <span className="flex items-center justify-center">
-                                                        {cell.count}
-                                                        {renderTrendIcon(cell.trend)}
-                                                    </span>
+                                                    {count}
                                                 </div>
                                             </td>
                                         );
@@ -272,11 +157,6 @@ const RiskHeatmap: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-
-                {/* Decorative Scrollbar Track matching screenshot
-                <div className="w-2.5 bg-slate-800 rounded-full flex flex-col justify-between py-1 px-[2px] self-stretch mt-12 mb-2">
-                    <div className="w-full h-1/2 bg-white rounded-full opacity-90"></div>
-                </div> */}
             </div>
 
             {/* Legend Section */}
@@ -307,7 +187,7 @@ const RiskHeatmap: React.FC = () => {
                         <span className="text-xs font-medium text-gray-600 dark:text-white">Low Risk</span>
                     </div>
 
-                    {/* Safe/Vendor Fraud Low */}
+                    {/* No detections */}
                     <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-lg bg-emerald-100 border border-emerald-200 shadow-sm"></div>
                         <span className="text-xs font-medium text-gray-600 dark:text-white">Safe</span>

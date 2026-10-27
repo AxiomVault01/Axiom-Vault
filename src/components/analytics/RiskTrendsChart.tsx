@@ -7,7 +7,7 @@
  * the chart config.
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Line } from "react-chartjs-2";
 import type { ChartOptions } from "chart.js";
 
@@ -23,6 +23,7 @@ import {
   Legend,
   Filler,
 } from "chart.js";
+import { useDashboardTrends } from "../../hooks/useDashboardData";
 
 ChartJS.register(
   CategoryScale,
@@ -43,6 +44,7 @@ export interface RiskTrendDataPoint {
   critical: number;
   highRisk: number;
   mediumRisk: number;
+  lowRisk?: number;
 }
 
 interface Props {
@@ -50,17 +52,14 @@ interface Props {
   className?: string;
 }
 
-// ── Default mock data ──────────────────────────────────────────────────────
-
-const DEFAULT_DATA: RiskTrendDataPoint[] = [
-  { label: "Jan 1", critical: 15, highRisk: 45, mediumRisk: 28 },
-  { label: "Jan 5", critical: 20, highRisk: 50, mediumRisk: 30 },
-  { label: "Jan 10", critical: 22, highRisk: 52, mediumRisk: 35 },
-  { label: "Jan 15", critical: 28, highRisk: 55, mediumRisk: 40 },
-  { label: "Jan 20", critical: 25, highRisk: 68, mediumRisk: 42 },
-  { label: "Jan 25", critical: 35, highRisk: 65, mediumRisk: 44 },
-  { label: "Jan 30", critical: 40, highRisk: 68, mediumRisk: 46 },
-];
+// "2026-10-14" -> "Oct 14" (parsed as a local date to avoid TZ shifts)
+const formatDay = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+};
 
 // ── Legend pill ────────────────────────────────────────────────────────────
 
@@ -79,17 +78,32 @@ const LegendPill: React.FC<{ color: string; label: string }> = ({
 
 // ── Component ──────────────────────────────────────────────────────────────
 
-const RiskTrendsChart: React.FC<Props> = ({
-  data = DEFAULT_DATA,
-  className = "",
-}) => {
+const RiskTrendsChart: React.FC<Props> = ({ data: dataProp, className = "" }) => {
+  // Fall back to the API when no data is passed in
+  const { data: trends, isLoading, isError } = useDashboardTrends();
+
+  const data = useMemo<RiskTrendDataPoint[]>(
+    () =>
+      dataProp ??
+      (trends?.days ?? []).map((d) => ({
+        label: formatDay(d.date),
+        critical: d.critical,
+        highRisk: d.high,
+        mediumRisk: d.medium,
+        lowRisk: d.low,
+      })),
+    [dataProp, trends],
+  );
+
   const labels = data.map((d) => d.label);
   const critical = data.map((d) => d.critical);
   const highRisk = data.map((d) => d.highRisk);
   const mediumRisk = data.map((d) => d.mediumRisk);
+  const lowRisk = data.map((d) => d.lowRisk ?? 0);
 
-  const maxValue = Math.max(...critical, ...highRisk, ...mediumRisk);
-  const yMax = Math.ceil((maxValue + 2) / 10) * 11; // round up to nearest 11
+  const maxValue = Math.max(0, ...critical, ...highRisk, ...mediumRisk, ...lowRisk);
+  // Leave a little headroom above the highest point
+  const yMax = Math.max(5, Math.ceil(maxValue * 1.2));
 
   const chartData = {
     labels,
@@ -130,6 +144,18 @@ const RiskTrendsChart: React.FC<Props> = ({
         pointBackgroundColor: "#EAB308",
         pointBorderWidth: 0,
       },
+      {
+        label: "Low Risk",
+        data: lowRisk,
+        borderColor: "#22C55E",
+        backgroundColor: "rgba(34,197,94,0)",
+        borderWidth: 2,
+        tension: 0.35,
+        pointRadius: 2,
+        pointHoverRadius: 3,
+        pointBackgroundColor: "#22C55E",
+        pointBorderWidth: 0,
+      },
     ],
   };
 
@@ -155,11 +181,11 @@ const RiskTrendsChart: React.FC<Props> = ({
         ticks: { font: { size: 11 }, color: "#9CA3AF" },
       },
       y: {
-        min: 15,
+        min: 0,
         max: yMax,
         grid: { color: "rgba(0,0,0,0.05)", lineWidth: 1 },
         border: { display: false, dash: [4, 4] },
-        ticks: { font: { size: 11 }, color: "#9CA3AF", stepSize: 10 },
+        ticks: { font: { size: 11 }, color: "#9CA3AF", precision: 0 },
       },
     },
     interaction: { mode: "nearest", axis: "x", intersect: false },
@@ -171,18 +197,28 @@ const RiskTrendsChart: React.FC<Props> = ({
     >
       <div className="mb-4">
         <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-300 tracking-tight">
-          Risk Trends (Last 30 Days)
+          Risk Trends (Last {data.length || 30} Days)
         </h3>
       </div>
 
       <div className="py-3">
         {/* Custom legend */}
-        <div className="flex items-center gap-5 mb-4">
+        <div className="flex flex-wrap items-center gap-5 mb-4">
           <LegendPill color="#d92d20" label="Critical" />
           <LegendPill color="#F97316" label="High Risk" />
           <LegendPill color="#EAB308" label="Medium Risk" />
+          <LegendPill color="#22C55E" label="Low Risk" />
         </div>
-        <div className="h-52">
+        <div className="h-52 relative">
+          {!dataProp && (isLoading || isError || data.length === 0) && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
+              {isLoading
+                ? "Loading trends..."
+                : isError
+                  ? "Couldn't load risk trends."
+                  : "No trend data yet."}
+            </div>
+          )}
           <Line
             data={chartData}
             options={options}

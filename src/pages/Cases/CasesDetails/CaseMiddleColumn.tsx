@@ -10,9 +10,8 @@ interface Props {
   isGeneratingAI: boolean;
   handleGenerateAI: () => void;
   handleAddComment: (comment: string) => void;
-  handleFileUpload: (files: FileList | null) => void;
+  handleAttachEvidence: () => void;
   handleRemoveEvidence: (id: string) => void;
-  fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export default function CaseMiddleColumn({
@@ -21,9 +20,8 @@ export default function CaseMiddleColumn({
   isGeneratingAI,
   handleGenerateAI,
   handleAddComment,
-  handleFileUpload,
+  handleAttachEvidence,
   handleRemoveEvidence,
-  fileInputRef,
 }: Props) {
   const [newComment, setNewComment] = useState("");
 
@@ -75,24 +73,13 @@ export default function CaseMiddleColumn({
         title="Evidence & Documents"
         action={
           isInvestigating ? (
-            <>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                className="hidden"
-                onChange={(e) => {
-                  handleFileUpload(e.target.files);
-                  e.target.value = ""; // allow re-uploading the same file name
-                }}
-              />
               <button
-                onClick={() => fileInputRef.current?.click()}
+                type="button"
+                onClick={handleAttachEvidence}
                 className="flex items-center gap-1.5 px-3 py-1.5 border border-[#1a2e4a] text-[#1a2e4a] text-xs font-semibold rounded-lg hover:bg-[#1a2e4a] hover:text-white transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
               >
-                {Icons.upload} Upload File
+                {Icons.upload} Attach Existing File
               </button>
-            </>
           ) : null
         }
       >
@@ -118,10 +105,10 @@ export default function CaseMiddleColumn({
             <p className="text-sm text-gray-400">No evidence uploaded yet.</p>
             {isInvestigating && (
               <button
-                onClick={() => fileInputRef.current?.click()}
+                onClick={handleAttachEvidence}
                 className="mt-3 px-4 py-2 bg-[#1a2e4a] text-white text-xs font-semibold rounded-lg hover:bg-[#152438] transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
               >
-                Upload Evidence
+                Attach Existing Evidence
               </button>
             )}
           </div>

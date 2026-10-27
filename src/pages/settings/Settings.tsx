@@ -1,9 +1,19 @@
 import { useState } from "react";
 import Card from "../../components/settings/Card";
-import Input from "../../components/settings/Input";
+import AccountSettingsForm from "../../components/settings/AccountSettingsForm";
 import Select from "../../components/settings/Select";
 import Toggle from "../../components/settings/Toggle";
-import { User, Bell, Download, Trash2, Lock, Database } from "lucide-react";
+import TeamMembersList from "../../components/team/TeamMembersList";
+import { Link } from "react-router";
+import {
+  Users,
+  UserPlus,
+  Bell,
+  Download,
+  Trash2,
+  Lock,
+  Database,
+} from "lucide-react";
 
 function Settings() {
   const [criticalAlerts, setCriticalAlerts] = useState(true);
@@ -30,42 +40,36 @@ function Settings() {
         </Card>
 
         {/* Account Settings */}
+        <AccountSettingsForm />
+
+        {/* Team Members */}
         <Card className="dark:bg-white/[0.03] dark:border-gray-700">
-          <div className="flex items-start gap-3 mb-6">
-            <div className="bg-brand-500/10 p-2 rounded-lg">
-              <User className="w-5 h-5 text-brand-500" />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="bg-brand-500/10 p-2 rounded-lg">
+                <Users className="w-5 h-5 text-brand-500" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Team Members
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Add colleagues to your AxiomVault workspace
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Account Settings
-              </h2>
-              <p className="text-sm text-gray-500">
-                Update your personal information
-              </p>
-            </div>
-          </div>
-
-          {/* Form Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input label="Full Name" defaultValue="Senior Auditor" />
-            <Input label="Email Address" defaultValue="auditor@agency.gov" />
-            <Input label="Department" defaultValue="Internal Audit" />
-
-            <Select
-              label="Role"
-              defaultValue="Select Role"
-              className="dark:text-white"
+            <Link
+              to="/add-team-member"
+              className="inline-flex items-center justify-center gap-2 bg-brand-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300"
             >
-              <option disabled>Select Role</option>
-              <option>Senior Auditor</option>
-              <option>Junior Auditor</option>
-              <option>Administrator</option>
-            </Select>
+              <UserPlus className="w-4 h-4" />
+              Add Team Member
+            </Link>
           </div>
 
-          <button className="mt-6 bg-brand-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300">
-            Save Changes
-          </button>
+          <div className="mt-6">
+            <TeamMembersList />
+          </div>
         </Card>
 
         {/* Notification Preferences */}

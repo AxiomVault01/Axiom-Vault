@@ -53,7 +53,7 @@ return(
                   <td className="p-5">{item.updated}</td>
                   <td className="p-5">{item.evidence}</td>
                   <td className="p-5 align-middle">
-                      <button onClick={()=>navigate(`/investigations/${item.id}`)}
+                      <button onClick={()=>navigate(`/case/${item.id}`)}
                           className="inline-flex items-center gap-2 rounded-md bg-blue-50 px-3 py-2 text-blue-600">
                           <Eye size={16}/>
                           Open

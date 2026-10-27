@@ -1,49 +1,21 @@
-import { useLocation, useParams, useNavigate } from "react-router";
-import { useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router";
+import { useMemo, useRef, useState } from "react";
+import { Alert, EvidenceFile, Severity } from "./AlertsData";
 import {
-  MOCK_ALERTS,
-  Alert,
-  Severity,
-  DETAIL_DATA,
-  EvidenceFile,
-} from "./AlertsData";
-
-// Fallback for alerts without extended detail
-function buildFallbackDetail(alert: Alert) {
-  return {
-    title: `${alert.riskType} detected in ${alert.department}`,
-    flaggedRecords: alert.flaggedTransactions.map((t) => ({
-      txnId: t.id,
-      date: t.date,
-      amount: t.amount,
-      invoice: "—",
-      approver: "—",
-    })),
-    timeline: [
-      {
-        label: "Awaiting Decision",
-        sub: "No action taken yet",
-        date: "Today",
-        color: "blue" as const,
-      },
-      ...alert.timeline.map((t) => ({
-        label: t.event.split("—")[0].trim(),
-        sub: t.event.split("—")[1]?.trim() ?? "",
-        date: t.time.split(" ")[0],
-        color:
-          t.type === "alert"
-            ? ("red" as const)
-            : t.type === "action"
-              ? ("blue" as const)
-              : ("gray" as const),
-      })),
-    ],
-    evidence: [] as EvidenceFile[],
-    reviewers: [
-      alert.assigned === "Auto-assigned" ? "Auto-assigned" : alert.assigned,
-    ],
-  };
-}
+  AlertSuccessModal,
+  FalsePositiveModal,
+  NoReviewerModal,
+} from "../../components/alerts/AlertActionModals";
+import {
+  useAddAlertNote,
+  useAssignAlertReviewer,
+  useAlertHistory,
+  useAlertNotes,
+  useFraudAlert,
+  useUpdateAlertStatus,
+} from "../../hooks/useAlerts";
+import { useCreateCaseFromAlerts } from "../../hooks/useCases";
+import { useTeamMembers } from "../../hooks/useTeamMembers";
 
 // ── Severity styles ───────────────────────────────────────────────────────────
 const SEV_BADGE: Record<Severity, string> = {
@@ -59,25 +31,98 @@ const DOT_COLOR: Record<"red" | "blue" | "gray", string> = {
   gray: "bg-gray-300",
 };
 
+const pageFromLink = (link: string | null, fallback: number) => {
+  if (!link) return fallback;
+  const page = Number(new URL(link, window.location.href).searchParams.get("page"));
+  return Number.isInteger(page) && page > 0 ? page : fallback;
+};
+
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function AlertDetailPage() {
   const { id } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
+  const { data: alertDetail, isLoading, isError } = useFraudAlert(id ?? "");
+  const [historyPage, setHistoryPage] = useState(1);
+  const [notesPage, setNotesPage] = useState(1);
+  const historyQuery = useAlertHistory(id ?? "", historyPage);
+  const notesQuery = useAlertNotes(id ?? "", notesPage);
   const [note, setNote] = useState("");
-  const [reviewer, setReviewer] = useState("");
+  const [selectedReviewerId, setSelectedReviewerId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState("");
+  const teamMembersQuery = useTeamMembers();
+  const addNoteMutation = useAddAlertNote(id ?? "");
+  const assignReviewerMutation = useAssignAlertReviewer(id ?? "");
+  const updateStatusMutation = useUpdateAlertStatus(id ?? "");
+  const createCaseMutation = useCreateCaseFromAlerts();
+  const [createdCaseReference, setCreatedCaseReference] = useState("");
+  const [modal, setModal] = useState<
+    "none" | "noReviewer" | "falsePositive" | "converted" | "dismissed"
+  >("none");
+  const reviewerSelectRef = useRef<HTMLSelectElement>(null);
+  const closeModal = () => setModal("none");
+  const goToDashboard = () => navigate("/dashboard");
+  const goToCreatedCase = () =>
+    createdCaseReference
+      ? navigate(`/cases/${encodeURIComponent(createdCaseReference)}`)
+      : navigate("/cases");
 
   const alert: Alert | undefined = useMemo(() => {
-    if (location.state?.alert) return location.state.alert as Alert;
-    return MOCK_ALERTS.find((a) => a.id === id);
-  }, [location.state, id]);
+    if (!alertDetail) return undefined;
+    const severity =
+      (alertDetail.severity.charAt(0).toUpperCase() +
+        alertDetail.severity.slice(1)) as Severity;
+    const status =
+      alertDetail.status === "false_positive"
+        ? "False Positive"
+        : alertDetail.status.charAt(0).toUpperCase() +
+          alertDetail.status.slice(1);
+    return {
+      id: alertDetail.reference,
+      employee: alertDetail.entity_name,
+      riskType: alertDetail.risk_type,
+      department: alertDetail.department,
+      severity,
+      confidence: alertDetail.confidence,
+      status: status as Alert["status"],
+      detected: new Date(alertDetail.detected_at).toLocaleString(),
+      assigned: alertDetail.assigned_reviewer?.full_name ?? "Unassigned",
+      description: alertDetail.explanation,
+      flaggedTransactions: [],
+      timeline: [],
+    };
+  }, [alertDetail]);
 
   const detail = useMemo(() => {
-    if (!alert) return null;
-    return DETAIL_DATA[alert.id] ?? buildFallbackDetail(alert);
-  }, [alert]);
+    if (!alertDetail || !alert) return null;
+    return {
+      title: alertDetail.title,
+      flaggedRecords: alertDetail.flagged_records.map((record) => ({
+        txnId: record.transaction_id,
+        date: record.payment_date,
+        amount: `${alertDetail.currency} ${record.amount}`,
+        invoice: record.invoice_number,
+        approver: record.approver,
+      })),
+      timeline: alertDetail.timeline.map((item) => ({
+        label: item.label,
+        sub: item.detail,
+        date: item.date,
+        color: "blue" as const,
+      })),
+      evidence: [] as EvidenceFile[],
+      reviewers: [alertDetail.assigned_reviewer?.full_name ?? "Unassigned"],
+    };
+  }, [alert, alertDetail]);
 
-  if (!alert || !detail) {
+  if (isLoading) {
+    return <div className="p-8 text-center text-sm text-gray-500">Loading alert...</div>;
+  }
+
+  if (isError) {
+    return <div className="p-8 text-center text-sm text-red-500">Could not load this alert.</div>;
+  }
+
+  if (!alertDetail || !alert || !detail) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -96,8 +141,100 @@ export default function AlertDetailPage() {
   }
 
   // reviewer default
-  const reviewerOptions = detail.reviewers;
-  const activeReviewer = reviewer || reviewerOptions[0];
+  const currentReviewerId = alertDetail.assigned_reviewer?.id ?? "";
+  // Reviewer options come from the admin-managed team list; IDs are submitted to the reviewer endpoint.
+  const reviewerOptions = teamMembersQuery.data?.filter((member) => member.is_active) ?? [];
+  const activeReviewer = selectedReviewerId ?? currentReviewerId;
+  const timelineItems = historyQuery.data?.results.map((item) => ({
+    label: item.type.replace(/_/g, " "),
+    sub:
+      item.detail ||
+      (item.from_status && item.to_status
+        ? `${item.from_status} → ${item.to_status}`
+        : item.to_status),
+    date: new Date(item.created_at).toLocaleString(),
+    color: item.type === "created" ? "red" as const : "blue" as const,
+  })) ?? detail.timeline;
+
+  // Converting with only the auto-assigned reviewer asks for confirmation first
+  const handleConvertToCase = () => {
+    if (!currentReviewerId && /auto-assigned/i.test(alert.assigned)) {
+      setModal("noReviewer");
+    } else {
+      void handleCreateCase();
+    }
+  };
+
+  const handleCreateCase = async () => {
+    setActionError("");
+    try {
+      const createdCase = await createCaseMutation.mutateAsync([alert.id]);
+      setCreatedCaseReference(createdCase.reference);
+      setModal("converted");
+    } catch (error) {
+      setActionError(
+        error instanceof Error
+          ? `Could not convert the alert to a case: ${error.message}`
+          : "Could not convert the alert to a case. Please try again.",
+      );
+    }
+  };
+
+  const handleChangeReviewer = () => {
+    closeModal();
+    reviewerSelectRef.current?.focus();
+    reviewerSelectRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleSaveNote = async () => {
+    const text = note.trim();
+    if (!text) return;
+    setActionError("");
+    try {
+      await addNoteMutation.mutateAsync({ text });
+      setNote("");
+    } catch (error) {
+      setActionError(
+        error instanceof Error
+          ? `Could not save the note: ${error.message}`
+          : "Could not save the note. Please try again.",
+      );
+    }
+  };
+
+  const handleSaveReviewer = async () => {
+    setActionError("");
+    try {
+      await assignReviewerMutation.mutateAsync({
+        reviewer_id: (selectedReviewerId ?? currentReviewerId) || null,
+      });
+      setSelectedReviewerId(null);
+    } catch (error) {
+      setActionError(
+        error instanceof Error
+          ? `Could not update the reviewer: ${error.message}`
+          : "Could not update the reviewer. Please try again.",
+      );
+    }
+  };
+
+  const handleFalsePositive = async (reason: string) => {
+    setActionError("");
+    try {
+      await updateStatusMutation.mutateAsync({
+        status: "false_positive",
+        note: reason,
+      });
+      setModal("dismissed");
+    } catch (error) {
+      setModal("none");
+      setActionError(
+        error instanceof Error
+          ? `Could not update the alert status: ${error.message}`
+          : "Could not update the alert status. Please try again.",
+      );
+    }
+  };
 
   return (
     <div className="min-h-full bg-white dark:bg-transparent">
@@ -133,14 +270,18 @@ export default function AlertDetailPage() {
           </h1>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-4 mt-4 md:mt-1">
-          <button className="px-4 py-2 text-sm font-semibold border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-white dark:hover:bg-white/5">
+          <button
+            onClick={() => setModal("falsePositive")}
+            className="px-4 py-2 text-sm font-semibold border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-white dark:hover:bg-white/5"
+          >
             Mark False Positive
           </button>
           <button
             className="px-4 py-2 text-sm font-semibold bg-[#1a2e4a] text-white rounded-lg hover:bg-[#152438] transition-colors"
-            onClick={() => navigate("/investigations")}
+            onClick={handleConvertToCase}
+            disabled={createCaseMutation.isPending}
           >
-            Convert to Case
+            {createCaseMutation.isPending ? "Creating Case..." : "Convert to Case"}
           </button>
         </div>
       </div>
@@ -256,7 +397,13 @@ export default function AlertDetailPage() {
               {/* vertical line */}
               <div className="absolute left-2.5 top-3 bottom-3 w-px bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-5">
-                {detail.timeline.map((item, idx) => (
+                {historyQuery.isLoading ? (
+                  <p className="text-sm text-gray-500">Loading alert history...</p>
+                ) : historyQuery.isError ? (
+                  <p className="text-sm text-red-500">Could not load alert history.</p>
+                ) : timelineItems.length === 0 ? (
+                  <p className="text-sm text-gray-500">No history available.</p>
+                ) : timelineItems.map((item, idx) => (
                   <div key={idx} className="flex gap-4 relative">
                     <div
                       className={`w-5 h-5 rounded-full border-2 border-white dark:border-gray-900 shrink-0 mt-0.5 z-10 ${DOT_COLOR[item.color]}`}
@@ -278,6 +425,29 @@ export default function AlertDetailPage() {
                 ))}
               </div>
             </div>
+            {historyQuery.data && (historyQuery.data.next || historyQuery.data.previous) && (
+              <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+                <button
+                  onClick={() => setHistoryPage((current) =>
+                    pageFromLink(historyQuery.data?.previous ?? null, Math.max(1, current - 1)),
+                  )}
+                  disabled={!historyQuery.data.previous || historyQuery.isPlaceholderData}
+                  className="rounded border px-3 py-1.5 disabled:opacity-40"
+                >
+                  Previous
+                </button>
+                <span>Page {historyPage} · {historyQuery.data.count} events</span>
+                <button
+                  onClick={() => setHistoryPage((current) =>
+                    pageFromLink(historyQuery.data?.next ?? null, current + 1),
+                  )}
+                  disabled={!historyQuery.data.next || historyQuery.isPlaceholderData}
+                  className="rounded border px-3 py-1.5 disabled:opacity-40"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -388,8 +558,55 @@ export default function AlertDetailPage() {
           {/* Assignment & Notes */}
           <div className="p-5">
             <h2 className="text-sm font-bold text-gray-800 mb-4 dark:text-white">
-              Assignment And Notes
+              Assignment And Notes ({alertDetail?.notes_count ?? 0})
             </h2>
+            {actionError && (
+              <p role="alert" className="mb-3 text-xs text-red-600">
+                {actionError}
+              </p>
+            )}
+
+            <div className="mb-4 space-y-2">
+              {notesQuery.isLoading ? (
+                <p className="text-xs text-gray-500">Loading notes...</p>
+              ) : notesQuery.isError ? (
+                <p className="text-xs text-red-500">Could not load alert notes.</p>
+              ) : notesQuery.data?.results.length ? (
+                notesQuery.data.results.map((alertNote) => (
+                  <div key={alertNote.id} className="rounded-lg border border-gray-100 p-3 dark:border-gray-700">
+                    <p className="text-xs text-gray-700 dark:text-gray-200">{alertNote.text}</p>
+                    <p className="mt-1 text-[11px] text-gray-400">
+                      {alertNote.author?.full_name ?? "System"} · {new Date(alertNote.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-gray-500">No notes yet.</p>
+              )}
+              {notesQuery.data && (notesQuery.data.next || notesQuery.data.previous) && (
+                <div className="flex items-center justify-between text-xs text-gray-500">
+                  <button
+                    onClick={() => setNotesPage((current) =>
+                      pageFromLink(notesQuery.data?.previous ?? null, Math.max(1, current - 1)),
+                    )}
+                    disabled={!notesQuery.data.previous || notesQuery.isPlaceholderData}
+                    className="rounded border px-2 py-1 disabled:opacity-40"
+                  >
+                    Previous
+                  </button>
+                  <span>Page {notesPage} · {notesQuery.data.count} notes</span>
+                  <button
+                    onClick={() => setNotesPage((current) =>
+                      pageFromLink(notesQuery.data?.next ?? null, current + 1),
+                    )}
+                    disabled={!notesQuery.data.next || notesQuery.isPlaceholderData}
+                    className="rounded border px-2 py-1 disabled:opacity-40"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </div>
 
             <div className="mb-4">
               <label className="block text-xs font-semibold text-gray-500 mb-1.5 dark:text-gray-400">
@@ -397,13 +614,28 @@ export default function AlertDetailPage() {
               </label>
               <div className="relative">
                 <select
+                  ref={reviewerSelectRef}
                   value={activeReviewer}
-                  onChange={(e) => setReviewer(e.target.value)}
+                  onChange={(e) => setSelectedReviewerId(e.target.value)}
                   className="w-full appearance-none border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-white/3 dark:border-gray-700 dark:text-white pr-8"
                 >
-                  {reviewerOptions.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
+                  <option value="">
+                    {teamMembersQuery.isLoading
+                      ? "Loading reviewers..."
+                      : reviewerOptions.length
+                        ? "Unassigned"
+                        : "No active team members"}
+                  </option>
+                  {alertDetail.assigned_reviewer && !reviewerOptions.some(
+                    (member) => String(member.id) === alertDetail.assigned_reviewer?.id,
+                  ) && (
+                    <option value={alertDetail.assigned_reviewer.id}>
+                      {alertDetail.assigned_reviewer.full_name}
+                    </option>
+                  )}
+                  {reviewerOptions.map((member) => (
+                    <option key={member.id} value={String(member.id)}>
+                      {member.full_name}
                     </option>
                   ))}
                 </select>
@@ -424,6 +656,31 @@ export default function AlertDetailPage() {
                 </svg>
               </div>
             </div>
+            {teamMembersQuery.isError && (
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <p role="alert" className="text-xs text-red-500">
+                  Could not load reviewers: {teamMembersQuery.error instanceof Error
+                    ? teamMembersQuery.error.message
+                    : "Please try again."}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => teamMembersQuery.refetch()}
+                  disabled={teamMembersQuery.isFetching}
+                  className="shrink-0 text-xs font-semibold text-blue-600 disabled:opacity-50"
+                >
+                  {teamMembersQuery.isFetching ? "Retrying..." : "Retry"}
+                </button>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={handleSaveReviewer}
+              disabled={assignReviewerMutation.isPending || teamMembersQuery.isLoading}
+              className="mb-4 w-full py-2 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 dark:border-gray-700 dark:text-white dark:hover:bg-white/5"
+            >
+              {assignReviewerMutation.isPending ? "Saving reviewer..." : "Save Reviewer"}
+            </button>
 
             <div className="mb-4">
               <label className="block text-xs font-semibold text-gray-500 mb-1.5 dark:text-gray-400">
@@ -441,12 +698,43 @@ export default function AlertDetailPage() {
               </p>
             </div>
 
-            <button className="w-full py-2.5 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-700 dark:text-white dark:hover:bg-white/5">
-              Save Note
+            <button
+              type="button"
+              onClick={handleSaveNote}
+              disabled={!note.trim() || addNoteMutation.isPending}
+              className="w-full py-2.5 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 dark:border-gray-700 dark:text-white dark:hover:bg-white/5"
+            >
+              {addNoteMutation.isPending ? "Saving note..." : "Save Note"}
             </button>
           </div>
         </div>
       </div>
+
+      {/* ── Action modals ────────────────────────────────────────────── */}
+      <NoReviewerModal
+        isOpen={modal === "noReviewer"}
+        onClose={closeModal}
+        onAcceptAndConvert={() => void handleCreateCase()}
+        onChangeReviewer={handleChangeReviewer}
+      />
+      <FalsePositiveModal
+        isOpen={modal === "falsePositive"}
+        onClose={closeModal}
+        onConfirm={handleFalsePositive}
+        isSubmitting={updateStatusMutation.isPending}
+      />
+      <AlertSuccessModal
+        isOpen={modal === "converted"}
+        onClose={closeModal}
+        message="Alert Successfully Converted to a Case"
+        onGoToDashboard={goToCreatedCase}
+      />
+      <AlertSuccessModal
+        isOpen={modal === "dismissed"}
+        onClose={closeModal}
+        message="Alert Successfully Dismissed"
+        onGoToDashboard={goToDashboard}
+      />
     </div>
   );
 }

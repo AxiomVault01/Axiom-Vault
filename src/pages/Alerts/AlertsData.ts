@@ -1,5 +1,10 @@
 export type Severity = "Critical" | "High" | "Medium" | "Low";
-export type AlertStatus = "New" | "Investigating" | "Escalated" | "Resolved";
+export type AlertStatus =
+  | "New"
+  | "Investigating"
+  | "Escalated"
+  | "Resolved"
+  | "False Positive";
 
 export interface Alert {
   id: string;

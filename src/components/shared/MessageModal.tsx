@@ -18,6 +18,7 @@ export default function MessageModal({
   actionlink,
 }: ModalProps) {
   if (!isOpen) return null;
+  const email = sessionStorage.getItem("email")
   return (
     <div className="px-2 md:px-4 py-1 mb-5 w-full mt-2 text-sm text-white bg-brand-50 dark:bg-blue-500/20 border-brand-700 dark:border-blue-400 border rounded-lg relative">
       <div className=" text-left gap-3 fixed inset-0 z-50 flex items-center justify-center">
@@ -41,7 +42,7 @@ export default function MessageModal({
             >
               {count}{" "}
               <span className="text-black font-semibold dark:text-white ">
-                janedoe@gmail.com,
+                {email}
                 <br /> After receiving the email, copy the code provided to{" "}
                 <br />
                 continue your registration
