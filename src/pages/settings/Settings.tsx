@@ -1,12 +1,11 @@
 import { useState } from "react";
 import Card from "../../components/settings/Card";
-import Input from "../../components/settings/Input";
+import AccountSettingsForm from "../../components/settings/AccountSettingsForm";
 import Select from "../../components/settings/Select";
 import Toggle from "../../components/settings/Toggle";
 import TeamMembersList from "../../components/team/TeamMembersList";
 import { Link } from "react-router";
 import {
-  User,
   Users,
   UserPlus,
   Bell,
@@ -41,43 +40,7 @@ function Settings() {
         </Card>
 
         {/* Account Settings */}
-        <Card className="dark:bg-white/[0.03] dark:border-gray-700">
-          <div className="flex items-start gap-3 mb-6">
-            <div className="bg-brand-500/10 p-2 rounded-lg">
-              <User className="w-5 h-5 text-brand-500" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Account Settings
-              </h2>
-              <p className="text-sm text-gray-500">
-                Update your personal information
-              </p>
-            </div>
-          </div>
-
-          {/* Form Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input label="Full Name" defaultValue="Senior Auditor" />
-            <Input label="Email Address" defaultValue="auditor@agency.gov" />
-            <Input label="Department" defaultValue="Internal Audit" />
-
-            <Select
-              label="Role"
-              defaultValue="Select Role"
-              className="dark:text-white"
-            >
-              <option disabled>Select Role</option>
-              <option>Senior Auditor</option>
-              <option>Junior Auditor</option>
-              <option>Administrator</option>
-            </Select>
-          </div>
-
-          <button className="mt-6 bg-brand-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300">
-            Save Changes
-          </button>
-        </Card>
+        <AccountSettingsForm />
 
         {/* Team Members */}
         <Card className="dark:bg-white/[0.03] dark:border-gray-700">

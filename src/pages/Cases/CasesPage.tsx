@@ -5,12 +5,13 @@ import GettingStartedCard from "../../components/cases/GettingStartedCard";
 import QuickActionCard from "../../components/cases/QuickActionCard";
 import { DownloadIcon, Upload } from "lucide-react";
 import CasesTable, { exportCasesCsv } from "../../components/cases/CasesTable";
-import { MOCK_CASES } from "../../pages/Cases/CasesData";
-import { useHasUploadedData } from "../../hooks/useHasUploadedData";
+import { toCaseView } from "../../services/CasesAPI";
+import { useCases } from "../../hooks/useCases";
 
 const CasesPage: React.FC = () => {
-  const hasUploadedData = useHasUploadedData();
-  const cases = hasUploadedData ? MOCK_CASES : [];
+  // Load backend cases so the case list reflects alerts converted into cases.
+  const casesQuery = useCases();
+  const cases = casesQuery.data?.results.map(toCaseView) ?? [];
   const hasData = cases.length > 0;
 
   return (
@@ -42,7 +43,20 @@ const CasesPage: React.FC = () => {
           </button>
         </div>
 
-        {!hasData ? (
+        {casesQuery.isLoading ? (
+          <p className="py-12 text-center text-sm text-gray-500">Loading cases...</p>
+        ) : casesQuery.isError ? (
+          <div className="py-12 text-center">
+            <p role="alert" className="text-sm text-red-500">Could not load cases.</p>
+            <button
+              type="button"
+              onClick={() => casesQuery.refetch()}
+              className="mt-2 text-sm font-semibold text-blue-600 hover:underline"
+            >
+              Retry
+            </button>
+          </div>
+        ) : !hasData ? (
           <div className="mx-auto max-w-2xl space-y-8 pb-6">
             <CasesEmptyState />
             <GettingStartedCard />

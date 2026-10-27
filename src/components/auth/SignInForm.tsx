@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router";
+import { isTeamMember } from "../../TeamMembers/session";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -11,7 +12,7 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import api from "../../services/Axios";
-import { Loader, Lock, Mail } from "lucide-react";
+import { CircleCheck, Loader, Lock, Mail } from "lucide-react";
 import toast from "react-hot-toast";
 
 const bgImage = {
@@ -32,8 +33,11 @@ export default function SignInForm() {
   const [isChecked, setIsChecked] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Set when arriving from the change-temporary-password screen
+  const { state } = useLocation();
+  const passwordUpdated = Boolean(state?.passwordUpdated);
   const [formData, setFormData] = useState({
-    email: "",
+    email: state?.email ?? "",
   password: "",
   });
     const navigate = useNavigate();
@@ -99,7 +103,7 @@ export default function SignInForm() {
         toast.success("Login successful! 🎉")
         setShowToast(true)
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate(isTeamMember(rawResponse.data.user) ? "/member/cases" : "/dashboard");
         }, 2000);
       }
     } catch (err: any) {
@@ -140,6 +144,19 @@ export default function SignInForm() {
             </div>
 
             <div className="p-5">
+              {passwordUpdated && (
+                <div className="mb-4 flex gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-white/5">
+                  <CircleCheck size={18} className="mt-0.5 shrink-0 text-green-500" />
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                      Password Updated Successfully
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Your password has been permanently updated. You may now login.
+                    </p>
+                  </div>
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                   <div>
@@ -211,6 +228,13 @@ export default function SignInForm() {
                   </div>
                 </div>
               </form>
+
+              <p className="mt-4 text-center text-sm text-brand-100 dark:text-gray-400">
+                Signing in with a temporary password?{" "}
+                <Link to="/change-temporary-password" className="font-medium text-brand-500 dark:text-brand-400">
+                  Change it first
+                </Link>
+              </p>
 
               <div className="mt-6 flex justify-center">
                 <p className="text-sm font-normal text-brand-100 dark:text-gray-400 sm:text-start">

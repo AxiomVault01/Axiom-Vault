@@ -10,7 +10,7 @@ const Input = ({ label, ...props }: InputProps) => {
       </label>
       <input
         {...props}
-        className="h-11 px-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2D91D1] focus:border-[#2D91D1] text-sm dark:text-gray-400"
+        className="h-11 px-4 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2D91D1] focus:border-[#2D91D1] text-sm dark:text-gray-400 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed dark:disabled:bg-white/5"
       />
     </div>
   );

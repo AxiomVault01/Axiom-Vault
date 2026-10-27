@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router";
-import { MOCK_ALERTS, Alert, Severity, AlertStatus } from "./AlertsData";
-import { useHasUploadedData } from "../../hooks/useHasUploadedData";
+import { Alert, Severity, AlertStatus } from "./AlertsData";
+import { useFraudAlerts } from "../../hooks/useAlerts";
+import { AlertSeverity, AlertStatus as ApiAlertStatus } from "../../services/AlertsAPI";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -17,12 +18,48 @@ const STATUS_STYLES: Record<AlertStatus, string> = {
   Investigating: "bg-purple-100 text-purple-700",
   Escalated:     "bg-red-100 text-red-700",
   Resolved:      "bg-green-100 text-green-700",
+  "False Positive": "bg-gray-100 text-gray-600",
 };
 
 const CONFIDENCE_COLOR = (n: number) =>
   n >= 90 ? "bg-green-500" : n >= 75 ? "bg-blue-500" : "bg-orange-400";
 
 type SeverityFilter = "All" | Severity;
+const API_STATUSES: ApiAlertStatus[] = ["new", "investigating", "escalated", "false_positive"];
+
+const apiSeverity = (severity: string): Severity =>
+  (severity.charAt(0).toUpperCase() + severity.slice(1).toLowerCase()) as Severity;
+
+const apiStatus = (status: ApiAlertStatus): AlertStatus => {
+  if (status === "false_positive") return "False Positive";
+  return (status.charAt(0).toUpperCase() + status.slice(1)) as AlertStatus;
+};
+
+const fromApiAlert = (item: {
+  reference: string;
+  risk_type: string;
+  title: string;
+  entity_name: string;
+  department: string;
+  severity: AlertSeverity;
+  status: ApiAlertStatus;
+  confidence: number;
+  detected_at: string;
+  assigned_reviewer: { full_name: string } | null;
+}): Alert => ({
+  id: item.reference,
+  employee: item.entity_name,
+  riskType: item.risk_type,
+  department: item.department,
+  severity: apiSeverity(item.severity),
+  confidence: item.confidence,
+  status: apiStatus(item.status),
+  detected: new Date(item.detected_at).toLocaleString(),
+  assigned: item.assigned_reviewer?.full_name ?? "Unassigned",
+  description: item.title,
+  flaggedTransactions: [],
+  timeline: [],
+});
 
 // ── Empty State ───────────────────────────────────────────────────────────────
 
@@ -98,13 +135,28 @@ interface AlertsPageProps {
 }
 
 export default function AlertsPage({ alerts: alertsProp }: AlertsPageProps) {
-  const hasData = useHasUploadedData();
+  const [page, setPage] = useState(1);
+  const [department, setDepartment] = useState("");
+  const [severity, setSeverity] = useState<AlertSeverity | "">("");
+  const [status, setStatus] = useState<ApiAlertStatus | "">("");
+  const [rule, setRule] = useState("");
+  const {
+    data: response,
+    isLoading,
+    isError,
+    isPlaceholderData,
+  } = useFraudAlerts(
+    { page, department, severity: severity || undefined, status: status || undefined, rule },
+    !alertsProp,
+  );
   const alerts = useMemo(
-    () => alertsProp ?? (hasData ? MOCK_ALERTS : []),
-    [alertsProp, hasData],
+    () => alertsProp ?? (response?.results.map(fromApiAlert) ?? []),
+    [alertsProp, response],
   );
   const [search, setSearch] = useState("");
-  const [severityFilter, setSeverityFilter] = useState<SeverityFilter>("All");
+  const severityFilter: SeverityFilter = severity
+    ? apiSeverity(severity)
+    : "All";
 
   const counts = useMemo(() => ({
     All:      alerts.length,
@@ -123,10 +175,20 @@ export default function AlertsPage({ alerts: alertsProp }: AlertsPageProps) {
         a.id.toLowerCase().includes(q) ||
         a.riskType.toLowerCase().includes(q) ||
         a.department.toLowerCase().includes(q);
-      const matchSev = severityFilter === "All" || a.severity === severityFilter;
-      return matchSearch && matchSev;
+      return matchSearch;
     });
-  }, [alerts, search, severityFilter]);
+  }, [alerts, search]);
+
+  const changeFilter = (update: () => void) => {
+    setPage(1);
+    update();
+  };
+
+  const pageFromLink = (link: string | null, fallback: number) => {
+    if (!link) return fallback;
+    const nextPage = Number(new URL(link, window.location.href).searchParams.get("page"));
+    return Number.isInteger(nextPage) && nextPage > 0 ? nextPage : fallback;
+  };
 
   const handleExport = () => {
     const headers = ["Alert ID", "Employee/Vendor", "Risk Type", "Department", "Severity", "Confidence", "Status", "Detected", "Assigned"];
@@ -141,7 +203,9 @@ export default function AlertsPage({ alerts: alertsProp }: AlertsPageProps) {
     URL.revokeObjectURL(url);
   };
 
-  const isEmpty = alerts.length === 0;
+  const isEmpty = alertsProp
+    ? alertsProp.length === 0
+    : !isLoading && !isError && alerts.length === 0;
 
   return (
     <div className="flex flex-col h-full p-2 sm:p-4 lg:p-2 overflow-hidden">
@@ -185,17 +249,23 @@ export default function AlertsPage({ alerts: alertsProp }: AlertsPageProps) {
               return (
                 <button
                   key={f}
-                  onClick={() => setSeverityFilter(f)}
+                  onClick={() =>
+                    changeFilter(() =>
+                      setSeverity(f === "All" ? "" : f.toLowerCase() as AlertSeverity),
+                    )
+                  }
                   className={`px-4 py-1.5 rounded-md text-xs font-semibold transition-colors ${pill[f]}`}
                 >
-                  {f === "All" ? `All Alerts (${counts.All})` : `${f} (${counts[f]})`}
+                  {f === "All"
+                    ? `All Alerts (${response?.count ?? alerts.length})`
+                    : `${f} (${counts[f]})`}
                 </button>
               );
             })}
           </div>
 
           {/* Search + Filter bar */}
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-3 mb-4">
             <div className="relative flex-1">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.3"/>
@@ -209,11 +279,31 @@ export default function AlertsPage({ alerts: alertsProp }: AlertsPageProps) {
                 className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-white/3 dark:border-gray-700 dark:text-white"
               />
             </div>
-            <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M2 4h12M4 8h8M6 12h4" stroke="#64748b" strokeWidth="1.4" strokeLinecap="round"/>
-              </svg>
-            </button>
+            <input
+              aria-label="Filter by department"
+              value={department}
+              onChange={(e) => changeFilter(() => setDepartment(e.target.value))}
+              placeholder="Department"
+              className="w-36 px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white dark:bg-white/3 dark:border-gray-700 dark:text-white"
+            />
+            <select
+              aria-label="Filter by status"
+              value={status}
+              onChange={(e) => changeFilter(() => setStatus(e.target.value as ApiAlertStatus | ""))}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            >
+              <option value="">All statuses</option>
+              {API_STATUSES.map((value) => (
+                <option key={value} value={value}>{value.replace("_", " ")}</option>
+              ))}
+            </select>
+            <input
+              aria-label="Filter by rule"
+              value={rule}
+              onChange={(e) => changeFilter(() => setRule(e.target.value))}
+              placeholder="Rule"
+              className="w-36 px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white dark:bg-white/3 dark:border-gray-700 dark:text-white"
+            />
           </div>
 
           {/* Table */}
@@ -230,15 +320,19 @@ export default function AlertsPage({ alerts: alertsProp }: AlertsPageProps) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {filtered.length === 0 ? (
+                  {isLoading && !response ? (
+                    <tr><td colSpan={10} className="text-center py-12 text-gray-400 text-sm">Loading alerts...</td></tr>
+                  ) : isError ? (
+                    <tr><td colSpan={10} className="text-center py-12 text-red-500 text-sm">Could not load alerts.</td></tr>
+                  ) : filtered.length === 0 ? (
                     <tr>
                       <td colSpan={10} className="text-center py-12 text-gray-400 text-sm">
-                        No alerts match your search.
+                        No alerts match your filters.
                       </td>
                     </tr>
                   ) : (
                     filtered.map((alert) => (
-                      <tr key={alert.id} className="hover:bg-gray-50 transition-colors dark:hover:bg-white/2">
+                      <tr key={alert.id} className={`hover:bg-gray-50 transition-colors dark:hover:bg-white/2 ${isPlaceholderData ? "opacity-60" : ""}`}>
                         <td className="px-4 py-3.5 font-mono text-xs text-gray-500 whitespace-nowrap dark:text-gray-400">
                           {alert.id}
                         </td>
@@ -303,16 +397,24 @@ export default function AlertsPage({ alerts: alertsProp }: AlertsPageProps) {
             {/* Pagination footer */}
             <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between dark:border-gray-700">
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Showing 1–{filtered.length} of {filtered.length} alerts
+                Showing {filtered.length} alerts on page {page} · {response?.count ?? filtered.length} total
               </p>
               <div className="flex items-center gap-2">
-                <button className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-40 transition-colors" disabled>
+                <button
+                  onClick={() => setPage((current) => pageFromLink(response?.previous ?? null, Math.max(current - 1, 1)))}
+                  className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-40 transition-colors"
+                  disabled={!response?.previous || isPlaceholderData}
+                >
                   ← Previous
                 </button>
                 <span className="w-7 h-7 flex items-center justify-center text-xs font-semibold bg-[#1a2e4a] text-white rounded-lg">
-                  01
+                  {String(page).padStart(2, "0")}
                 </span>
-                <button className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-40 transition-colors" disabled>
+                <button
+                  onClick={() => setPage((current) => pageFromLink(response?.next ?? null, current + 1))}
+                  className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-40 transition-colors"
+                  disabled={!response?.next || isPlaceholderData}
+                >
                   Next →
                 </button>
               </div>

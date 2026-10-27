@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import Welcome from "./pages/AuthPages/Welcome";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
@@ -43,6 +43,11 @@ import CaseDetailPage from "./pages/Cases/CasesDetails/CaseDetailPage";
 // import WelcomePage from "./components/auth/WelcomePage";
 import { Toaster } from "react-hot-toast"
 import ProtectedRoute from "./components/Protectedroute/ProtectedRoute";
+import TeamMemberLayout from "./TeamMembers/TeamMemberLayout";
+import MemberCasesPage from "./TeamMembers/MemberCasesPage";
+import MemberEvidencePage from "./TeamMembers/MemberEvidencePage";
+import MemberSettingsPage from "./TeamMembers/MemberSettingsPage";
+import ChangeTemporaryPassword from "./TeamMembers/ChangeTemporaryPassword";
 
 export default function App() {
   return (
@@ -65,9 +70,20 @@ export default function App() {
             element={<ResetPasswordSuccessful />}
           />
           <Route path="/add-team-member" element={<AddTeamMember />} />
+          <Route path="/change-temporary-password" element={<ChangeTemporaryPassword />} />
 
           {/* Protected Dashboard Layout */}
           <Route element={<ProtectedRoute />}>
+            {/* Team member area */}
+            <Route path="/member" element={<TeamMemberLayout />}>
+              <Route index element={<Navigate to="cases" replace />} />
+              <Route path="cases" element={<MemberCasesPage />} />
+              <Route path="cases/:id" element={<CaseDetailPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="evidence" element={<MemberEvidencePage />} />
+              <Route path="settings" element={<MemberSettingsPage />} />
+            </Route>
+
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Home />} />
               <Route path="/alerts" element={<AlertsPage />} />

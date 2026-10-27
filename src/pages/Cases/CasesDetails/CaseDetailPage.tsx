@@ -1,27 +1,52 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router";
-import { MOCK_CASES, Case, CaseStatus, EvidenceFile, Severity } from "../CasesData";
+import { Case, CaseStatus, EvidenceFile, Severity } from "../CasesData";
 import { SectionCard } from "./CaseShared";
 import { Icons, SEV_BADGE, STATUS_BADGE } from "./CaseConstants";
 import CaseLeftColumn from "./CaseLeftColumn";
 import CaseMiddleColumn from "./CaseMiddleColumn";
 import CaseRightColumn from "./CaseRightColumn";
+import { useTeamMembers } from "../../../hooks/useTeamMembers";
+import {
+  useAddCaseComment,
+  useAssignCase,
+  useCase,
+  useCaseComments,
+  useCaseEvidence,
+  useCaseHistory,
+  useCaseReport,
+  useAttachCaseEvidence,
+  useEscalateCase,
+  useRemoveCaseEvidence,
+  useUpdateCaseStatus,
+} from "../../../hooks/useCases";
+import {
+  CaseEscalationPayload,
+  toCaseView,
+  toEvidenceView,
+} from "../../../services/CasesAPI";
+import { TeamMember } from "../../../services/teamMembers";
 
 // ── Screen: Escalate Case View ────────────────────────────────────────────────
 function EscalateCaseView({
   caseData,
+  teamMembers,
   onCancel,
   onEscalate,
 }: {
   caseData: Case;
+  teamMembers: TeamMember[];
   onCancel: () => void;
-  onEscalate: () => void;
+  onEscalate: (payload: CaseEscalationPayload) => Promise<void>;
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [reason, setReason] = useState("");
-  const [escalateTo, setEscalateTo] = useState("Legal Team");
+  const [escalateToId, setEscalateToId] = useState("");
   const [priority, setPriority] = useState(caseData.severity);
   const [notes, setNotes] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [supportingDocs, setSupportingDocs] = useState<EvidenceFile[]>([]);
 
   // Modal state
@@ -29,14 +54,29 @@ function EscalateCaseView({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
-    setShowSuccessModal(true);
+  const handleSubmit = async () => {
+    if (!reason || !escalateToId) return;
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await onEscalate({
+        reason,
+        escalate_to_id: escalateToId,
+        priority: priority.toLowerCase(),
+        notes,
+      });
+      setShowSuccessModal(true);
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "Could not escalate the case.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
-    onEscalate();
-    navigate("/cases");
+    // Back to the case list this page sits under (/cases or /member/cases)
+    navigate(location.pathname.replace(/\/[^/]+$/, ""));
   };
 
   const handleFileUpload = (files: FileList | null) => {
@@ -138,26 +178,18 @@ function EscalateCaseView({
             <label className="block text-sm font-bold text-gray-800 mb-2 dark:text-white">
               Escalate To
             </label>
-            <div className="flex gap-3 flex-col md:flex-row">
-              {["Legal Team", "Compliance", "Lead Investigator"].map((dept) => (
-                <button
-                  key={dept}
-                  onClick={() => setEscalateTo(dept)}
-                  className={`px-4 py-2 border rounded-md text-sm font-medium transition-colors flex items-center gap-2
-                    ${escalateTo === dept ? "border-green-500 bg-green-400 text-white dark:bg-green-500/30 dark:text-white" : "border-gray-200 text-gray-600 bg-white dark:bg-gray-800/20 dark:border-gray-700 dark:text-gray-300"}`}
-                >
-                  <span
-                    className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] text-white ${dept === "Legal Team" ? "bg-blue-500" : dept === "Compliance" ? "bg-purple-500" : "bg-green-500"}`}
-                  >
-                    {dept
-                      .split(" ")
-                      .map((w) => w[0])
-                      .join("")}
-                  </span>
-                  {dept}
-                </button>
+            <select
+              value={escalateToId}
+              onChange={(e) => setEscalateToId(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-700 dark:border-gray-700 dark:bg-gray-800/30 dark:text-white"
+            >
+              <option value="">Select a team member...</option>
+              {teamMembers.filter((member) => member.is_active).map((member) => (
+                <option key={member.id} value={String(member.id)}>
+                  {member.full_name} — {member.role}
+                </option>
               ))}
-            </div>
+            </select>
           </div>
 
           <div>
@@ -281,13 +313,14 @@ function EscalateCaseView({
               Cancel
             </button>
             <button
-              onClick={handleSubmit}
-              disabled={!reason}
+              onClick={() => void handleSubmit()}
+              disabled={!reason || !escalateToId || isSubmitting}
               className={`px-5 py-2.5 text-white text-sm font-semibold rounded-lg transition-colors ${reason ? "bg-[#1a2e4a] hover:bg-[#152438] dark:bg-blue-600 dark:hover:bg-blue-700" : "bg-gray-300 cursor-not-allowed dark:bg-gray-700"}`}
             >
-              Escalate Case
+              {isSubmitting ? "Escalating..." : "Escalate Case"}
             </button>
           </div>
+          {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
         </div>
       </div>
 
@@ -335,16 +368,82 @@ export default function CaseDetailPage() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const initialCase: Case | undefined = useMemo(() => {
-    if (location.state?.case) return location.state.case as Case;
-    return MOCK_CASES.find((c) => c.id === id);
-  }, [location.state, id]);
-
+  const initialCase: Case | undefined = useMemo(
+    () => location.state?.case as Case | undefined,
+    [location.state],
+  );
+  const caseQuery = useCase(id ?? "");
+  const commentsQuery = useCaseComments(id ?? "");
+  const evidenceQuery = useCaseEvidence(id ?? "");
+  const historyQuery = useCaseHistory(id ?? "");
+  const reportQuery = useCaseReport(id ?? "");
+  const teamMembersQuery = useTeamMembers();
+  const addCommentMutation = useAddCaseComment(id ?? "");
+  const assignMutation = useAssignCase(id ?? "");
+  const attachEvidenceMutation = useAttachCaseEvidence(id ?? "");
+  const escalateMutation = useEscalateCase(id ?? "");
+  const removeEvidenceMutation = useRemoveCaseEvidence(id ?? "");
+  const statusMutation = useUpdateCaseStatus(id ?? "");
   const [caseData, setCaseData] = useState<Case | undefined>(initialCase);
+  const [actionError, setActionError] = useState("");
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [currentView, setCurrentView] = useState<"detail" | "escalate">("detail");
+
+  useEffect(() => {
+    if (!caseQuery.data) return;
+    const mapped = toCaseView(caseQuery.data);
+    const comments = commentsQuery.data?.results.map((comment) => ({
+      id: comment.id,
+      author: comment.author?.full_name ?? "System",
+      authorInitials: (comment.author?.full_name ?? "S")
+        .split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase(),
+      authorColor: "bg-teal-600",
+      timeAgo: new Date(comment.created_at).toLocaleString(),
+      text: comment.text,
+    })) ?? [];
+    const timeline = historyQuery.data?.results.map((event) => ({
+      id: event.id,
+      type: "status_change" as const,
+      title: event.type.replace(/_/g, " "),
+      description: event.detail,
+      by: event.actor?.full_name ?? "System",
+      byInitials: (event.actor?.full_name ?? "S")
+        .split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase(),
+      byColor: "bg-slate-800",
+      timeAgo: new Date(event.created_at).toLocaleString(),
+    })) ?? [];
+    const statusHistory = historyQuery.data?.results
+      .filter((event) => event.from_status && event.to_status)
+      .map((event) => ({
+        from: event.from_status!,
+        to: event.to_status!,
+        date: new Date(event.created_at).toLocaleString(),
+      })) ?? [];
+    // Prefer the figures computed by the report endpoint over the ones derived on the client
+    const analysis = reportQuery.data?.analysis;
+    setCaseData({
+      ...mapped,
+      comments,
+      timeline,
+      statusHistory,
+      evidence: evidenceQuery.data?.results.map(toEvidenceView) ?? [],
+      ...(analysis && {
+        totalExposure: `${analysis.currency} ${analysis.total_exposure}`,
+        duplicateAmount: `${analysis.currency} ${analysis.duplicate_amount}`,
+        riskScore: String(analysis.risk_score),
+        transactionCount: analysis.transaction_count,
+      }),
+    });
+  }, [caseQuery.data, commentsQuery.data, evidenceQuery.data, historyQuery.data, reportQuery.data]);
+
+  if (caseQuery.isLoading && !caseData) {
+    return <div className="p-8 text-center text-sm text-gray-500">Loading case...</div>;
+  }
+
+  if (caseQuery.isError && !caseData) {
+    return <div role="alert" className="p-8 text-center text-sm text-red-500">Could not load this case.</div>;
+  }
 
   if (!caseData) {
     return (
@@ -365,7 +464,14 @@ export default function CaseDetailPage() {
 
   // ── Handlers ────────────────────────────────────────────────────────────
 
-  const handleStartInvestigation = () => {
+  const handleStartInvestigation = async () => {
+    setActionError("");
+    try {
+      await statusMutation.mutateAsync({ status: "investigating" });
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Could not start investigation.");
+      return;
+    }
     setCaseData((prev) => prev ? ({
       ...prev,
       investigationStarted: true,
@@ -382,46 +488,24 @@ export default function CaseDetailPage() {
     }) : prev);
   };
 
-  const handleFileUpload = (files: FileList | null) => {
-    if (!files) return;
-    const newFiles: EvidenceFile[] = Array.from(files).map((f) => ({
-      id: `e${Date.now()}_${f.name}`,
-      name: f.name,
-      size: `${Math.round(f.size / 1024)} KB`,
-      uploadedBy: "Sarah Chen",
-      uploadedAt: new Date().toISOString().slice(0, 16).replace("T", " "),
-    }));
-    setCaseData((prev) => prev ? ({
-      ...prev,
-      evidence: [...prev.evidence, ...newFiles],
-      timeline: [
-        { id: `t${Date.now()}`, type: "evidence_uploaded", title: "Evidence uploaded", description: newFiles.map((f) => f.name).join(", "), by: "Sarah Chen", byInitials: "SC", byColor: "bg-teal-600", timeAgo: "Just now" },
-        ...prev.timeline,
-      ],
-      activityLog: [
-        { id: `a${Date.now()}`, event: "Evidence uploaded", by: "Sarah Chen", timeAgo: "Just now" },
-        ...prev.activityLog,
-      ],
-    }) : prev);
+  const handleAttachEvidence = async () => {
+    const fileId = window.prompt("Enter the ID of the file already uploaded to the system:");
+    if (!fileId?.trim()) return;
+    setActionError("");
+    try {
+      await attachEvidenceMutation.mutateAsync(fileId.trim());
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Could not attach case evidence.");
+    }
   };
 
-  const handleRemoveEvidence = (idToRemove: string) => {
-    setCaseData((prev) => {
-      if (!prev) return prev;
-      const removed = prev.evidence.find((f) => f.id === idToRemove);
-      return {
-        ...prev,
-        evidence: prev.evidence.filter((f) => f.id !== idToRemove),
-        timeline: removed ? [
-          { id: `t${Date.now()}`, type: "evidence_removed", title: "Evidence removed", description: removed.name, by: "Sarah Chen", byInitials: "SC", byColor: "bg-teal-600", timeAgo: "Just now" },
-          ...prev.timeline,
-        ] : prev.timeline,
-        activityLog: removed ? [
-          { id: `a${Date.now()}`, event: "Evidence removed", by: "Sarah Chen", timeAgo: "Just now" },
-          ...prev.activityLog,
-        ] : prev.activityLog,
-      };
-    });
+  const handleRemoveEvidence = async (idToRemove: string) => {
+    setActionError("");
+    try {
+      await removeEvidenceMutation.mutateAsync(idToRemove);
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Could not remove case evidence.");
+    }
   };
 
   const handleGenerateAI = async () => {
@@ -446,66 +530,47 @@ export default function CaseDetailPage() {
     setIsGeneratingAI(false);
   };
 
-  const handleAddComment = (commentText: string) => {
-    const comment = {
-      id: `c${Date.now()}`, author: "Sarah Chen", authorInitials: "SC", authorColor: "bg-teal-600",
-      timeAgo: "Just now", text: commentText,
-    };
-    setCaseData((prev) => prev ? ({
-      ...prev,
-      comments: [comment, ...prev.comments],
-      timeline: [
-        { id: `t${Date.now()}`, type: "note_added", title: "Note Added", description: commentText, by: "Sarah Chen", byInitials: "SC", byColor: "bg-teal-600", timeAgo: "Just now" },
-        ...prev.timeline,
-      ],
-      activityLog: [
-        { id: `a${Date.now()}`, event: "Note added", by: "Sarah Chen", timeAgo: "Just now" },
-        ...prev.activityLog,
-      ],
-    }) : prev);
+  const handleAddComment = async (commentText: string) => {
+    setActionError("");
+    try {
+      await addCommentMutation.mutateAsync(commentText);
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Could not add case comment.");
+    }
   };
 
-  const handleAssignRole = (role: "investigator" | "reviewer", name: string) => {
-    setCaseData((prev) => {
-      if (!prev) return prev;
-      const historyUpdate = role === "reviewer" && !prev.reviewer
-        ? [{ from: prev.status, to: "Under Review", date: new Date().toLocaleString() }]
-        : [];
-
-      return {
-        ...prev,
-        ...(role === "reviewer"
-          ? { status: "Under Review" as CaseStatus, reviewer: { name, role: "Lead Investigator", dept: "Compliance Operations" } }
-          : { investigator: { name, role: "Senior Investigator", dept: "Compliance Operations" } }),
-        timeline: [
-          { id: `t${Date.now()}`, type: "reassign", title: `Assigned Case to ${role === "reviewer" ? "Reviewer" : "Investigator"}`, description: `Case assigned to ${name}`, by: "System", byInitials: "SYS", byColor: "bg-slate-800", timeAgo: "Just now" },
-          ...prev.timeline,
-        ],
-        activityLog: [
-          { id: `a${Date.now()}`, event: `Assigned ${role === "reviewer" ? "Reviewer" : "Investigator"}`, by: "System", timeAgo: "Just now" },
-          ...prev.activityLog,
-        ],
-        statusHistory: [...prev.statusHistory, ...historyUpdate],
-      };
-    });
+  const handleAssignRole = async (role: "investigator" | "reviewer", memberId: string) => {
+    setActionError("");
+    const member = teamMembersQuery.data?.find((candidate) => String(candidate.id) === memberId);
+    if (!member) {
+      setActionError("Select a valid active team member.");
+      return;
+    }
+    try {
+      await assignMutation.mutateAsync({
+        investigator_id: role === "investigator" ? memberId : caseQuery.data?.investigator?.id ?? null,
+        reviewer_id: role === "reviewer" ? memberId : caseQuery.data?.reviewer?.id ?? null,
+      });
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Could not assign the case.");
+    }
   };
 
   const handleEscalateInit = () => setCurrentView("escalate");
 
-  const handleEscalateSubmit = () => {
-    setCaseData((prev) => prev ? ({
-      ...prev,
-      status: "Escalated" as CaseStatus,
-      activityLog: [
-        { id: `a${Date.now()}`, event: "Case escalated", by: "Sarah Chen", timeAgo: "Just now" },
-        ...prev.activityLog,
-      ],
-      statusHistory: [...prev.statusHistory, { from: prev.status, to: "Escalated", date: new Date().toLocaleString() }],
-    }) : prev);
+  const handleEscalateSubmit = async (payload: CaseEscalationPayload) => {
+    await escalateMutation.mutateAsync(payload);
     setCurrentView("detail");
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    setActionError("");
+    try {
+      await statusMutation.mutateAsync({ status: "closed" });
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Could not close the case.");
+      return;
+    }
     setCaseData((prev) => prev ? ({
       ...prev,
       status: "Closed" as CaseStatus,
@@ -518,7 +583,14 @@ export default function CaseDetailPage() {
     }) : prev);
   };
 
-  const handleReopen = () => {
+  const handleReopen = async () => {
+    setActionError("");
+    try {
+      await statusMutation.mutateAsync({ status: "investigating" });
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Could not reopen the case.");
+      return;
+    }
     setCaseData((prev) => prev ? ({
       ...prev,
       status: "Investigating" as CaseStatus,
@@ -536,6 +608,7 @@ export default function CaseDetailPage() {
     return (
       <EscalateCaseView
         caseData={caseData}
+        teamMembers={teamMembersQuery.data ?? []}
         onCancel={() => setCurrentView("detail")}
         onEscalate={handleEscalateSubmit}
       />
@@ -545,6 +618,21 @@ export default function CaseDetailPage() {
   // ── Main detail view — ALWAYS the full 3-column layout ───────────────────
   return (
     <div className="min-h-full bg-gray-50 dark:bg-transparent">
+      {actionError && (
+        <p role="alert" className="mx-6 mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20">
+          {actionError}
+        </p>
+      )}
+      {teamMembersQuery.isError && (
+        <p role="alert" className="mx-6 mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20">
+          Could not load team members for case assignment.
+        </p>
+      )}
+      {(commentsQuery.isError || evidenceQuery.isError || historyQuery.isError) && (
+        <p role="alert" className="mx-6 mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20">
+          Some case comments, evidence, or history could not be loaded.
+        </p>
+      )}
 
       {/* Top bar */}
       <div className="bg-white px-6 py-4 dark:bg-white/3">
@@ -652,9 +740,8 @@ export default function CaseDetailPage() {
           isGeneratingAI={isGeneratingAI}
           handleGenerateAI={handleGenerateAI}
           handleAddComment={handleAddComment}
-          handleFileUpload={handleFileUpload}
+          handleAttachEvidence={handleAttachEvidence}
           handleRemoveEvidence={handleRemoveEvidence}
-          fileInputRef={fileInputRef}
         />
 
         <CaseRightColumn
@@ -664,6 +751,7 @@ export default function CaseDetailPage() {
           handleStartInvestigation={handleStartInvestigation}
           handleEscalateInit={handleEscalateInit}
           handleAssignRole={handleAssignRole}
+          teamMembers={teamMembersQuery.data ?? []}
           handleClose={handleClose}
           handleReopen={handleReopen}
         />

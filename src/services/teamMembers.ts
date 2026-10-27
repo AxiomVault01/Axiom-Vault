@@ -23,11 +23,31 @@ const memberUrl = (id: TeamMember["id"]) => `${TEAM_MEMBERS_URL}${id}/`;
 const unwrap = (data: any) => data?.data ?? data;
 
 export const getTeamMembers = async (): Promise<TeamMember[]> => {
-  const res = await api.get(TEAM_MEMBERS_URL);
-  const body = unwrap(res.data);
-  if (Array.isArray(body)) return body;
-  if (Array.isArray(body?.results)) return body.results;
-  return [];
+  const members: TeamMember[] = [];
+  const visitedPages = new Set<string>();
+  let nextPage: string | null = TEAM_MEMBERS_URL;
+
+  while (nextPage) {
+    if (visitedPages.has(nextPage)) {
+      throw new Error("The team members API returned a repeated page link.");
+    }
+    visitedPages.add(nextPage);
+
+    const res = await api.get(nextPage);
+    const body = unwrap(res.data);
+    if (Array.isArray(body)) {
+      members.push(...body);
+      break;
+    }
+    if (!Array.isArray(body?.results)) {
+      throw new Error("The team members API returned an invalid list response.");
+    }
+
+    members.push(...body.results);
+    nextPage = typeof body.next === "string" ? body.next : null;
+  }
+
+  return members;
 };
 
 export const getTeamMember = async (

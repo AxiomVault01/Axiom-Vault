@@ -87,10 +87,12 @@ export function FalsePositiveModal({
   isOpen,
   onClose,
   onConfirm,
+  isSubmitting = false,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (reason: string) => void;
+  isSubmitting?: boolean;
 }) {
   const [reason, setReason] = useState("");
 
@@ -124,8 +126,8 @@ export function FalsePositiveModal({
           <button type="button" onClick={onClose} className={`${OUTLINE_BTN} py-2.5`}>
             Cancel
           </button>
-          <button type="submit" disabled={!trimmed} className={`${PRIMARY_BTN} sm:min-w-72`}>
-            Confirm False Positive
+          <button type="submit" disabled={!trimmed || isSubmitting} className={`${PRIMARY_BTN} sm:min-w-72`}>
+            {isSubmitting ? "Updating status..." : "Confirm False Positive"}
           </button>
         </div>
       </form>

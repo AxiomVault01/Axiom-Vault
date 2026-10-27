@@ -13,6 +13,8 @@ import { Case, CaseStatus, Severity } from "../../pages/Cases/CasesData";
 
 interface Props {
   data: Case[];
+  // Where each case's detail page lives (team members use their own area)
+  basePath?: string;
 }
 
 type StatusFilter = "All" | CaseStatus;
@@ -78,7 +80,7 @@ const SEVERITY_STYLES: Record<Severity, string> = {
   Low: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
 };
 
-export default function CasesTable({ data }: Props) {
+export default function CasesTable({ data, basePath = "/cases" }: Props) {
   const navigate = useNavigate();
 
   // Search + pill filter
@@ -451,7 +453,7 @@ export default function CasesTable({ data }: Props) {
                     <td className="px-4 py-4.5 align-middle text-center">
                       <button
                         onClick={() =>
-                          navigate(`/cases/${item.id}`, {
+                          navigate(`${basePath}/${item.id}`, {
                             state: { case: item },
                           })
                         }
