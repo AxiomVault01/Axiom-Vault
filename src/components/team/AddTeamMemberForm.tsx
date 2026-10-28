@@ -8,6 +8,7 @@ import MainImg from "../../../public/Vault.jpg";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import api from "../../services/Axios";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 import { useQueryClient } from "@tanstack/react-query";
 import { teamMemberKeys } from "../../hooks/useTeamMembers";
 import {
@@ -126,10 +127,7 @@ export default function AddTeamMemberForm() {
       queryClient.invalidateQueries({ queryKey: teamMemberKeys.all });
       setCreatedMember(formData);
     } catch (err: any) {
-      const errormessage =
-        err.response?.data?.message ||
-        err.message ||
-        "Failed to create team member";
+      const errormessage = getErrorMessage(err, "Failed to create team member");
       toast.error(errormessage);
     } finally {
       setLoading(false);

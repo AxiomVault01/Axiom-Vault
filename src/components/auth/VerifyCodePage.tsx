@@ -9,6 +9,7 @@ import logob from "../../../public/AXIOM _VAULT_B.png";
 import MessageModal from "../shared/MessageModal";
 import api from "../../services/Axios";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 import { Loader } from "lucide-react";
 
 
@@ -61,14 +62,14 @@ export default function VerifyCodePage() {
       const payload = {
         email,
       };
-      const res = await api.put(`/auth/resend-otp/`, payload);
-      console.log(res, "email verification response");
+      await api.put(`/auth/resend-otp/`, payload);
+      // console.log(res, "email verification response");
       console.log(payload);
       toast.success("otp sent to your email");
       setIsOpen(true);
     } catch (err: any) {
-      console.error(err.message, "error re-sending otp code");
-      toast.error(err.message, err.data?.message);
+      // console.error(err.message, "error re-sending otp code");
+      toast.error(getErrorMessage(err, "Something went wrong. Please try again."));
     } finally {
     }
   };
@@ -104,7 +105,7 @@ const email = sessionStorage.getItem("email");
       toast.success("OTP confirmed successfully");
       navigate("/reset-password");
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(getErrorMessage(err, "Verification failed. Please try again."));
     }finally{
       setLoading(false)
     }

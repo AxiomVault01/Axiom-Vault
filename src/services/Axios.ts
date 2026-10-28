@@ -1,5 +1,6 @@
 import axios from "axios";
 import { queryClient } from "./queryClient";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -9,7 +10,7 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-console.log(api.defaults.baseURL);
+// console.log(api.defaults.baseURL);
 
 // Request interceptor to add authentication token
 api.interceptors.request.use(
@@ -59,6 +60,9 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    // Replace axios' generic "Request failed with status code XXX" with the backend's message
+    error.message = getErrorMessage(error, error.message);
+
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && isAuthRequest(originalRequest?.url)) {

@@ -8,10 +8,10 @@ import logo from "../../../public/Logo.jpg";
 import logob from "../../../public/AXIOM _VAULT_B.png";
 import api from "../../services/Axios";
 import toast from "react-hot-toast";
+import { getErrorMessage, getFieldErrors } from "../../utils/getErrorMessage";
 import { Check, Loader, Lock } from "lucide-react";
 import Bicon from "../../../public/Brand Icon.jpg";
 import Biconw from "../../../public/AXIOM_VAULT_c.png";
-
 
 const lgImage = {
   width: "175px",
@@ -22,16 +22,22 @@ const BiImage = {
   height: "40px",
 };
 
+interface resetpasswordProps {
+  new_password: string;
+  re_enter_password: string;
+}
+
 export default function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
+  const [loading, setLoading] = useState(false);
+  const [networkError, setNetworkError] = useState("");
+  const [formData, setFormData] = useState<resetpasswordProps>({
     new_password: "",
     re_enter_password: "",
   });
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<resetpasswordProps>({
     new_password: "",
     re_enter_password: "",
   });
@@ -44,7 +50,7 @@ export default function ResetPasswordPage() {
   };
 
   const validateForm = () => {
-    const newErrors = {
+    const newErrors: resetpasswordProps = {
       new_password: "",
       re_enter_password: "",
     };
@@ -65,7 +71,7 @@ export default function ResetPasswordPage() {
 
     return !newErrors.new_password && !newErrors.re_enter_password;
   };
-const reset_token = sessionStorage.getItem("reset_token")
+  const reset_token = sessionStorage.getItem("reset_token");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -73,25 +79,31 @@ const reset_token = sessionStorage.getItem("reset_token")
     try {
       const payload = {
         reset_token,
-        new_password: formData.new_password ,
+        new_password: formData.new_password,
         re_enter_password: formData.re_enter_password,
       };
-      const resetPassword = await api.post(`/auth/reset-password/`, payload);
-      console.log(resetPassword, "API response");
-      toast.success("Password reset successful you will be redirected to the login page");
+      // console.log(resetPassword, "API response");
+      if (validateForm()) {
+        await api.post(`/auth/reset-password/`, payload);
+        console.log("Form submitted", formData);
+        navigate("/signin");
+        toast.success(
+          "Password reset successful you will be redirected to the login page",
+        );
+      }
       setTimeout(() => {
-        if (validateForm()) {
-          console.log("Form submitted", formData);
-          navigate("/signin");
-        }
-      }, 4000);
+        setErrors(formData);
+        setNetworkError("")
+      }, 1000);
       sessionStorage.clear();
     } catch (err: any) {
-      toast.error(err.message);
+      const errormessage = getErrorMessage(err, "Password reset failed. Please try again.");
+      toast.error(errormessage);
+      setErrors((prev) => ({ ...prev, ...getFieldErrors(err) }));
+      setNetworkError(errormessage)
     } finally {
       setLoading(false);
     }
-
   };
 
   return (
@@ -135,6 +147,11 @@ const reset_token = sessionStorage.getItem("reset_token")
 
           <div className="p-5">
             <form onSubmit={handleSubmit}>
+              {networkError && (
+                <p className="text-red-500 text-[10px] mb-5 bg-red-50 p-2 border-l-3 border-red-600">
+                  {networkError}
+                </p>
+              )}
               <div className="space-y-4">
                 <div className="relative">
                   <div className="relative w-full max-w-md">
@@ -165,7 +182,9 @@ const reset_token = sessionStorage.getItem("reset_token")
                   </span>
                 </div>
                 {errors.new_password && (
-                  <p className="text-red-500 text-sm">{errors.new_password}</p>
+                  <p className="text-red-500 text-[10px]">
+                    {errors.new_password}
+                  </p>
                 )}
 
                 <div className="relative">
@@ -197,7 +216,7 @@ const reset_token = sessionStorage.getItem("reset_token")
                   </span>
                 </div>
                 {errors.re_enter_password && (
-                  <p className="text-red-500 text-sm">
+                  <p className="text-red-500 text-[10px]">
                     {errors.re_enter_password}
                   </p>
                 )}

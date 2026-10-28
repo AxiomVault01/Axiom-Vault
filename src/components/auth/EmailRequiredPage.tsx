@@ -12,6 +12,7 @@ import MessageModal from "../shared/MessageModal";
 import { Loader, Mail } from "lucide-react";
 import api from "../../services/Axios";
 import toast from "react-hot-toast";
+import { getErrorMessage, getFieldErrors } from "../../utils/getErrorMessage";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -27,7 +28,7 @@ const BiImage = {
   height: "40px",
 };
 export interface emailProps {
-email: string;
+  email: string;
 }
 export default function EmailRequiredPage() {
   const navigate = useNavigate();
@@ -36,7 +37,8 @@ export default function EmailRequiredPage() {
   const [errors, setErrors] = useState({
     email: "",
   });
-  const [loading, setLoading] = useState<boolean>(false)
+  const [networkError, setNetworkError] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setFormData({
@@ -64,29 +66,30 @@ export default function EmailRequiredPage() {
     if (validateForm()) {
       console.log("Form submitted", email);
     }
-    setLoading(true)
+    setLoading(true);
     try {
       const payload = {
         email,
       };
-      const res = await api.post(`/auth/send-otp/`, payload);
-      console.log(res, "email verification response")
-      toast.success(res.data.message);
-      localStorage.setItem("email", email)
-      setEmail("");
-      setIsOpen(true);
+      if (validateForm()) {
+        const res = await api.post(`/auth/send-otp/`, payload);
+        toast.success(res.data.message);
+        localStorage.setItem("email", email);
+        setEmail("");
+        setIsOpen(true);
+      }
     } catch (err: any) {
-      console.error(err.message, "error sending otp code")
-      toast.error(err.message,  err.data?.message);
+      const errormessage = getErrorMessage(err, "Error sending OTP code");
+      toast.error(errormessage);
+      setNetworkError(errormessage);
+      setErrors((prev) => ({ ...prev, ...getFieldErrors(err) }));
     } finally {
-      setLoading(false)
-      
+      setLoading(false);
     }
   };
   const handleCloseModal = () => {
     setIsOpen(false);
     navigate("/email-verification");
-    
   };
 
   return (
@@ -129,6 +132,11 @@ export default function EmailRequiredPage() {
 
             <div className="p-5 pt-0 ">
               <form onSubmit={handleSubmit}>
+                {networkError && (
+                  <p className="text-red-600 text-[10px] bg-red-50 border-l-4 border-red-600">
+                    {networkError}
+                  </p>
+                )}
                 <div className="space-y-4">
                   <Label className="text-brand-800 dark:text-white/90">
                     Work Email Address
@@ -147,7 +155,7 @@ export default function EmailRequiredPage() {
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-red-500 text-sm">{errors.email}</p>
+                    <p className="text-red-500 text-[10px]">{errors.email}</p>
                   )}
                 </div>
                 <div>

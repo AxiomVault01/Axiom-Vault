@@ -11,6 +11,7 @@ import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import { SuccessMessageModal } from "../shared/MessageModal";
 import api from "../../services/Axios";
 import toast from "react-hot-toast";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 import { Loader } from "lucide-react";
 
 const bgImage = {
@@ -82,13 +83,13 @@ export default function EmailVerificationPage() {
         // code: code.join(""),
       };
       const res = await api.post(`/auth/resend-otp/`, payload);
-      console.log(res, "email verification response");
-      console.log(payload)
+      // console.log(res, "email verification response");
+      // console.log(payload)
       toast.success(res.data.message);
       setIsOpen(true);
     } catch (err: any) {
-      console.error(err.message, "error re-sending otp code");
-      toast.error(err.message, err.data?.message);
+      // console.error(err.message, "error re-sending otp code");
+      toast.error(getErrorMessage(err, "Something went wrong. Please try again."));
     } finally {
       
     }
@@ -122,7 +123,7 @@ export default function EmailVerificationPage() {
       localStorage.setItem("code", res.data.verification_token);
     } catch (err: any) {
       console.error(err.message, "error sending otp code");
-      toast.error(err.message, err.data?.message);
+      toast.error(getErrorMessage(err, "Something went wrong. Please try again."));
     } finally {
       setLoading(false);
     }

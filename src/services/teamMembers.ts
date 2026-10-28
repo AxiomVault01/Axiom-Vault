@@ -87,8 +87,4 @@ export const toggleTeamMemberStatus = async (
   return { ...member, is_active: !member.is_active };
 };
 
-export const getErrorMessage = (err: any, fallback: string) =>
-  err?.response?.data?.message ||
-  err?.response?.data?.detail ||
-  err?.message ||
-  fallback;
+export { getErrorMessage } from "../utils/getErrorMessage";
