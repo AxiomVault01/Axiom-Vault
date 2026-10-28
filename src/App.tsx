@@ -73,7 +73,7 @@ export default function App() {
           <Route path="/change-temporary-password" element={<ChangeTemporaryPassword />} />
 
           {/* Protected Dashboard Layout */}
-          {/* <Route element={<ProtectedRoute />}> */}
+          <Route element={<ProtectedRoute />}>
             {/* Team member area */}
             <Route path="/member" element={<TeamMemberLayout />}>
               <Route index element={<Navigate to="cases" replace />} />
@@ -118,7 +118,7 @@ export default function App() {
               <Route path="/line-chart" element={<LineChart />} />
               <Route path="/bar-chart" element={<BarChart />} />
             </Route>
-          {/* </Route> */}
+          </Route>
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
