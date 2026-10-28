@@ -14,6 +14,7 @@ import Biconw from "../../../public/AXIOM_VAULT_c.png";
 import api from "../../services/Axios";
 import { CircleCheck, Loader, Lock, Mail } from "lucide-react";
 import toast from "react-hot-toast";
+import { getErrorMessage, getFieldErrors } from "../../utils/getErrorMessage";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -28,6 +29,10 @@ const BiImage = {
   height: "40px",
 };
 
+interface FormErrors {
+  email: string;
+  password: string;
+}
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -36,85 +41,97 @@ export default function SignInForm() {
   // Set when arriving from the change-temporary-password screen
   const { state } = useLocation();
   const passwordUpdated = Boolean(state?.passwordUpdated);
-  const [formData, setFormData] = useState({
-    email: state?.email ?? "",
-  password: "",
+  const [formData, setFormData] = useState<FormErrors>({
+    email: "",
+    password: "",
+    // checkbox: isChecked
   });
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const [errors, setErrors] = useState({
-  email: "",
-  password: "",
+  const [networkErrors, setNetworkErrors] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({
+    email: "",
+    password: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setFormData({
-    ...formData,
-    [e.target.name]: e.target.value,
-  });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const validateForm = () => {
-  const newErrors = {
-    email: "",
-    password: "",
+    const newErrors: FormErrors = {
+      email: "",
+      password: "",
+      // checkbox: "",
+    };
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    if (!passwordPattern.test(formData.password)) {
+      newErrors.password =
+        "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
+    }
+
+    // if (!isChecked) {
+    //   newErrors.checkbox =
+    //     "You must agree to the Terms & Conditions and Privacy Policy, and confirm government or institutional official use before logging in.";
+    // }
+
+    setErrors(newErrors);
+
+    return Object.values(newErrors).every((error) => error === "");
   };
 
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  if (!emailPattern.test(formData.email)) {
-    newErrors.email = "Please enter a valid email address";
-  }
-
-  const passwordPattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-
-  if (!passwordPattern.test(formData.password)) {
-    newErrors.password =
-    "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
-  }
-
-  setErrors(newErrors);
-
-  return !newErrors.email && !newErrors.password;
- };
-
- const handleSubmit = async (e: React.FormEvent) => {
-   e.preventDefault();
-   if (!validateForm()) return;
-
-   setLoading(true);
-   //  login logic
-   try {
-    const payload = {
-      email: formData.email,
-      password: formData.password,
-      role: "super_admin",
-    }
-     const rawResponse = await api.post(`/auth/login/`, payload);
-     const token = rawResponse.data.access;
-     localStorage.setItem("token", token);
-     localStorage.setItem("email", formData.email);
-     localStorage.setItem("user", JSON.stringify(rawResponse.data.user));
-    //  console.log(token, "token");
-    //  console.log(rawResponse, "API response");
-    //   console.log(rawResponse, "API response");
-      if (rawResponse.status === 200) {
-        toast.success("Login successful! 🎉")
-        setShowToast(true)
-        setTimeout(() => {
-          navigate(isTeamMember(rawResponse.data.user) ? "/member/cases" : "/dashboard");
-        }, 2000);
+    setLoading(true);
+    //  login logic
+    try {
+      const payload = {
+        email: formData.email,
+        password: formData.password,
+        role: "super_admin",
+      };
+      if (validateForm()) {
+        const rawResponse = await api.post(`/auth/login/`, payload);
+        const token = rawResponse.data.access;
+        localStorage.setItem("token", token);
+        localStorage.setItem("email", formData.email);
+        localStorage.setItem("user", JSON.stringify(rawResponse.data.user));
+        if (rawResponse.status === 200) {
+          toast.success("Login successful! 🎉");
+          setShowToast(true);
+          setTimeout(() => {
+            navigate(
+              isTeamMember(rawResponse.data.user)
+                ? "/member/cases"
+                : "/dashboard",
+            );
+          }, 2000);
+        }
       }
     } catch (err: any) {
       // console.error(err.message, "error logging in");
-      toast.error(err.message, err.data?.message);
+      const ErrorMsg = getErrorMessage(err, "Login failed. Please try again.");
+      toast.error(ErrorMsg);
+      setNetworkErrors(ErrorMsg);
+      setErrors((prev) => ({ ...prev, ...getFieldErrors(err) }));
     } finally {
       setLoading(false);
     }
-
- 
- };
+  };
 
   return (
     <div style={bgImage}>
@@ -132,8 +149,18 @@ export default function SignInForm() {
           <div className="bg-white rounded-t-lg border dark:border-gray-300 dark:bg-gray-900 rounded-lg">
             <div className="mb-5 sm:mb-4 p-8 bg-brand-500 rounded-t-lg">
               <div className="w-12 h-12 mb-3 bg-white dark:bg-gray-900 p-1 rounded-lg mx-auto">
-                <img src={Bicon} style={BiImage} className="mx-auto dark:hidden" alt="Brand Icon" />
-                <img src={Biconw} style={BiImage} className="mx-auto hidden dark:block" alt="Brand Icon" />
+                <img
+                  src={Bicon}
+                  style={BiImage}
+                  className="mx-auto dark:hidden"
+                  alt="Brand Icon"
+                />
+                <img
+                  src={Biconw}
+                  style={BiImage}
+                  className="mx-auto hidden dark:block"
+                  alt="Brand Icon"
+                />
               </div>
               <h1 className="mb-2 font-semibold text-center text-white text-title-sm dark:text-white/90 sm:text-title-md">
                 Welcome Back
@@ -146,29 +173,47 @@ export default function SignInForm() {
             <div className="p-5">
               {passwordUpdated && (
                 <div className="mb-4 flex gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-white/5">
-                  <CircleCheck size={18} className="mt-0.5 shrink-0 text-green-500" />
+                  <CircleCheck
+                    size={18}
+                    className="mt-0.5 shrink-0 text-green-500"
+                  />
                   <div>
                     <p className="text-sm font-semibold text-gray-900 dark:text-white">
                       Password Updated Successfully
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Your password has been permanently updated. You may now login.
+                      Your password has been permanently updated. You may now
+                      login.
                     </p>
                   </div>
                 </div>
               )}
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
+                  {networkErrors && (
+                    <p className="text-red-500 text-[10px] bg-red-50 p-3 border-l-3 border-red-600">
+                      {networkErrors}
+                    </p>
+                  )}
                   <div>
                     <Label className="text-brand-800 dark:text-white/90">
                       Email Address
                     </Label>
                     <div className="relative w-full max-w-md">
-                      <Mail  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none dark:text-gray-400 z-50" />
-                      <Input type="email" id="email" name="email" placeholder="auditor@agency.gov" value={formData.email} onChange={handleChange} required className="w-full pl-10 pr-4 py-2" />
+                      <Mail className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none dark:text-gray-400 z-50" />
+                      <Input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="auditor@agency.gov"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-10 pr-4 py-2"
+                      />
                     </div>
                     {errors.email && (
-                      <p className="text-red-500 text-sm">{errors.email}</p>
+                      <p className="text-red-500 text-[10px]">{errors.email}</p>
                     )}
                   </div>
 
@@ -178,11 +223,18 @@ export default function SignInForm() {
                     </Label>
                     <div className="relative">
                       <div className="relative w-full max-w-md">
-                        <Lock  className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400 pointer-events-none z-50" />
-                        <Input className="w-full pl-10 pr-4 py-2" name="password" value={formData.password} onChange={handleChange}  placeholder="Enter Your Password" required 
-                        type={showPassword ? "text" : "password"} />
-                     </div>
-                      
+                        <Lock className="absolute w-5 h-5 left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400 pointer-events-none z-50" />
+                        <Input
+                          className="w-full pl-10 pr-4 py-2"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          placeholder="Enter Your Password"
+                          required
+                          type={showPassword ? "text" : "password"}
+                        />
+                      </div>
+
                       <span
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -195,16 +247,24 @@ export default function SignInForm() {
                       </span>
                     </div>
                     {errors.password && (
-                      <p className="text-red-500 text-sm">{errors.password}</p>
+                      <p className="text-red-500 text-[10px]">{errors.password}</p>
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Checkbox checked={isChecked} onChange={setIsChecked} />
-                      <span className="block font-normal text-brand-800 text-theme-sm dark:text-white/90">
-                        Remember Me
-                      </span>
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <Checkbox checked={isChecked} onChange={setIsChecked} />
+                        <span className="block font-normal text-brand-800 text-theme-sm dark:text-white/90">
+                          Remember Me
+                        </span>
+                      </div>
+                      {/* {errors.checkbox && (
+                        <p className="text-red-500 text-[10px]">
+                          {errors.checkbox}
+                        </p>
+                      )} */}
                     </div>
+
                     <Link
                       to="/forgot-password"
                       className="text-sm text-brand-500 hover:text-brand-500 dark:text-brand-400"
@@ -214,24 +274,24 @@ export default function SignInForm() {
                   </div>
                   <div>
                     <Button
-                    disabled={loading}
-                     type="submit"
-                     className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-500 hover:border-gray-400 hover:text-gray-50 mt-6"
-                     size="sm">
-                     
-                      {loading && (
-                        <Loader size={18} className="animate-spin"/>
-                      )}
-                      {loading ? 'Sigining in...' : 'Sign in'}
+                      disabled={loading}
+                      type="submit"
+                      className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition border rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-500 hover:border-gray-400 hover:text-gray-50 mt-6"
+                      size="sm"
+                    >
+                      {loading && <Loader size={18} className="animate-spin" />}
+                      {loading ? "Sigining in..." : "Sign in"}
                     </Button>
-                    
                   </div>
                 </div>
               </form>
 
               <p className="mt-4 text-center text-sm text-brand-100 dark:text-gray-400">
                 Signing in with a temporary password?{" "}
-                <Link to="/change-temporary-password" className="font-medium text-brand-500 dark:text-brand-400">
+                <Link
+                  to="/change-temporary-password"
+                  className="font-medium text-brand-500 dark:text-brand-400"
+                >
                   Change it first
                 </Link>
               </p>
@@ -259,7 +319,11 @@ export default function SignInForm() {
           </div>
         </div>
       </div>
-      <Toast message=" Login successful! 🎉" isVisible={showToast} onClose={() => setShowToast(false)} />
+      <Toast
+        message=" Login successful! 🎉"
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
     </div>
   );
 }

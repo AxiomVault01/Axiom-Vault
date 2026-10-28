@@ -13,6 +13,7 @@ import { ErrorMessageModal } from "../shared/MessageModal";
 import api from "../../services/Axios";
 import { Loader, Lock, User } from "lucide-react";
 import toast from "react-hot-toast";
+import { getErrorMessage, getFieldErrors } from "../../utils/getErrorMessage";
 
 const bgImage = {
   backgroundImage: `url(${MainImg})`,
@@ -28,6 +29,15 @@ const BiImage = {
   height: "40px",
 };
 
+interface FormDataError {
+  full_name: string;
+  organization: string;
+  department: string;
+  password: string;
+  re_enter_password: string;
+  checkbox: string;
+}
+
 export default function SignUpForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +45,8 @@ export default function SignUpForm() {
   const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [networkErrors, setNetworkErrors] = useState("");
+  const [formData, setFormData] = useState<FormDataError>({
     full_name: "",
     organization: "",
     department: "",
@@ -43,7 +54,7 @@ export default function SignUpForm() {
     re_enter_password: "",
     checkbox: "",
   });
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<FormDataError>({
     full_name: "",
     organization: "",
     department: "",
@@ -61,49 +72,54 @@ export default function SignUpForm() {
     });
   };
 
-  const validateForm = () => {
-    const newErrors = {
-      full_name: "",
-      organization: "",
-      department: "",
-      password: "",
-      re_enter_password: "",
-      checkbox: "",
-    };
-
-    const fullNamePattern = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = "Full name is required";
-    } else if (!fullNamePattern.test(formData.full_name.trim())) {
-      newErrors.full_name =
-        "Please enter your first, middle and last name, letters only";
-    }
-
-    const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-
-    if (!passwordPattern.test(formData.password)) {
-      newErrors.password =
-        "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
-    }
-
-    if (formData.password !== formData.re_enter_password) {
-      newErrors.re_enter_password = "Passwords do not match";
-    }
-
-    if (!isChecked) {
-      newErrors.checkbox =
-        "You must agree to the Terms & Conditions and Privacy Policy, and confirm government or institutional official use before creating an account.";
-    }
-
-    setErrors(newErrors);
-
-    return Object.values(newErrors).every((error) => error === "");
-  };
   const verification_token = localStorage.getItem("code");
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    const validateForm = () => {
+      const newErrors: FormDataError = {
+        full_name: "",
+        organization: "",
+        department: "",
+        password: "",
+        re_enter_password: "",
+        checkbox: "",
+      };
+
+      const fullNamePattern = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
+      if (!formData.full_name.trim()) {
+        newErrors.full_name = "Full name is required";
+      } else if (!fullNamePattern.test(formData.full_name.trim())) {
+        newErrors.full_name =
+          "Please enter your first, middle and last name, letters only";
+        return;
+      }
+
+      const passwordPattern =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+      if (!passwordPattern.test(formData.password)) {
+        newErrors.password =
+          "Password must be at least 8 characters and include uppercase, lowercase, number and special character.";
+      }
+
+      if (formData.password !== formData.re_enter_password) {
+        newErrors.re_enter_password = "Passwords do not match";
+      }
+      if (!formData.department) {
+        newErrors.re_enter_password = "Please select a department";
+      }
+
+      if (!isChecked) {
+        newErrors.checkbox =
+          "You must agree to the Terms & Conditions and Privacy Policy, and confirm government or institutional official use before creating an account.";
+      }
+
+      setErrors(newErrors);
+
+      return Object.values(newErrors).every((error) => error === "");
+    };
 
     try {
       const Payload = {
@@ -114,20 +130,21 @@ export default function SignUpForm() {
         password: formData.password,
         re_enter_password: formData.re_enter_password,
       };
-      const res = await api.post(`/auth/signup/`, Payload);
       // console.log(Payload, "login res");
-      setFormData(formData);
       if (validateForm()) {
         // console.log("Form submitted", formData);
+        setFormData(formData);
+        const res = await api.post(`/auth/signup/`, Payload);
+        toast.success(res.data.message);
+        setIsOpen(true);
       }
-      setIsOpen(true);
       // localStorage.setItem("data", JSON.stringify(res.data));
-      toast.success(res.data.message);
     } catch (err: any) {
-      const errormessage =
-        err.response?.data?.message || err.message || "signup failed";
-      toast.error(err.message, errormessage);
-      setErrors(errormessage);
+      const errormessage = getErrorMessage(err, "Signup failed. Please try again.");
+      toast.error(errormessage);
+      setNetworkErrors(errormessage);
+      // Show field-level errors (e.g. { full_name: ["This field is required."] }) under each input
+      setErrors((prev) => ({ ...prev, ...getFieldErrors(err) }));
     } finally {
       setLoading(false);
     }
@@ -183,6 +200,11 @@ export default function SignUpForm() {
 
               <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
+                  {networkErrors && (
+                    <p className="text-red-500 text-[10px] bg-red-50 p-3 border-l-3 border-red-600">
+                      {networkErrors}
+                    </p>
+                  )}
                   <div className="sm:col-span-1">
                     <Label className="text-brand-800 dark:text-white/90">
                       Full Name
@@ -201,7 +223,9 @@ export default function SignUpForm() {
                       />
                     </div>
                     {errors.full_name && (
-                      <p className="text-red-500 text-sm">{errors.full_name}</p>
+                      <p className="text-red-500 text-[10px]">
+                        {errors.full_name}
+                      </p>
                     )}
                   </div>
 
@@ -221,6 +245,7 @@ export default function SignUpForm() {
                         required
                       />
                     </div>
+
                     <div className="sm:col-span-1">
                       <Label className="text-brand-800 dark:text-white/90">
                         Department
@@ -293,7 +318,9 @@ export default function SignUpForm() {
                       </span>
                     </div>
                     {errors.password && (
-                      <p className="text-red-500 text-sm">{errors.password}</p>
+                      <p className="text-red-500 text-[10px]">
+                        {errors.password}
+                      </p>
                     )}
                   </div>
 
@@ -354,7 +381,7 @@ export default function SignUpForm() {
                     </p>
                   </div>
                   {errors.checkbox && (
-                    <p className="text-red-500 text-sm ml-8">
+                    <p className="text-red-500 text-[10px]">
                       {errors.checkbox}
                     </p>
                   )}
